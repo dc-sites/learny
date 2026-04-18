@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learny - Achievements</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Premium Lock Styles (Inline to keep style.css untouched) */
+        .badge-container.locked {
+            pointer-events: none;
+            opacity: 0.85;
+            cursor: default;
+        }
+        .badge.locked:hover {
+            transform: none;
+            box-shadow: var(--shadow-sm);
+        }
+        .goal-input-wrapper { position: relative; }
+        .form-control.locked {
+            background: var(--bg-dark);
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .btn.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        .lock-icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: var(--warning);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">L</div>
+                <div class="sidebar-title">Learny</div>
+            </div>
+            <nav>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
+                    <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+                    <li class="nav-item"><a href="bot.html"><i class="fa fa-brain"></i> LearnyAI</a></li>
+                    <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
+                    <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+                    <li class="nav-item active"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+                    <li class="nav-item"><a href="motivation.html"><i class="fa fa-lightbulb"></i> Motivation</a></li>
+                    <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
+                    <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-stopwatch"></i> Pomodoro</a></li>
+                    <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
+                    <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
+                    <li class="nav-item"><a href="countdown.html"><i class="fa fa-hourglass-half"></i> Countdown</a></li>
+                    <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+                    <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+                    <li class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></li>
+                    <li class="nav-item premium-nav-item" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+                        <a href="premium.html" class="premium-link" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(108, 43, 217, 0.2)); color: var(--warning); border-radius: 8px;">
+                            <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" style="width: 18px; height: 18px; margin-right: 8px;">
+                            Get Premium
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-welcome">
+                <div class="divider"></div>
+                <p id="sidebar-username">Welcome, User!</p>
+            </div>
+        </aside>
+
+        <div class="overlay"></div>
+
+        <main class="main-content">
+            <div class="page-header">
+                <button class="hamburger"><i class="fa fa-bars"></i></button>
+                <h1 class="page-title"><i class="fa fa-trophy"></i> Achievements</h1>
+                <div class="header-actions">
+                    <button class="theme-toggle"><i class="fa fa-moon"></i></button>
+                </div>
+            </div>
+
+            <!-- Weekly Badges (View Only) -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fa fa-medal"></i> Weekly Badges</h2>
+                    <div id="goal-display" class="goal-display">0 / 35h</div>
+                </div>
+                <div class="badge-container locked">
+                    <div class="badge bronze locked" data-badge="bronze">
+                        <div class="badge-icon"><i class="fa fa-medal"></i></div>
+                        <div class="badge-name">Bronze</div>
+                        <div class="badge-desc">60% of goal</div>
+                    </div>
+                    <div class="badge silver locked" data-badge="silver">
+                        <div class="badge-icon"><i class="fa fa-award"></i></div>
+                        <div class="badge-name">Silver</div>
+                        <div class="badge-desc">100% of goal</div>
+                    </div>
+                    <div class="badge golden locked" data-badge="golden">
+                        <div class="badge-icon"><i class="fa fa-crown"></i></div>
+                        <div class="badge-name">Golden</div>
+                        <div class="badge-desc">130% of goal</div>
+                    </div>
+                </div>
+                <p style="text-align:center; margin-top:14px; font-size:13px; color:var(--text-muted);">
+                    <i class="fa fa-eye" style="margin-right:4px;"></i> View only • Upgrade to unlock interactive tracking
+                </p>
+            </div>
+
+            <!-- Customize Goal (Locked) -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fa fa-sliders-h"></i> Customize Goal</h2>
+                    <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" style="width: 18px; height: 18px;">
+                </div>
+                <div class="form-group">
+                    <label>Weekly Target (Hours) <span style="color:var(--warning); font-size:12px;"><i class="fa fa-lock"></i> Premium</span></label>
+                    <div class="flex items-center gap-3 goal-input-wrapper">
+                        <input type="number" id="goal-input" class="form-control locked" value="35" min="1" max="100" disabled>
+                        <span class="lock-icon"><i class="fa fa-lock"></i></span>
+                        <button id="update-goal" class="btn btn-primary locked" disabled>Update</button>
+                    </div>
+                </div>
+                <p class="text-muted mt-2" style="font-size:13px;">
+                    <i class="fa fa-lock" style="margin-right:4px;"></i> Bronze: 21h | Silver: 35h | Golden: 45.5h<br>
+                    Upgrade to Premium to customize your weekly targets.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fa fa-info-circle"></i> How it Works</h2>
+                </div>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li style="padding: 8px 0; border-bottom: 1px solid var(--border); color: var(--text-muted); font-size: 14px;"><i class="fa fa-check" style="color: var(--success); margin-right: 8px;"></i>Log daily study hours in Time Tracker</li>
+                    <li style="padding: 8px 0; border-bottom: 1px solid var(--border); color: var(--text-muted); font-size: 14px;"><i class="fa fa-check" style="color: var(--success); margin-right: 8px;"></i>Badges unlock automatically based on progress</li>
+                    <li style="padding: 8px 0; border-bottom: 1px solid var(--border); color: var(--text-muted); font-size: 14px;"><i class="fa fa-check" style="color: var(--success); margin-right: 8px;"></i>Golden badge triggers confetti celebration</li>
+                    <li style="padding: 8px 0; color: var(--text-muted); font-size: 14px;"><i class="fa fa-check" style="color: var(--success); margin-right: 8px;"></i>Data resets weekly automatically</li>
+                </ul>
+            </div>
+
+            <footer class="site-footer">
+                Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰
+            </footer>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Safely override APP.initAchievements to keep locks after APP runs
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof APP !== 'undefined' && typeof APP.initAchievements === 'function') {
+                const originalInit = APP.initAchievements;
+                APP.initAchievements = function() {
+                    // Run original logic so badges still update based on study hours
+                    originalInit.call(APP);
+                    
+                    // Re-apply locks
+                    const input = document.getElementById('goal-input');
+                    const btn = document.getElementById('update-goal');
+                    const container = document.querySelector('.badge-container');
+                    
+                    if (input) { input.disabled = true; input.classList.add('locked'); }
+                    if (btn) { btn.disabled = true; btn.classList.add('locked'); }
+                    if (container) container.classList.add('locked');
+                };
+                // Trigger once after page loads
+                setTimeout(() => APP.initAchievements(), 120);
+            }
+        });
+    </script>
+</body>
+</html>

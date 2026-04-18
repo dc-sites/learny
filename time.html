@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learny - Time Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">L</div>
+                <div class="sidebar-title">Learny</div>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
+                                    <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+                    <li class="nav-item"><a href="bot.html"><i class="fa fa-brain"></i> LearnyAI</a></li>
+                <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
+                <li class="nav-item active"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+                <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+                <li class="nav-item"><a href="motivation.html"><i class="fa fa-lightbulb"></i> Motivation</a></li>
+                <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
+                <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-stopwatch"></i> Pomodoro</a></li>
+                <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
+                <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
+                <li class="nav-item"><a href="countdown.html"><i class="fa fa-hourglass-half"></i> Countdown</a></li>
+                <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+                <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+                <li class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></li>
+                    <li class="nav-item premium-nav-item" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+                        <a href="premium.html" class="premium-link" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(108, 43, 217, 0.2)); color: var(--warning); border-radius: 8px;">
+                            <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" style="width: 18px; height: 18px; margin-right: 8px;">
+                            Get Premium
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-welcome">
+                <div class="divider"></div>
+                <p id="sidebar-username">Welcome, User!</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+<button class="hamburger"><i class="fa fa-bars"></i></button>
+                <h1 class="page-title"><i class="fa fa-clock"></i> Time Tracker</h1>
+                <div class="header-actions">
+                    <button class="theme-toggle" title="Toggle Theme"><i class="fa fa-moon"></i></button>
+                    
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <!-- Log Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title"><i class="fa fa-plus-circle"></i> Log Study Time</h2>
+                    </div>
+                    <form id="time-form" class="mb-3">
+                        <div class="form-group">
+                            <label for="date-input">Date</label>
+                            <input type="date" id="date-input" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="hours-input">Hours</label>
+                            <input type="number" id="hours-input" class="form-control" step="0.5" min="0.5" placeholder="e.g., 2.5" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-full"><i class="fa fa-save"></i> Save</button>
+                    </form>
+                </div>
+
+                <!-- Calendar -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title"><i class="fa fa-calendar"></i> Study Calendar</h2>
+                    </div>
+                    <div id="study-calendar" class="calendar-grid"></div>
+                </div>
+            </div>
+
+            <!-- Chart -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fa fa-chart-bar"></i> Study Hours (7 Days)</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="timeChart" class="chart-canvas"></canvas>
+                </div>
+            </div>
+
+            <!-- How to Use -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fa fa-info-circle"></i> How to Use</h2>
+                </div>
+                <div class="how-to-use-content">
+                    <ul>
+                        <li><strong>Select Date:</strong> Pick a date directly from the calendar or use the date picker above (defaults to today).</li>
+                        <li><strong>Enter Hours:</strong> Type your study duration (min 0.5h) for the selected date.</li>
+                        <li><strong>Save:</strong> Click "Save" to log your session. <em>Note: This updates the total hours for that specific date (overwrites previous entry).</em></li>
+                        <li><strong>View Progress:</strong> The chart shows your last 7 days. Calendar highlights logged dates in your active theme color.</li>
+                        <li><strong>Stay Consistent:</strong> Track daily to maintain streaks, unlock badges, and hit weekly goals.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <footer class="site-footer">
+                Powered by <a href="contact.html">DC</a> | Made in Sri Lanka
+            </footer>
+        </main>
+    </div>
+
+    <!-- Overlay for mobile sidebar -->
+    <div class="overlay"></div>
+    <!-- Toast Notification -->
+    <div id="notification-toast" class="notification"><i class="fa fa-bell"></i> <span></span></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

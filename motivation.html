@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learny - Motivation</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Premium Lock Styles for Translate Button */
+        .translate-btn.premium-locked {
+            position: relative;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .translate-btn.premium-locked::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 15, 26, 0.5);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .translate-btn.premium-locked i {
+            position: relative;
+            z-index: 1;
+        }
+        .premium-badge-inline {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--warning);
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 6px;
+        }
+        .premium-badge-inline img {
+            width: 12px;
+            height: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">L</div>
+                <div class="sidebar-title">Learny</div>
+            </div>
+            <nav>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
+                    <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+
+                    <li class="nav-item"><a href="bot.html"><i class="fa fa-brain"></i> LearnyAI</a></li>
+                    <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
+                    <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+                    <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+                    <li class="nav-item active"><a href="motivation.html"><i class="fa fa-lightbulb"></i> Motivation</a></li>
+                    <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
+                    <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-stopwatch"></i> Pomodoro</a></li>
+                    <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
+                    <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
+                    <li class="nav-item"><a href="countdown.html"><i class="fa fa-hourglass-half"></i> Countdown</a></li>
+                    <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+                    <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+                    <li class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></li>
+                    <li class="nav-item premium-nav-item" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+                        <a href="premium.html" class="premium-link" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(108, 43, 217, 0.2)); color: var(--warning); border-radius: 8px;">
+                            <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" style="width: 18px; height: 18px; margin-right: 8px;">
+                            Get Premium
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-welcome">
+                <div class="divider"></div>
+                <p id="sidebar-username">Welcome, User!</p>
+            </div>
+        </aside>
+
+        <div class="overlay"></div>
+
+        <main class="main-content">
+            <div class="page-header">
+                <button class="hamburger"><i class="fa fa-bars"></i></button>
+                <h1 class="page-title"><i class="fa fa-lightbulb"></i> Motivation</h1>
+                <div class="header-actions">
+                    <button class="theme-toggle"><i class="fa fa-moon"></i></button>
+                </div>
+            </div>
+
+            <div class="card mb-3" style="background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(108,43,217,0.08)); border: 1px solid var(--warning);">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" style="width: 28px; height: 28px;">
+                        <div>
+                            <h3 style="color: var(--warning); margin: 0; font-size: 16px;">Premium Translation</h3>
+                            <p style="color: var(--text-muted); margin: 2px 0 0; font-size: 13px;">Unlock Sinhala translations for all quotes</p>
+                        </div>
+                    </div>
+                    <a href="premium.html" class="btn btn-sm" style="background: linear-gradient(135deg, var(--warning), #fbbf24); color: #000;">
+                        <i class="fa fa-crown"></i> Upgrade
+                    </a>
+                </div>
+            </div>
+
+            <div class="card mb-3" style="text-align: center; padding: 16px;">
+                <button id="refresh-quotes" class="btn btn-secondary">
+                    <i class="fa fa-sync-alt"></i> Refresh Quotes
+                </button>
+            </div>
+
+            <div id="quotes-container" class="motivation-grid">
+                <!-- Quotes will be rendered here by JavaScript -->
+            </div>
+
+            <footer class="site-footer">
+                Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰
+            </footer>
+        </main>
+    </div>
+
+    <!-- Premium Popup -->
+    <div id="translate-premium-popup" class="premium-popup-overlay" style="display: none;">
+        <div class="premium-popup">
+            <button class="premium-popup-close" onclick="closeTranslatePremiumPopup()" aria-label="Close">
+                <i class="fa fa-times"></i>
+            </button>
+            <div class="premium-popup-content">
+                <div class="premium-popup-icon">
+                    <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium">
+                </div>
+                <h2>Unlock Sinhala Translations</h2>
+                <p>Get access to Sinhala translations for all motivational quotes and enhance your learning experience!</p>
+                <a href="premium.html" class="btn btn-primary btn-lg" style="margin-top: 16px;">
+                    <i class="fa fa-crown"></i> Get Premium
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Override APP.initMotivation to add premium lock
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof APP !== 'undefined') {
+                const originalRenderQuotes = APP.renderQuotes;
+                APP.renderQuotes = function() {
+                    originalRenderQuotes.call(APP);
+                    
+                    // Add premium lock to all translate buttons
+                    document.querySelectorAll('.translate-btn').forEach(btn => {
+                        btn.classList.add('premium-locked');
+                        btn.innerHTML = '<i class="fa fa-language"></i> Translate <span class="premium-badge-inline"><img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium"> Premium</span>';
+                        
+                        // Remove original click handler and add premium popup
+                        const newBtn = btn.cloneNode(true);
+                        btn.parentNode.replaceChild(newBtn, btn);
+                        
+                        newBtn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            showTranslatePremiumPopup();
+                        });
+                    });
+                };
+                
+                // Re-render quotes with premium lock
+                setTimeout(() => APP.renderQuotes(), 150);
+            }
+        });
+
+        // Premium Popup Functions
+        function showTranslatePremiumPopup() {
+            document.getElementById('translate-premium-popup').style.display = 'flex';
+        }
+
+        function closeTranslatePremiumPopup() {
+            document.getElementById('translate-premium-popup').style.display = 'none';
+        }
+
+        // Close on outside click
+        document.getElementById('translate-premium-popup').addEventListener('click', function(e) {
+            if (e.target === this) closeTranslatePremiumPopup();
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeTranslatePremiumPopup();
+        });
+    </script>
+</body>
+</html>

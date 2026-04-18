@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learny - Premium</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .premium-hero {
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(245, 158, 11, 0.1) 100%);
+            border: 2px solid var(--warning);
+            border-radius: var(--radius);
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .premium-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .premium-hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .premium-badge-large {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .premium-hero h1 {
+            font-size: 36px;
+            background: linear-gradient(135deg, var(--warning), #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+
+        .premium-hero p {
+            font-size: 16px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 24px;
+        }
+
+        .premium-price {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--warning);
+            margin: 20px 0;
+        }
+
+        .premium-price span {
+            font-size: 18px;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .features-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .features-scroll-left,
+        .features-scroll-right {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow: hidden;
+        }
+
+        .features-scroll-right {
+            flex-direction: column-reverse;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all var(--transition);
+            animation: slideIn 0.5s ease;
+        }
+
+        .feature-card:hover {
+            border-color: var(--warning);
+            transform: translateX(5px);
+            box-shadow: var(--shadow);
+        }
+
+        .features-scroll-right .feature-card:hover {
+            transform: translateX(-5px);
+        }
+
+        .feature-gif {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 2px solid var(--border);
+        }
+
+        .feature-info h3 {
+            font-size: 16px;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .feature-info p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .testimonials-section {
+            margin-top: 40px;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        .testimonial-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            font-size: 60px;
+            color: var(--warning);
+            opacity: 0.3;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            font-family: serif;
+        }
+
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .testimonial-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border);
+        }
+
+        .testimonial-info {
+            flex: 1;
+        }
+
+        .testimonial-name {
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .premium-badge-small {
+            width: 16px;
+            height: 16px;
+            vertical-align: middle;
+        }
+
+        .testimonial-text {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(108, 43, 217, 0.1));
+            border-radius: var(--radius);
+            margin-top: 32px;
+            border: 2px dashed var(--warning);
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--warning), #fbbf24);
+            color: #000;
+            font-weight: 700;
+            font-size: 18px;
+            border-radius: 12px;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: all var(--transition);
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(245, 158, 11, 0.5);
+        }
+
+        .guarantee-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .features-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-scroll-right {
+                flex-direction: column;
+            }
+            
+            .premium-hero h1 {
+                font-size: 28px;
+            }
+            
+            .premium-price {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">L</div>
+                <div class="sidebar-title">Learny</div>
+            </div>
+            <nav>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
+                    <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+                    
+                    <li class="nav-item"><a href="bot.html"><i class="fa fa-brain"></i> LearnyAI</a></li>
+                    <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
+                    <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+                    <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+                    <li class="nav-item"><a href="motivation.html"><i class="fa fa-lightbulb"></i> Motivation</a></li>
+                    <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
+                    <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-stopwatch"></i> Pomodoro</a></li>
+                    <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
+                    <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
+                    <li class="nav-item"><a href="countdown.html"><i class="fa fa-hourglass-half"></i> Countdown</a></li>
+                    <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+                    <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+                    <li class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></li>
+                    <li class="nav-item premium-nav-item" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+                        <a href="premium.html" class="premium-link" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(108, 43, 217, 0.2)); color: var(--warning); border-radius: 8px;">
+                            <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" style="width: 18px; height: 18px; margin-right: 8px;">
+                            Get Premium
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-welcome">
+                <div class="divider"></div>
+                <p id="sidebar-username">Welcome, User!</p>
+            </div>
+        </aside>
+
+        <div class="overlay"></div>
+
+        <main class="main-content">
+      <header class="page-header">
+        <button class="hamburger"><i class="fa fa-bars"></i></button>
+        <h1 class="page-title"><i class="fa fa-crown"></i>Premium</h1>
+        <div class="header-actions"><button class="theme-toggle" id="toggle-mode"><i class="fa fa-sun"></i></button></div>
+      </header>
+
+      
+
+            <div class="premium-hero">
+                <div class="premium-hero-content">
+                    <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" class="premium-badge-large">
+                    <h1>Unlock Premium</h1>
+                    <p>Get exclusive access to all features and take your learning experience to the next level!</p>
+                    <div class="premium-price">
+                        LKR 1699<span>/year</span>
+                    </div>
+                    <a href="https://wa.me/94764720488" target="_blank" class="btn btn-primary btn-lg" style="font-size: 18px; padding: 16px 32px;">
+                        <i class="fa fa-gem"></i> Get Premium Now
+                    </a>
+                </div>
+            </div>
+
+            <div class="features-container">
+                <div class="features-scroll-left" id="features-left">
+                    <!-- Features will be auto-populated -->
+                </div>
+                <div class="features-scroll-right" id="features-right">
+                    <!-- Features will be auto-populated -->
+                </div>
+            </div>
+
+            <div class="testimonials-section">
+                <h2 style="text-align: center; margin-bottom: 8px;"><i class="fa fa-comments" style="color: var(--warning); margin-right: 8px;"></i>What Our Premium Users Say</h2>
+                <p style="text-align: center; color: var(--text-muted); margin-bottom: 24px;">Join thousands of satisfied learners</p>
+                
+                <div class="testimonials-grid" id="testimonials-grid">
+                    <!-- Testimonials will be auto-populated -->
+                </div>
+            </div>
+
+            <div class="cta-section">
+                <h2 style="margin-bottom: 12px;">Ready to Upgrade?</h2>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Start your premium journey today and unlock your full potential!</p>
+                <a href="https://wa.me/94764720488" target="_blank" class="cta-button">
+                    <i class="fa fa-phone"></i>
+                    Contact Us
+                </a>
+            </div>
+
+            <footer class="site-footer">
+                Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱
+            </footer>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Premium features data
+        const premiumFeatures = [
+            {
+                title: 'Access to Learny AI',
+                desc: 'Unlimited Messages & Quiz Generator',
+                gif: 'https://i.postimg.cc/59QKjRtC/ai-assistant-(1).gif'
+            },
+{
+                title: 'No AD Breaks',
+                desc: 'Remove all pop-up ads & only focus study',
+                gif: 'https://i.postimg.cc/gch4GLMX/ad-blocker.gif'
+            },
+{
+                title: 'Get Verification Badge',
+                desc: 'Stand out with an exclusive premium verification badge next to your name',
+                gif: 'https://i.postimg.cc/CLdc8s6V/premium-quality.gif'
+            },
+            {
+                title: 'Offline Work',
+                desc: 'Access your study materials and track progress even without internet connection',
+                gif: 'https://i.postimg.cc/DZFCbVRt/no-signal.gif'
+            },
+            {
+                title: 'Track Subscriptions',
+                desc: 'Advanced analytics to monitor your learning progress and study patterns',
+                gif: 'https://i.postimg.cc/vZfL7qrv/analytics.gif'
+            },
+            {
+                title: 'VIP Membership',
+                desc: 'Join an exclusive community of premium learners with special privileges',
+                gif: 'https://i.postimg.cc/zfw7Nt3x/membership.gif'
+            },
+            {
+                title: 'Export Data to PDF',
+                desc: 'Download your study reports, progress charts, and achievements as PDF',
+                gif: 'https://i.postimg.cc/Hk93Dvrk/pdf.gif'
+            },
+            {
+                title: 'All Avatars Unlocked',
+                desc: 'Access all 14+ premium avatars and customize your profile freely',
+                gif: 'https://i.postimg.cc/HLT5wpsJ/success.gif'
+            },
+            {
+                title: 'Unlocked All Features',
+                desc: 'Get unlimited access to every feature in the Learny app',
+                gif: 'https://i.postimg.cc/XN5f61hp/padlock.gif'
+            },
+            {
+                title: '24 Hours Support',
+                desc: 'Priority customer support available 24/7 to help you anytime',
+                gif: 'https://i.postimg.cc/26M7FPKG/support.gif'
+            },
+            {
+                title: 'Upload Your Songs',
+                desc: 'Create your personalized study playlist with your favorite music',
+                gif: 'https://i.postimg.cc/7Lc2pSnK/upload.gif'
+            },
+            {
+                title: 'Access to All Devices',
+                desc: 'Sync your data across all your devices seamlessly',
+                gif: 'https://i.postimg.cc/6pp4qMHh/digital-native.gif'
+            }
+        ];
+
+        // Testimonials data
+        const testimonials = [
+            {
+                name: 'Kusal Hewage',
+                avatar: 'https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png',
+                text: 'Learny Premium has transformed my study routine. Learny AI is perfect bro.',
+                isPremium: true
+            },
+            {
+                name: 'Nimali Silva',
+                avatar: 'https://i.postimg.cc/vmJKntqc/AIRetouch-20260412-134105556.png',
+                text: 'Best investment for my education. The analytics help me track my progress effectively. Thank you Learny Team.',
+                isPremium: true
+            },
+            {
+                name: 'Kasun Bandara',
+                avatar: 'https://i.postimg.cc/DyvM1Zgn/AIRetouch-20260412-134857396.png',
+                text: 'Website eka nam superbbbbbb.',
+                isPremium: true
+            },
+            {
+                name: 'Dilini Fernando',
+                avatar: 'https://i.postimg.cc/CKqPwfhV/AIRetouch-20260412-134937423.png',
+                text: 'I love being able to upload my own study music. Highly recommended!',
+                isPremium: true
+            },
+            {
+                name: 'Wishaka Perera',
+                avatar: 'https://i.postimg.cc/Twvk1Y1m/AIRetouch-20260412-140516089.png',
+                text: 'Learny AI is awesome. I love this and recommended.',
+                isPremium: true
+            },
+            {
+                name: 'Sapumal Gamage',
+                avatar: 'https://i.postimg.cc/SRDVg6rm/AIRetouch-20260412-140552262.png',
+                text: 'Premium membership gives me access to everything I need to succeed.',
+                isPremium: true
+            }
+        ];
+
+        // Render features
+        function renderFeatures() {
+            const leftContainer = document.getElementById('features-left');
+            const rightContainer = document.getElementById('features-right');
+            
+            // Split features between left and right
+            const midPoint = Math.ceil(premiumFeatures.length / 2);
+            const leftFeatures = premiumFeatures.slice(0, midPoint);
+            const rightFeatures = premiumFeatures.slice(midPoint);
+            
+            leftContainer.innerHTML = leftFeatures.map(feature => `
+                <div class="feature-card">
+                    <img src="${feature.gif}" alt="${feature.title}" class="feature-gif">
+                    <div class="feature-info">
+                        <h3>${feature.title}</h3>
+                        <p>${feature.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+            
+            rightContainer.innerHTML = rightFeatures.map(feature => `
+                <div class="feature-card">
+                    <img src="${feature.gif}" alt="${feature.title}" class="feature-gif">
+                    <div class="feature-info">
+                        <h3>${feature.title}</h3>
+                        <p>${feature.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render testimonials
+        function renderTestimonials() {
+            const grid = document.getElementById('testimonials-grid');
+            grid.innerHTML = testimonials.map(t => `
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <img src="${t.avatar}" alt="${t.name}" class="testimonial-avatar">
+                        <div class="testimonial-info">
+                            <div class="testimonial-name">
+                                ${t.name}
+                                ${t.isPremium ? '<img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" class="premium-badge-small" title="Premium User">' : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">${t.text}</p>
+                </div>
+            `).join('');
+        }
+
+        // Auto-scroll features
+        function autoScrollFeatures() {
+            const leftContainer = document.getElementById('features-left');
+            const rightContainer = document.getElementById('features-right');
+            
+            if (leftContainer && rightContainer) {
+                let leftPos = 0;
+                let rightPos = 0;
+                
+                setInterval(() => {
+                    leftPos += 0.5;
+                    if (leftPos >= leftContainer.scrollHeight - leftContainer.clientHeight) {
+                        leftPos = 0;
+                    }
+                    leftContainer.scrollTop = leftPos;
+                    
+                    rightPos += 0.5;
+                    if (rightPos >= rightContainer.scrollHeight - rightContainer.clientHeight) {
+                        rightPos = 0;
+                    }
+                    rightContainer.scrollTop = rightPos;
+                }, 50);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderFeatures();
+            renderTestimonials();
+            autoScrollFeatures();
+            
+            if (typeof APP !== 'undefined') {
+                APP.updateGreetingUI();
+            }
+        });
+    </script>
+</body>
+</html>

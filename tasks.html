@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learny - Tasks</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#6c2bd9">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <div class="overlay"></div>
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="sidebar-logo"><i class="fa fa-graduation-cap"></i></div><span class="sidebar-title">Learny</span></div>
+      <ul class="nav-list">
+        <li class="nav-item"><a href="index.html"><i class="fa fa-grip"></i> Dashboard</a></li>
+                    <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+        <li class="nav-item"><a href="bot.html"><i class="fa fa-brain"></i> LearnyAI</a></li>
+        <li class="nav-item active"><a href="tasks.html"><i class="fa fa-check-circle"></i> Tasks</a></li>
+        <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+        <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+        <li class="nav-item"><a href="motivation.html"><i class="fa fa-quote-left"></i> Motivation</a></li>
+        <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
+        <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-hourglass-half"></i> Pomodoro</a></li>
+        <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
+        <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
+        <li class="nav-item"><a href="countdown.html"><i class="fa fa-calendar-day"></i> Countdown</a></li>
+        <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+        <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+        <li class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></li>
+                    <li class="nav-item premium-nav-item" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+                        <a href="premium.html" class="premium-link" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(108, 43, 217, 0.2)); color: var(--warning); border-radius: 8px;">
+                            <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" style="width: 18px; height: 18px; margin-right: 8px;">
+                            Get Premium
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-welcome">
+                <div class="divider"></div>
+                <p id="sidebar-username">Welcome, User!</p>
+            </div>
+        </aside>
+    <main class="main-content">
+      <header class="page-header">
+        <button class="hamburger"><i class="fa fa-bars"></i></button>
+        <h1 class="page-title"><i class="fa fa-check-circle"></i> Tasks</h1>
+        <div class="header-actions"><button class="theme-toggle" id="toggle-mode"><i class="fa fa-sun"></i></button></div>
+      </header>
+      <div id="notification-toast" class="notification"><i class="fa fa-check-circle"></i><span></span></div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon purple"><i class="fa fa-list"></i></div><div class="stat-info"><h3 id="task-count">0</h3><p>Total Tasks</p></div></div>
+        <div class="stat-card"><div class="stat-icon orange"><i class="fa fa-hourglass-start"></i></div><div class="stat-info"><h3 id="pending-count">0</h3><p>Pending</p></div></div>
+        <div class="stat-card"><div class="stat-icon green"><i class="fa fa-check"></i></div><div class="stat-info"><h3 id="done-count">0</h3><p>Done</p></div></div>
+        <div class="stat-card"><div class="stat-icon blue"><i class="fa fa-chart-pie"></i></div><div class="stat-info"><h3 id="completion-rate">0%</h3><p>Completion</p></div></div>
+      </div>
+      <div class="card mb-3">
+        <div class="card-header"><span class="card-title"><i class="fa fa-plus-circle"></i> Add Task</span></div>
+        <form id="task-form" class="grid-equal">
+          <div class="form-group"><label>Task Name</label><input type="text" id="task-input" class="form-control" placeholder="What do you need to do?"></div>
+          <div class="form-group"><label>Time</label><input type="time" id="task-time-input" class="form-control"></div>
+          <button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i> Add Task</button>
+        </form>
+        <div class="progress-container"><div class="progress-bar" id="progress-bar" style="width:0"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title"><i class="fa fa-clipboard-list"></i> Today's Tasks</span></div>
+        <div class="task-list" id="tasks-list"></div>
+      </div>
+      <footer class="site-footer">Powered by <a href="contact.html">DC</a> | Made in Sri Lanka <i class="fa fa-heart" style="color:var(--danger)"></i></footer>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

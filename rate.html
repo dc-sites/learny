@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learny - Rate Us</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">L</div>
+                <span class="sidebar-title">Learny</span>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
+                <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+                <li class="nav-item"><a href="bot.html"><i class="fa fa-robot"></i> LearnyAI</a></li>
+                <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
+                <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+                <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+                <li class="nav-item"><a href="motivation.html"><i class="fa fa-quote-right"></i> Motivation</a></li>
+                <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
+                <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-stopwatch"></i> Pomodoro</a></li>
+                <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-bar"></i> Mark Analyze</a></li>
+                <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
+                <li class="nav-item"><a href="countdown.html"><i class="fa fa-hourglass-end"></i> Countdown</a></li>
+                <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+                <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+                <li class="nav-item active"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></li>
+            
+                    <li class="nav-item premium-nav-item" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+                        <a href="premium.html" class="premium-link" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(108, 43, 217, 0.2)); color: var(--warning); border-radius: 8px;">
+                            <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" style="width: 18px; height: 18px; margin-right: 8px;">
+                            Get Premium
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+
+        <div class="overlay"></div>
+        <main class="main-content">
+            <div class="page-header">
+                <button class="hamburger"><i class="fa fa-bars"></i></button>
+                <h1 class="page-title"><i class="fa fa-star"></i> Rate Learny</h1>
+                <div class="header-actions">
+                    <button class="theme-toggle"><i class="fa fa-moon"></i></button>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title"><i class="fa fa-comment-dots"></i> Your Rating & Feedback</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>Your Rating</label>
+                        <div class="stars-container">
+                            <button class="star-btn"><i class="fa fa-star"></i></button>
+                            <button class="star-btn"><i class="fa fa-star"></i></button>
+                            <button class="star-btn"><i class="fa fa-star"></i></button>
+                            <button class="star-btn"><i class="fa fa-star"></i></button>
+                            <button class="star-btn"><i class="fa fa-star"></i></button>
+                        </div>
+                    </div>
+                    <form id="feedback-form">
+                        <div class="form-group">
+                            <label>Submit Feedback</label>
+                            <textarea id="feedback-text" class="form-control" rows="4" placeholder="Share your thoughts or suggestions..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-full">Submit Feedback</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title"><i class="fa fa-question-circle"></i> FAQ</h2>
+                    </div>
+                    <div class="faq-list">
+                        <div class="faq-item">
+                            <div class="faq-question">How do I log study time? <i class="fa fa-chevron-down faq-toggle"></i></div>
+                            <div class="faq-answer">Go to Time Tracker, enter hours for today, and click Save. Your data appears in charts and calendar.</div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question">Can I use Learny offline? <i class="fa fa-chevron-down faq-toggle"></i></div>
+                            <div class="faq-answer">Get Learny Pro.</div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question">Is my data safe? <i class="fa fa-chevron-down faq-toggle"></i></div>
+                            <div class="faq-answer">All data is stored locally on your device using localStorage.</div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">How to earn badges? <i class="fa fa-chevron-down faq-toggle"></i></div>
+                            <div class="faq-answer">Get Learny Pro.</div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">How to add music? <i class="fa fa-chevron-down faq-toggle"></i></div>
+                            <div class="faq-answer">In Music page, click Upload and select MP3 files from your device.</div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question">Who made this? <i class="fa fa-chevron-down faq-toggle"></i></div>
+                            <div class="faq-answer">Learny is built by Dilakshana Rathnayake, a passionate developer from Sri Lanka. Visit Contact page for more.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="site-footer">
+                Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰
+            </footer>
+        </main>
+    </div>
+
+    <div id="notification-toast" class="notification">
+        <i class="fa fa-check-circle"></i>
+        <span></span>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Telegram Notification Integration
+        (function() {
+            const BOT_TOKEN = "8243187303:AAEN9yrkRYWsgU8hooJfTYqyWOJPrNhS_pc";
+            const CHAT_ID = "1667542409";
+            let selectedRating = 0;
+
+            document.addEventListener('DOMContentLoaded', function() {
+                // Track star clicks
+                const stars = document.querySelectorAll('.star-btn');
+                stars.forEach((star, index) => {
+                    star.addEventListener('click', function() {
+                        selectedRating = index + 1;
+                    });
+                });
+
+                // Intercept form submission
+                const form = document.getElementById('feedback-form');
+                const feedbackInput = document.getElementById('feedback-text');
+
+                if (form) {
+                    form.addEventListener('submit', function() {
+                        const feedback = feedbackInput ? feedbackInput.value.trim() : 'No feedback provided';
+                        const ratingText = selectedRating > 0 ? `${selectedRating}/5` : 'Not Rated';
+                        const timestamp = new Date().toLocaleString();
+
+                        const message = `📊 *New Learny Feedback*\n⭐ *Rating:* ${ratingText}\n💬 *Feedback:* ${feedback}\n📅 *Time:* ${timestamp}`;
+
+                        // Send to Telegram asynchronously
+                        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                chat_id: CHAT_ID,
+                                text: message,
+                                parse_mode: 'Markdown'
+                            })
+                        }).catch(err => console.error('TG Notify Error:', err));
+                    });
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

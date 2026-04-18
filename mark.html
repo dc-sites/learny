@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learny - Mark Analyze</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .premium-locked { opacity: 0.75; cursor: not-allowed !important; pointer-events: none !important; background: var(--bg-dark) !important; border: 1px dashed rgba(245, 158, 11, 0.4) !important; }
+        .premium-locked:focus { border-color: rgba(245, 158, 11, 0.4) !important; box-shadow: none !important; }
+        .premium-inline-icon { width: 14px; height: 14px; vertical-align: middle; margin-left: 5px; opacity: 0.9; }
+        .premium-header-badge { width: 18px; height: 18px; vertical-align: middle; }
+        .input-wrapper-locked { position: relative; }
+        .lock-symbol { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--warning); font-size: 14px; pointer-events: none; }
+        .btn-locked { opacity: 0.6; cursor: not-allowed !important; position: relative; }
+        .btn-locked::after { content: '🔒'; margin-left: 6px; font-size: 12px; vertical-align: middle; }
+        
+        /* Unlock Features Banner */
+        .unlock-features-banner {
+            background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(108,43,217,0.12));
+            border: 1px solid var(--warning);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            transition: all var(--transition);
+        }
+        .unlock-features-banner:hover { border-color: #fbbf24; box-shadow: 0 4px 20px rgba(245,158,11,0.15); }
+        .unlock-features-content { display: flex; align-items: center; gap: 12px; }
+        .unlock-features-icon { font-size: 28px; animation: float 3s ease-in-out infinite; }
+        .unlock-features-text h3 { margin: 0; font-size: 16px; color: var(--warning); font-weight: 700; }
+        .unlock-features-text p { margin: 2px 0 0; font-size: 13px; color: var(--text-muted); }
+        .unlock-features-btn {
+            background: linear-gradient(135deg, var(--warning), #fbbf24);
+            color: #000; font-weight: 700; padding: 10px 20px;
+            border-radius: 24px; text-decoration: none; font-size: 13px;
+            transition: all var(--transition); display: inline-flex; align-items: center; gap: 8px;
+        }
+        .unlock-features-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(245,158,11,0.3); }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+        
+        @media (max-width: 600px) {
+            .unlock-features-banner { flex-direction: column; text-align: center; }
+            .unlock-features-content { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">L</div>
+                <div class="sidebar-title">Learny</div>
+            </div>
+            <nav>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
+                    <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+
+                    <li class="nav-item"><a href="bot.html"><i class="fa fa-brain"></i> LearnyAI</a></li>
+                    <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
+                    <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+                    <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+                    <li class="nav-item"><a href="motivation.html"><i class="fa fa-lightbulb"></i> Motivation</a></li>
+                    <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
+                    <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-stopwatch"></i> Pomodoro</a></li>
+                    <li class="nav-item active"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
+                    <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
+                    <li class="nav-item"><a href="countdown.html"><i class="fa fa-hourglass-half"></i> Countdown</a></li>
+                    <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+                    <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+                    <li class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></li>
+                    <li class="nav-item premium-nav-item" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+                        <a href="premium.html" class="premium-link" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(108, 43, 217, 0.2)); color: var(--warning); border-radius: 8px;">
+                            <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" style="width: 18px; height: 18px; margin-right: 8px;">
+                            Unlock Features
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-welcome">
+                <div class="divider"></div>
+                <p id="sidebar-username">Welcome, User!</p>
+            </div>
+        </aside>
+
+        <div class="overlay"></div>
+
+        <main class="main-content">
+            <div class="page-header">
+                <button class="hamburger"><i class="fa fa-bars"></i></button>
+                <h1 class="page-title"><i class="fa fa-chart-line"></i> Mark Analyze</h1>
+                <div class="header-actions">
+                    <button class="theme-toggle"><i class="fa fa-moon"></i></button>
+                </div>
+            </div>
+
+            <!-- UNLOCK FEATURES TAB -->
+            <div class="unlock-features-banner">
+                <div class="unlock-features-content">
+                    <span class="unlock-features-icon"></span>
+                    <div class="unlock-features-text">
+                        <h3>Unlock Premium Features</h3>
+                        <p>Get full access to mark tracking, analytics charts, and data export</p>
+                    </div>
+                </div>
+                <a href="premium.html" class="unlock-features-btn">
+                    Go Premium <i class="fa fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="stats-grid mb-3">
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fa fa-arrow-up"></i></div>
+                    <div class="stat-info">
+                        <h3 id="mark-highest">-</h3>
+                        <p>Highest Marks <img src="https://i.postimg.cc/nrFwN8kn/gem.png" class="premium-inline-icon"></p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon red"><i class="fa fa-arrow-down"></i></div>
+                    <div class="stat-info">
+                        <h3 id="mark-lowest">-</h3>
+                        <p>Lowest Marks <img src="https://i.postimg.cc/nrFwN8kn/gem.png" class="premium-inline-icon"></p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple"><i class="fa fa-calculator"></i></div>
+                    <div class="stat-info">
+                        <h3 id="mark-avg">-</h3>
+                        <p>Average <img src="https://i.postimg.cc/nrFwN8kn/gem.png" class="premium-inline-icon"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <!-- ADD MARKS CARD -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title"><i class="fa fa-plus-circle"></i> Add Marks</h2>
+                        <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" class="premium-header-badge">
+                    </div>
+                    <form id="mark-form">
+                        <div class="form-group input-wrapper-locked">
+                            <label>Subject <img src="https://i.postimg.cc/nrFwN8kn/gem.png" class="premium-inline-icon"></label>
+                            <input type="text" id="mark-subject" class="form-control premium-locked" placeholder="e.g. Mathematics" disabled>
+                            <i class="fa fa-lock lock-symbol"></i>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group input-wrapper-locked">
+                                <label>Marks <img src="https://i.postimg.cc/nrFwN8kn/gem.png" class="premium-inline-icon"></label>
+                                <input type="number" id="mark-value" class="form-control premium-locked" placeholder="0" disabled>
+                                <i class="fa fa-lock lock-symbol"></i>
+                            </div>
+                            <div class="form-group input-wrapper-locked">
+                                <label>Date <img src="https://i.postimg.cc/nrFwN8kn/gem.png" class="premium-inline-icon"></label>
+                                <input type="date" id="mark-date" class="form-control premium-locked" disabled>
+                                <i class="fa fa-lock lock-symbol"></i>
+                            </div>
+                        </div>
+                        <div class="form-group input-wrapper-locked">
+                            <label>Period <img src="https://i.postimg.cc/nrFwN8kn/gem.png" class="premium-inline-icon"></label>
+                            <select id="mark-period" class="form-control premium-locked" disabled>
+                                <option value="Monthly">Monthly</option>
+                                <option value="Weekly">Weekly</option>
+                                <option value="Yearly">Yearly</option>
+                            </select>
+                            <i class="fa fa-lock lock-symbol"></i>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-full btn-locked" disabled>
+                            <i class="fa fa-save"></i> Save Mark
+                        </button>
+                    </form>
+                </div>
+
+                <!-- CHART & TABLE CARD -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title"><i class="fa fa-chart-bar"></i> Mark Chart</h2>
+                        <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" class="premium-header-badge">
+                    </div>
+                    <div class="chart-container mb-3">
+                        <canvas id="markChart" class="chart-canvas"></canvas>
+                    </div>
+                    <div class="card-header">
+                        <h2 class="card-title"><i class="fa fa-list"></i> Recent Entries</h2>
+                        <button id="mark-clear" class="btn btn-sm btn-secondary btn-locked" disabled>
+                            <i class="fa fa-trash"></i> Clear Data
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Subject <img src="https://i.postimg.cc/nrFwN8kn/gem.png" class="premium-inline-icon"></th>
+                                    <th>Marks <img src="https://i.postimg.cc/nrFwN8kn/gem.png" class="premium-inline-icon"></th>
+                                    <th>Date <img src="https://i.postimg.cc/nrFwN8kn/gem.png" class="premium-inline-icon"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="mark-tbody">
+                                <!-- Populated by script.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="site-footer">
+                Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰
+            </footer>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Safely intercept form submission & clear button to show premium message
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('mark-form');
+            const clearBtn = document.getElementById('mark-clear');
+
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    if(APP && APP.showToast) APP.showToast('🔒 Mark tracking is a Premium feature. Upgrade to unlock!');
+                }, true);
+            }
+
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    if(APP && APP.showToast) APP.showToast('🔒 Clearing data requires Premium.');
+                }, true);
+            }
+
+            // Ensure inputs stay locked even after APP.renderMarks() runs
+            if (typeof APP !== 'undefined' && typeof APP.renderMarks === 'function') {
+                const originalRender = APP.renderMarks;
+                APP.renderMarks = function() {
+                    originalRender.call(APP);
+                    document.querySelectorAll('.premium-locked').forEach(el => {
+                        el.disabled = true;
+                        el.style.pointerEvents = 'none';
+                    });
+                };
+                setTimeout(() => APP.renderMarks(), 150);
+            }
+        });
+    </script>
+</body>
+</html>

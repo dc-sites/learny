@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learny - Countdown</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">L</div>
+                <div class="sidebar-title">Learny</div>
+            </div>
+            <nav>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
+                    <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+<li class="nav-item"><a href="bot.html"><i class="fa fa-brain"></i> LearnyAI</a></li>
+                    <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
+                    <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+                    <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+                    <li class="nav-item"><a href="motivation.html"><i class="fa fa-lightbulb"></i> Motivation</a></li>
+                    <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
+                    <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-stopwatch"></i> Pomodoro</a></li>
+                    <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
+                    <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
+                    <li class="nav-item active"><a href="countdown.html"><i class="fa fa-hourglass-half"></i> Countdown</a></li>
+                    <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+                    <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+                    <li class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></li>
+                    <li class="nav-item premium-nav-item" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+                        <a href="premium.html" class="premium-link" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(108, 43, 217, 0.2)); color: var(--warning); border-radius: 8px;">
+                            <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" style="width: 18px; height: 18px; margin-right: 8px;">
+                            Get Premium
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-welcome">
+                <div class="divider"></div>
+                <p id="sidebar-username">Welcome, User!</p>
+            </div>
+        </aside>
+
+        <div class="overlay"></div>
+
+        <main class="main-content">
+            <div class="page-header">
+                <button class="hamburger"><i class="fa fa-bars"></i></button>
+                <h1 class="page-title"><i class="fa fa-hourglass-half"></i> Exam Countdowns</h1>
+                <div class="header-actions">
+                    <button class="theme-toggle"><i class="fa fa-moon"></i></button>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fa fa-plus-circle"></i> Add New Countdown</h2>
+                </div>
+                <form id="countdown-form" class="form-row">
+                    <div class="form-group" style="flex: 2;">
+                        <label>Exam/Event Name</label>
+                        <input type="text" id="countdown-name" class="form-control" placeholder="e.g. O/L Mathematics" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Target Date</label>
+                        <input type="date" id="countdown-date" class="form-control" required>
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: flex-end;">
+                        <button type="submit" class="btn btn-primary w-full">Add Countdown</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div id="no-countdowns" class="empty-state" style="display: none; text-align: center; color: var(--text-muted); padding: 20px;">
+                        <i class="fa fa-hourglass-half" style="font-size: 32px; margin-bottom: 8px;"></i>
+                        <p>No countdowns added yet. Add one above to get started!</p>
+                    </div>
+                </div>
+                <div id="countdown-list" class="countdown-list-container">
+                    <!-- Countdowns rendered here -->
+                </div>
+            </div>
+
+            <footer class="site-footer">
+                Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰
+            </footer>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // ✅ ENFORCE 1 COUNTDOWN LIMIT
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update badge to show 1/1 limit
+            const limitBadge = document.getElementById('countdown-limit');
+            const updateBadge = () => {
+                if (limitBadge) {
+                    limitBadge.innerHTML = `${APP.data.countdowns.length} / 1`;
+                    if (APP.data.countdowns.length >= 1) {
+                        limitBadge.style.color = 'var(--danger)';
+                    }
+                }
+            };
+            updateBadge();
+
+            // Override renderCountdowns to keep badge updated
+            if (APP && APP.renderCountdowns) {
+                const originalRender = APP.renderCountdowns;
+                APP.renderCountdowns = function() {
+                    originalRender.call(APP);
+                    updateBadge();
+                };
+            }
+
+            // Intercept Form Submit (Capture Phase to run before APP logic)
+            const form = document.getElementById('countdown-form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    if (APP.data.countdowns.length >= 1) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                        showCountdownPremiumPopup();
+                    }
+                }, true);
+            }
+        });
+
+        // ✅ PREMIUM POPUP FUNCTION
+        function showCountdownPremiumPopup() {
+            if (document.getElementById('cd-premium-popup')) return;
+            
+            const popup = document.createElement('div');
+            popup.id = 'cd-premium-popup';
+            popup.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; z-index:10000; backdrop-filter:blur(5px); animation: fadeIn 0.3s ease;';
+            
+            popup.innerHTML = `
+                <div style="background: var(--bg-card); border: 2px solid var(--warning); border-radius: var(--radius); padding: 32px; max-width: 400px; width: 90%; text-align: center; position: relative; animation: popupSlide 0.3s ease;">
+                    <button onclick="this.parentElement.parentElement.remove()" style="position:absolute; top:14px; right:14px; background:var(--bg-dark); border:1px solid var(--border); color:var(--text-muted); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center;">&times;</button>
+                    <div style="width:80px; height:80px; margin:0 auto 16px;">
+                        <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" style="width:100%; height:100%; object-fit:contain;">
+                    </div>
+                    <h2 style="font-size:24px; background: linear-gradient(135deg, var(--warning), #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom:12px;">Countdown Limit Reached</h2>
+                    <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">You've used your 1 free countdown slot. Upgrade to Premium to add unlimited exams and events!</p>
+                    <a href="premium.html" style="display:inline-block; padding:12px 24px; background:linear-gradient(135deg, var(--warning), #fbbf24); color:#000; font-weight:700; border-radius:12px; text-decoration:none;">
+                        <i class="fa fa-crown"></i> Get Premium
+                    </a>
+                </div>
+            `;
+            
+            document.body.appendChild(popup);
+            
+            // Close on outside click
+            popup.addEventListener('click', function(e) {
+                if (e.target === popup) popup.remove();
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Learny - Settings</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">L</div>
+        <span class="sidebar-title">Learny</span>
+      </div>
+      <ul class="nav-list">
+        <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
+        <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+        <li class="nav-item"><a href="bot.html"><i class="fa fa-brain"></i> LearnyAI</a></li>
+        <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
+        <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+        <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+        <li class="nav-item"><a href="motivation.html"><i class="fa fa-lightbulb"></i> Motivation</a></li>
+        <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
+        <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-stopwatch"></i> Pomodoro</a></li>
+        <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
+        <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
+        <li class="nav-item"><a href="countdown.html"><i class="fa fa-hourglass-half"></i> Countdown</a></li>
+        <li class="nav-item active"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+        <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+        <li class="nav-item premium-nav-item" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+                        <a href="premium.html" class="premium-link" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(108, 43, 217, 0.2)); color: var(--warning); border-radius: 8px;">
+                            <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" style="width: 18px; height: 18px; margin-right: 8px;">
+                            Get Premium
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-welcome">
+                <div class="divider"></div>
+                <p id="sidebar-username">Welcome, User!</p>
+            </div>
+        </aside>
+
+        <div class="overlay"></div>
+
+        <main class="main-content">
+            <div class="page-header">
+                <button class="hamburger"><i class="fa fa-bars"></i></button>
+                <h1 class="page-title"><i class="fa fa-cog"></i> Settings</h1>
+                <div class="header-actions">
+                    <button class="theme-toggle"><i class="fa fa-moon"></i></button>
+                </div>
+            </div>
+
+      <!-- Color Theme Section - FIXED -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title"><i class="fa fa-palette"></i> Color Theme</h2>
+        </div>
+        <div class="theme-grid">
+          
+          <!-- ✅ Purple - FREE (clickable) -->
+          <div class="theme-option active" data-theme="purple">
+            <div class="theme-preview" style="background: #6c2bd9"></div>
+            <div class="theme-name">Purple</div>
+          </div>
+          
+          <!-- ✅ Green - FREE (clickable) -->
+          <div class="theme-option" data-theme="green">
+            <div class="theme-preview" style="background: #10b981"></div>
+            <div class="theme-name">Green</div>
+          </div>
+          
+          <!-- 🔒 Red - PREMIUM (locked) -->
+          <div class="theme-option" data-theme="red" 
+               style="position: relative; opacity: 0.7; pointer-events: none; cursor: not-allowed;"
+               onclick="return false">
+            <div class="theme-preview" style="background: #ef4444"></div>
+            <div class="theme-name">Red</div>
+            <!-- Gem icon - clickable, stops event propagation -->
+            <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" 
+                 style="position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; cursor: pointer; z-index: 10; pointer-events: auto;"
+                 onclick="event.stopPropagation(); window.location.href='premium.html'" 
+                 title="Unlock Premium Theme">
+          </div>
+          
+          <!-- 🔒 Blue - PREMIUM (locked) -->
+          <div class="theme-option" data-theme="blue" 
+               style="position: relative; opacity: 0.7; pointer-events: none; cursor: not-allowed;"
+               onclick="return false">
+            <div class="theme-preview" style="background: #3b82f6"></div>
+            <div class="theme-name">Blue</div>
+            <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" 
+                 style="position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; cursor: pointer; z-index: 10; pointer-events: auto;"
+                 onclick="event.stopPropagation(); window.location.href='premium.html'" 
+                 title="Unlock Premium Theme">
+          </div>
+          
+          <!-- 🔒 Yellow - PREMIUM (locked) -->
+          <div class="theme-option" data-theme="yellow" 
+               style="position: relative; opacity: 0.7; pointer-events: none; cursor: not-allowed;"
+               onclick="return false">
+            <div class="theme-preview" style="background: #eab308"></div>
+            <div class="theme-name">Yellow</div>
+            <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" 
+                 style="position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; cursor: pointer; z-index: 10; pointer-events: auto;"
+                 onclick="event.stopPropagation(); window.location.href='premium.html'" 
+                 title="Unlock Premium Theme">
+          </div>
+          
+        </div>
+      </div>
+
+      <!-- Data Management -->
+      <div class="card mt-3">
+        <div class="card-header">
+          <h2 class="card-title"><i class="fa fa-database"></i> Data Management</h2>
+        </div>
+        <button id="delete-all" class="btn btn-danger btn-sm">
+          <i class="fa fa-trash"></i> Delete All Data
+        </button>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">
+          This will remove all tasks, logs, and settings permanently.
+        </p>
+      </div>
+
+      <!-- About -->
+      <div class="card mt-3">
+        <div class="card-header">
+          <h2 class="card-title"><i class="fa fa-info-circle"></i> About Learnly</h2>
+        </div>
+        <p style="color: var(--text-muted); font-size: 14px;">
+          Version 1.0.0 | Built with passion in Sri Lanka. All data is stored locally on your device.
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <footer class="site-footer">
+        Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰
+      </footer>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

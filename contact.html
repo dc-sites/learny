@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learny - Contact</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">LL</div>
+                <h2 class="sidebar-title">Learny</h2>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li class="nav-item"><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                <li class="nav-item"><a href="bot.html"><i class="fas fa-robot"></i> LearnyAI</a></li>
+                <li class="nav-item"><a href="tasks.html"><i class="fas fa-tasks"></i> Tasks</a></li>
+                <li class="nav-item"><a href="time.html"><i class="fas fa-clock"></i> Time Tracker</a></li>
+                <li class="nav-item"><a href="achievements.html"><i class="fas fa-trophy"></i> Achievements</a></li>
+                <li class="nav-item"><a href="motivation.html"><i class="fas fa-quote-left"></i> Motivation</a></li>
+                <li class="nav-item"><a href="music.html"><i class="fas fa-music"></i> Music</a></li>
+                <li class="nav-item"><a href="pomodoro.html"><i class="fas fa-hourglass-half"></i> Pomodoro</a></li>
+                <li class="nav-item"><a href="mark.html"><i class="fas fa-chart-bar"></i> Mark Analyze</a></li>
+                <li class="nav-item"><a href="pastpapers.html"><i class="fas fa-file-alt"></i> Past Papers</a></li>
+                <li class="nav-item"><a href="countdown.html"><i class="fas fa-calendar-alt"></i> Countdown</a></li>
+                <li class="nav-item"><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                <li class="nav-item active"><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                 <li class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></li>
+                    <li class="nav-item premium-nav-item" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+                        <a href="premium.html" class="premium-link" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(108, 43, 217, 0.2)); color: var(--warning); border-radius: 8px;">
+                            <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" style="width: 18px; height: 18px; margin-right: 8px;">
+                            Get Premium
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-welcome">
+                <div class="divider"></div>
+                <p id="sidebar-username">Welcome, User!</p>
+            </div>
+        </aside>
+
+        <!-- Mobile Overlay (Required by script.js) -->
+        <div class="overlay"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <h1 class="page-title"><i class="fas fa-envelope"></i> Contact Developer</h1>
+                <div class="header-actions">
+                    <!-- Theme toggle handled automatically by APP.bindThemeToggle() in script.js -->
+                    <button class="theme-toggle" title="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="hamburger"><i class="fas fa-bars"></i></button>
+                </div>
+            </header>
+
+            <div class="card">
+                <!-- Developer Info Card -->
+                <div class="contact-card">
+                    <div class="contact-avatar"><i class="fas fa-user-tie"></i></div>
+                    <div>
+                        <h2 style="margin-bottom: 4px;">Dilakshana Rathnayake</h2>
+                        <p style="color: var(--text-muted); margin-bottom: 12px;">Developer | Web Designer</p>
+                        <div class="social-links">
+ <a href="https://magnificent-pony-8a3730.netlify.app/" target="_blank" class="social-link" title="Portfolio"><i class="fas fa-globe"></i></a>
+                            <a href="https://wa.me/94764720488" target="_blank" class="social-link" title="WhatsApp 1"><i class="fab fa-whatsapp"></i></a>
+                            <a href="https://t.me/dilakshana_1" target="_blank" class="social-link" title="Telegram"><i class="fab fa-telegram"></i></a>
+                            <a href="https://wa.me/94774075773" target="_blank" class="social-link" title="WhatsApp 2"><i class="fab fa-whatsapp"></i></a>
+                            <a href="https://www.facebook.com/share/1EFUr8Cdnq/" target="_blank" class="social-link" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="https://www.instagram.com/infin8hex_/" target="_blank" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+                           
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <form id="contactForm" style="margin-top: 24px;">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" class="form-control" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-control" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" class="form-control" rows="5" placeholder="How can I help you?" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-full">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+            </div>
+
+            <footer class="site-footer">
+                
+                <p>Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰</p>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="notification">
+        <i class="fas fa-check-circle"></i>
+        <span>Message sent successfully!</span>
+    </div>
+
+    <!-- Page Specific Scripts -->
+    <script>
+        // Telegram & Form Handling
+        const contactForm = document.getElementById('contactForm');
+        const toast = document.getElementById('toast');
+        const submitBtn = contactForm.querySelector('button[type="submit"]');
+
+        contactForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const message = document.getElementById('message').value.trim();
+            if (!name || !email || !message) return;
+
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+            const TG_BOT_TOKEN = '8243187303:AAEN9yrkRYWsgU8hooJfTYqyWOJPrNhS_pc';
+            const TG_CHAT_ID = '1667542409';
+            const TG_TEXT = `📩 *New Contact Message*\n👤 *Name:* ${name}\n📧 *Email:* ${email}\n💬 *Message:* ${message}`;
+
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TG_CHAT_ID,
+                        text: TG_TEXT,
+                        parse_mode: 'Markdown'
+                    })
+                });
+
+                if (response.ok) {
+                    showToast('Message sent successfully!', 'success');
+                    contactForm.reset();
+                } else {
+                    showToast('Failed to send. Please try again.', 'error');
+                }
+            } catch (error) {
+                showToast('Network error. Check connection.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
+        });
+
+        function showToast(message, type) {
+            const icon = toast.querySelector('i');
+            const text = toast.querySelector('span');
+            text.textContent = message;
+            icon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+            toast.style.borderColor = type === 'success' ? 'var(--success)' : 'var(--danger)';
+            toast.style.color = type === 'success' ? 'var(--success)' : 'var(--danger)';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+    </script>
+    
+    <!-- Main Application Script -->
+    <script src="script.js"></script>
+</body>
+</html>
