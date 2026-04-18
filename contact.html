@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0f0f1a">
     <title>Learny - Contact</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
@@ -24,108 +23,74 @@
                 <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
                 <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
                 <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
-                <li class="nav-item"><a href="motivation.html"><i class="fa fa-quote-left"></i> Motivation</a></li>
+                <li class="nav-item"><a href="motivation.html"><i class="fa fa-fire"></i> Motivation</a></li>
                 <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
-                <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-stopwatch"></i> Pomodoro</a></li>
-                <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-bar"></i> Mark Analyze</a></li>
+                <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-hourglass-half"></i> Pomodoro</a></li>
+                <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
                 <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
-                <li class="nav-item"><a href="countdown.html"><i class="fa fa-hourglass-half"></i> Countdown</a></li>
+                <li class="nav-item"><a href="countdown.html"><i class="fa fa-calendar-alt"></i> Countdown</a></li>
                 <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
                 <li class="nav-item active"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
                 <li class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></li>
             </ul>
             <div class="sidebar-welcome">
-                <p id="sidebar-username">Welcome, User!</p>
+                <a href="#" class="premium-link" onclick="event.preventDefault(); APP.showPremiumPopup();">
+                    <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Premium" style="width:20px;margin-right:8px;"> Get Premium
+                </a>
+                <p class="welcome-text" id="sidebar-username">Welcome, User!</p>
             </div>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
             <div class="page-header">
+                <button class="hamburger"><i class="fa fa-bars"></i></button>
                 <h1 class="page-title"><i class="fa fa-envelope"></i> Contact Developer</h1>
                 <div class="header-actions">
-                    <button class="theme-toggle" aria-label="Toggle theme"><i class="fa fa-moon"></i></button>
-                    <button class="hamburger" aria-label="Open menu"><i class="fa fa-bars"></i></button>
+                    <button class="theme-toggle"><i class="fa fa-sun"></i></button>
                 </div>
             </div>
 
-            <div class="overlay"></div>
-
-            <!-- Contact Layout (Auto-stacks on mobile via existing .grid-2 media query) -->
-            <div class="grid-2">
-                <!-- Developer Info -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title"><i class="fa fa-user-tie"></i> Developer Info</h2>
+            <div class="contact-card">
+                <div class="contact-avatar">D</div>
+                <div class="contact-info">
+                    <h3>Dilakshana Rathnayake</h3>
+                    <p>Developer | Web Designer</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fa fa-envelope"></i></a>
+                        <a href="#" class="social-link"><i class="fa fa-phone"></i></a>
+                        <a href="#" class="social-link"><i class="fa fa-globe"></i></a>
                     </div>
-                    <div class="contact-card">
-                        <div class="contact-avatar">
-                            <img src="https://i.postimg.cc/nrFwN8kn/gem.png" alt="Developer" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
-                        </div>
-                        <div>
-                            <h3 style="font-size:18px; font-weight:700; margin-bottom:4px;">Dilakshana Rathnayake</h3>
-                            <p style="color:var(--text-muted); font-size:14px; margin-bottom:12px;">Developer | Web Designer</p>
-                            <div class="social-links">
-                                <a href="#" class="social-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                                <a href="#" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                                <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                                <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="color:var(--text-muted); font-size:14px; line-height:1.7; margin-top: 12px;">
-                        Have a question, suggestion, or want to collaborate? Feel free to reach out using the form. I'll get back to you as soon as possible!
-                    </p>
-                </div>
-
-                <!-- Contact Form -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title"><i class="fa fa-paper-plane"></i> Send a Message</h2>
-                    </div>
-                    <form id="contact-form">
-                        <div class="form-group">
-                            <label for="contact-name">Name</label>
-                            <input type="text" id="contact-name" class="form-control" placeholder="Your full name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="contact-email">Email</label>
-                            <input type="email" id="contact-email" class="form-control" placeholder="your@email.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="contact-message">Message</label>
-                            <textarea id="contact-message" class="form-control" rows="5" placeholder="How can I help you?" required style="resize: vertical;"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-full">
-                            <i class="fa fa-paper-plane"></i> Send Message
-                        </button>
-                    </form>
                 </div>
             </div>
 
-            <footer class="site-footer">
-                Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰
-            </footer>
+            <form class="card" id="contact-form">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea class="form-control" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-full">Send Message</button>
+            </form>
+            
+            <footer class="site-footer">Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰</footer>
         </main>
     </div>
 
-    <!-- Notification Toast -->
+    <!-- Mobile Overlay & Notification Toast -->
+    <div class="overlay"></div>
     <div id="notification-toast" class="notification">
         <i class="fa fa-check-circle"></i>
         <span>Message sent successfully!</span>
     </div>
 
     <script src="script.js"></script>
-    <script>
-        // Handles contact form submission without modifying script.js
-        document.getElementById('contact-form')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Trigger existing toast system
-            if (typeof APP !== 'undefined' && APP.showToast) {
-                APP.showToast('Message sent successfully!');
-            }
-            this.reset();
-        });
-    </script>
 </body>
 </html>
