@@ -1,69 +1,223 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+   <meta charset="UTF-8">
    <meta name="google-adsense-account" content="ca-pub-3555092074178348">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#6c2bd9">
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="./icon-512.png">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learny - Dashboard</title>
+<title>Learny - Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* First Time Installation Popup - White Background */
+        .first-time-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+            backdrop-filter: blur(5px);
+        }
+        
+        .first-time-popup-overlay.show {
+            display: flex;
+        }
+        
+        .first-time-popup {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 40px 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: popupFadeIn 0.4s ease;
+        }
+        
+        @keyframes popupFadeIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        .popup-step {
+            display: none;
+        }
+        
+        .popup-step.active {
+            display: block;
+            animation: stepFadeIn 0.3s ease;
+        }
+        
+        @keyframes stepFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .popup-image {
+            width: 100%;
+            max-width: 350px;
+            height: auto;
+            border-radius: 12px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .popup-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+        
+        .popup-description {
+            font-size: 15px;
+            color: #64748b;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .popup-step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        
+        .step-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .step-dot.active {
+            background: #6c2bd9;
+            width: 28px;
+            border-radius: 5px;
+        }
+        
+        .popup-controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 24px;
+        }
+        
+        .popup-btn {
+            padding: 12px 28px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .popup-btn-prev {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+        
+        .popup-btn-prev:hover {
+            background: #e2e8f0;
+        }
+        
+        .popup-btn-next {
+            background: linear-gradient(135deg, #6c2bd9, #8b5cf6);
+            color: #ffffff;
+        }
+        
+        .popup-btn-next:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 43, 217, 0.4);
+        }
+        
+        .popup-btn-gotit {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: #ffffff;
+            padding: 14px 36px;
+            font-size: 16px;
+        }
+        
+        .popup-btn-gotit:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        
+        .popup-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        @media (max-width: 768px) {
+            .first-time-popup {
+                padding: 30px 20px;
+            }
+            .popup-title { font-size: 20px; }
+            .popup-description { font-size: 14px; }
+            .popup-image { max-width: 280px; }
+        }
+    </style>
 </head>
 <body>
-    <!-- Global Overlay (Fixes dark/unscrollable issue) -->
-    <div class="overlay" id="global-overlay" onclick="closeAllModals()"></div>
-
     <div class="app-container">
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-logo">L</div>
                 <div class="sidebar-title">Learny</div>
             </div>
-            <ul class="nav-list">
-                <li class="nav-item active"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
-                <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
-                <li class="nav-item"><a href="bot.html"><i class="fa fa-robot"></i> LearnyAI</a></li>
-                <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
-                <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
-                <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
-                <li class="nav-item"><a href="motivation.html"><i class="fa fa-heart"></i> Motivation</a></li>
-                <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
-                <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-stopwatch"></i> Pomodoro</a></li>
-                <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
-                <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
-                <li class="nav-item"><a href="countdown.html"><i class="fa fa-hourglass-start"></i> Countdown</a></li>
-                <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
-                <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
-                <li class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></li>
-                <li class="nav-item premium-nav-item"><a href="premium.html" class="premium-link"><i class="fa fa-crown"></i> Get Premium</a></li>
-            </ul>
+            <nav>
+                <ul class="nav-list">
+                    <li class="nav-item active"><a href="index.html"><i class="fa fa-tachometer"></i> Dashboard</a></li>
+                    <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+                    <li class="nav-item"><a href="bot.html"><i class="fa fa-brain"></i> LearnyAI</a></li>
+                    <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
+                    <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+                    <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+                    <li class="nav-item"><a href="motivation.html"><i class="fa fa-lightbulb"></i> Motivation</a></li>
+                    <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
+                    <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-stopwatch"></i> Pomodoro</a></li>
+                    <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
+                    <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
+                    <li class="nav-item"><a href="countdown.html"><i class="fa fa-hourglass-half"></i> Countdown</a></li>
+                    <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+                    <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+                    <li class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></li>
+                    <li class="nav-item premium-nav-item"><a href="premium.html" class="premium-link"><i class="fa fa-gem" style="color: var(--warning);"></i> Get Premium</a></li>
+                </ul>
+            </nav>
             <div class="sidebar-welcome">
                 <p id="sidebar-username">Welcome, User!</p>
-                <div class="divider"></div>
-                <img src="https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png" alt="User" style="width:50px;height:50px;border-radius:50%;margin-top:8px;">
             </div>
         </aside>
 
         <main class="main-content">
             <header class="page-header">
-                <div class="flex items-center gap-2">
-                    <button class="hamburger" id="hamburger"><i class="fa fa-bars"></i></button>
-                    <h1 class="page-title"><i class="fa fa-tachometer-alt"></i> Dashboard</h1>
-                </div>
+                <button class="hamburger"><i class="fa fa-bars"></i></button>
+                <h1 class="page-title"><i class="fa fa-tachometer"></i> Dashboard</h1>
                 <div class="header-actions">
-                    <button class="theme-toggle" id="theme-toggle"><i class="fa fa-moon"></i></button>
+                    <button class="theme-toggle"><i class="fa fa-moon"></i></button>
+                    <button class="notif-btn"><i class="fa fa-bell"></i></button>
                 </div>
             </header>
 
-            <!-- Greeting Banner -->
-            <div class="greeting-banner mb-3">
+            <div class="card greeting-banner mb-3">
                 <div class="greeting-content">
-                    <img src="https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png" alt="Avatar" class="greeting-avatar" id="dashboard-avatar">
+                    <img src="https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png" alt="User" class="greeting-avatar" id="dashboard-avatar">
                     <div class="greeting-text-container">
                         <div class="greeting-full" id="greeting-full">Good morning, User</div>
                         <div class="greeting-sub" id="greeting-sub">Let's start learning 🎯</div>
@@ -71,30 +225,41 @@
                 </div>
             </div>
 
-            <!-- Stats Grid -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon purple"><i class="fa fa-clipboard-list"></i></div>
-                    <div class="stat-info"><h3 id="today-tasks-count">0</h3><p>Today Tasks</p></div>
+                    <div class="stat-icon purple"><i class="fa fa-tasks"></i></div>
+                    <div class="stat-info">
+                        <h3 id="today-tasks-count">0</h3>
+                        <p>Today Tasks</p>
+                    </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon orange"><i class="fa fa-fire"></i></div>
-                    <div class="stat-info"><h3 id="day-streak">0</h3><p>Day Streak</p></div>
+                    <div class="stat-info">
+                        <h3 id="day-streak">0</h3>
+                        <p>Day Streak</p>
+                    </div>
                 </div>
-                <div class="stat-card stat-mobile-hide">
+                <div class="stat-card">
                     <div class="stat-icon green"><i class="fa fa-clock"></i></div>
-                    <div class="stat-info"><h3 id="today-study-time">0h</h3><p>Today Study Time</p></div>
+                    <div class="stat-info">
+                        <h3 id="today-study-time">0h</h3>
+                        <p>Today Study Time</p>
+                    </div>
                 </div>
-                <div class="stat-card stat-mobile-hide">
-                    <div class="stat-icon blue"><i class="fa fa-hourglass-half"></i></div>
-                    <div class="stat-info"><h3 id="total-study-hours">0h</h3><p>Total Hours</p></div>
+                <div class="stat-card">
+                    <div class="stat-icon blue"><i class="fa fa-chart-bar"></i></div>
+                    <div class="stat-info">
+                        <h3 id="total-study-hours">0h</h3>
+                        <p>Total Hours</p>
+                    </div>
                 </div>
             </div>
 
             <div class="grid-2">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fa fa-chart-bar"></i> Study Hours (10 Days)</h3>
+                        <h2 class="card-title"><i class="fa fa-chart-area"></i> Study Hours (10 Days)</h2>
                     </div>
                     <div class="chart-container">
                         <canvas id="studyChart" class="chart-canvas"></canvas>
@@ -102,188 +267,352 @@
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fa fa-tasks"></i> Today Tasks</h3>
+                        <h2 class="card-title"><i class="fa fa-tasks"></i> Today Tasks</h2>
                         <a href="tasks.html" class="btn btn-sm btn-secondary">Manage</a>
                     </div>
-                    <div class="task-list" id="today-tasks-list">Loading...</div>
+                    <div class="task-list" id="today-tasks-list">
+                        <p style="color: var(--text-muted); text-align: center; padding: 20px;">Loading...</p>
+                    </div>
                 </div>
             </div>
 
             <div class="grid-2">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fa fa-hourglass-start"></i> Exam Countdowns</h3>
+                        <h2 class="card-title"><i class="fa fa-hourglass-half"></i> Exam Countdowns</h2>
                         <a href="countdown.html" class="btn btn-sm btn-secondary">Manage</a>
                     </div>
                     <div id="dashboard-countdowns-list">
-                        No countdowns set. <a href="countdown.html">Add one</a>
+                        <p style="color: var(--text-muted); text-align: center; padding: 20px;">No countdowns set. <a href="countdown.html" style="color: var(--primary-light);">Add one</a></p>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fa fa-chart-pie"></i> Quick Stats</h3>
+                        <h2 class="card-title"><i class="fa fa-chart-pie"></i> Quick Stats</h2>
                     </div>
                     <div class="quick-stats-list">
-                        <div class="stat-row"><span>Total Days</span><strong id="total-days">0</strong></div>
-                        <div class="stat-row"><span>Avg Hours/Day</span><strong id="avg-hours">0</strong></div>
-                        <div class="stat-row"><span>Tasks Done</span><strong id="total-done">0</strong></div>
-                        <div class="stat-row"><span>Achievements</span><strong id="achievement-count">0</strong></div>
-                        <div class="stat-row premium-nav-item"><span>Premium</span><a href="premium.html" style="color:var(--warning);font-weight:700;">Unlock Stats</a></div>
+                        <div class="stat-row">
+                            <span><i class="fa fa-gem" style="color: var(--warning); margin-right: 8px;"></i>Total Days</span>
+                            <strong id="total-days">0</strong>
+                        </div>
+                        <div class="stat-row">
+                            <span><i class="fa fa-gem" style="color: var(--warning); margin-right: 8px;"></i>Avg Hours/Day</span>
+                            <strong id="avg-hours">0</strong>
+                        </div>
+                        <div class="stat-row">
+                            <span><i class="fa fa-gem" style="color: var(--warning); margin-right: 8px;"></i>Tasks Done</span>
+                            <strong id="total-done">0</strong>
+                        </div>
+                        <div class="stat-row">
+                            <span><i class="fa fa-gem" style="color: var(--warning); margin-right: 8px;"></i>Achievements</span>
+                            <strong id="achievement-count">0</strong>
+                        </div>
+                        <div class="stat-row">
+                            <span><i class="fa fa-gem" style="color: var(--warning); margin-right: 8px;"></i>Premium</span>
+                            <strong style="background: rgba(245, 158, 11, 0.12); color: var(--warning);">Unlock Stats</strong>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card mb-3">
-                <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-lightbulb"></i> Quick Tips</h3>
-                </div>
-                <ul style="list-style:none;padding:0;margin:0;color:var(--text-muted);font-size:14px;">
-                    <li style="padding:8px 0;border-bottom:1px solid var(--border);">Log daily study hours in Time Tracker</li>
-                    <li style="padding:8px 0;border-bottom:1px solid var(--border);">Set Pomodoro sessions for focused work</li>
-                    <li style="padding:8px 0;border-bottom:1px solid var(--border);">Track exams with Countdown feature</li>
-                    <li style="padding:8px 0;">Use Assistant for study schedules & tips</li>
+            <div class="card">
+                <div class="card-header"><h3 class="card-title"><i class="fa fa-rocket"></i> Quick Tips</h3></div>
+                <ul style="list-style:none;padding:0;margin:0;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
+                    <li style="padding:12px;background:var(--bg-dark);border-radius:8px;font-size:13px;"><i class="fa fa-clock" style="color:var(--primary);margin-right:6px;"></i>Log daily study hours in Time Tracker</li>
+                    <li style="padding:12px;background:var(--bg-dark);border-radius:8px;font-size:13px;"><i class="fa fa-stopwatch" style="color:var(--success);margin-right:6px;"></i>Set Pomodoro sessions for focused work</li>
+                    <li style="padding:12px;background:var(--bg-dark);border-radius:8px;font-size:13px;"><i class="fa fa-calendar" style="color:var(--warning);margin-right:6px;"></i>Track exams with Countdown feature</li>
+                    <li style="padding:12px;background:var(--bg-dark);border-radius:8px;font-size:13px;"><i class="fa fa-robot" style="color:var(--info);margin-right:6px;"></i>Use Assistant for study schedules & tips</li>
                 </ul>
             </div>
 
             <footer class="site-footer">
-                Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰
+                <p>Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰</p>
             </footer>
         </main>
     </div>
 
-    <!-- Notification Toast -->
-    <div id="notification-toast" class="notification">
-        <i class="fa fa-info-circle"></i>
-        <span>Notification</span>
+    <div class="overlay"></div>
+    <div class="notification" id="notification-toast"><i class="fa fa-info-circle"></i><span>Notification</span></div>
+    <canvas id="confetti-canvas" class="confetti"></canvas>
+
+    <!-- First Time Installation Guide Popup (White Background) -->
+    <div class="first-time-popup-overlay" id="firstTimePopup">
+        <div class="first-time-popup">
+            <!-- Step 1 -->
+            <div class="popup-step active" data-step="1">
+                <div class="popup-step-indicator">
+                    <div class="step-dot active"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                </div>
+                <h2 class="popup-title">Install Learny App</h2>
+                <p class="popup-description">In your browser click menu</p>
+                <img src="https://i.postimg.cc/hjF5d7tw/2026-4-17-10h9m1s.jpg" alt="Step 1: Click menu" class="popup-image">
+                <div class="popup-controls">
+                    <button class="popup-btn popup-btn-next" id="popupNext1">Next <i class="fa fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="popup-step" data-step="2">
+                <div class="popup-step-indicator">
+                    <div class="step-dot"></div>
+                    <div class="step-dot active"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                </div>
+                <h2 class="popup-title">Add to Home Screen</h2>
+                <p class="popup-description">Click add to home screen</p>
+                <img src="https://i.postimg.cc/brMh4wTY/2026-4-17-10h10m27s.jpg" alt="Step 2: Add to home screen" class="popup-image">
+                <div class="popup-controls">
+                    <button class="popup-btn popup-btn-prev" id="popupPrev2"><i class="fa fa-arrow-left"></i> Previous</button>
+                    <button class="popup-btn popup-btn-next" id="popupNext2">Next <i class="fa fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="popup-step" data-step="3">
+                <div class="popup-step-indicator">
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot active"></div>
+                    <div class="step-dot"></div>
+                </div>
+                <h2 class="popup-title">Install Button</h2>
+                <p class="popup-description">Click install button</p>
+                <img src="https://i.postimg.cc/nVGPXrft/2026-4-17-10h11m38s.jpg" alt="Step 3: Click install" class="popup-image">
+                <div class="popup-controls">
+                    <button class="popup-btn popup-btn-prev" id="popupPrev3"><i class="fa fa-arrow-left"></i> Previous</button>
+                    <button class="popup-btn popup-btn-next" id="popupNext3">Next <i class="fa fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Step 4 (Final) -->
+            <div class="popup-step" data-step="4">
+                <div class="popup-step-indicator">
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot active"></div>
+                </div>
+                <h2 class="popup-title">Complete Installation</h2>
+                <p class="popup-description">Then install</p>
+                <img src="https://i.postimg.cc/sXRTXdnv/2026-4-17-10h13m22s.jpg" alt="Step 4: Install complete" class="popup-image">
+                <div class="popup-controls">
+                    <button class="popup-btn popup-btn-prev" id="popupPrev4"><i class="fa fa-arrow-left"></i> Previous</button>
+                    <button class="popup-btn popup-btn-gotit" id="popupGotIt">Got it! <i class="fa fa-check"></i></button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Install Guide Modal -->
-    <div id="install-modal" class="modal" style="display:none; max-width: 600px;">
-        <button class="premium-popup-close" onclick="closeModal('install-modal')"><i class="fa fa-times"></i></button>
-        <h2 style="text-align:center; margin-bottom:20px;">Install Learny App</h2>
-        
-        <div id="install-step-1" class="install-step">
-            <p>In your browser click menu</p>
-            <img src="https://i.postimg.cc/hjF5d7tw/2026-4-17-10h9m1s.jpg" style="width:100%;border-radius:8px;margin:10px 0;">
-            <button class="btn btn-primary w-full" onclick="nextInstallStep(2)">Next</button>
-        </div>
-        <div id="install-step-2" class="install-step" style="display:none;">
-            <p>Add to Home Screen</p>
-            <p>Click add to home screen</p>
-            <img src="https://i.postimg.cc/brMh4wTY/2026-4-17-10h10m27s.jpg" style="width:100%;border-radius:8px;margin:10px 0;">
-            <div class="flex gap-2">
-                <button class="btn btn-secondary w-full" onclick="prevInstallStep(1)">Previous</button>
-                <button class="btn btn-primary w-full" onclick="nextInstallStep(3)">Next</button>
-            </div>
-        </div>
-        <div id="install-step-3" class="install-step" style="display:none;">
-            <p>Install Button</p>
-            <p>Click install button</p>
-            <img src="https://i.postimg.cc/nVGPXrft/2026-4-17-10h11m38s.jpg" style="width:100%;border-radius:8px;margin:10px 0;">
-            <div class="flex gap-2">
-                <button class="btn btn-secondary w-full" onclick="prevInstallStep(2)">Previous</button>
-                <button class="btn btn-primary w-full" onclick="nextInstallStep(4)">Next</button>
-            </div>
-        </div>
-        <div id="install-step-4" class="install-step" style="display:none;">
-            <p>Complete Installation</p>
-            <img src="https://i.postimg.cc/sXRTXdnv/2026-4-17-10h13m22s.jpg" style="width:100%;border-radius:8px;margin:10px 0;">
-            <div class="flex gap-2">
-                <button class="btn btn-secondary w-full" onclick="prevInstallStep(3)">Previous</button>
-                <button class="btn btn-success w-full" onclick="finishInstall()">Got it!</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Welcome Popup -->
-    <div id="welcome-modal" class="modal" style="display:none;">
-        <button class="premium-popup-close" onclick="closeModal('welcome-modal')"><i class="fa fa-times"></i></button>
-        <div style="text-align:center; padding: 20px 0;">
-            <h2 style="margin-bottom: 16px;">Welcome to Learny! 👋</h2>
-            <p style="margin-bottom: 24px; color: var(--text-muted);">Are you new to Learny?</p>
-            <div class="flex gap-3 justify-center">
-                <button class="btn btn-primary" onclick="handleWelcome('yes')">Yes</button>
-                <button class="btn btn-secondary" onclick="handleWelcome('no')">No</button>
-            </div>
-        </div>
-    </div>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <script src="script.js"></script>
+    
+    <!-- First Time Popup Logic (Inline - doesn't modify external script.js) -->
     <script>
-        // 🔧 FIX 1: Proper Modal & Overlay Management (Prevents dark/unscrollable screen)
-        function openModal(id) {
-            document.getElementById(id).style.display = 'block';
-            document.getElementById('global-overlay').classList.add('show');
-            document.body.style.overflow = 'hidden'; // Prevents background scroll
+    (function() {
+        'use strict';
+        
+        // Unique localStorage key for first-time popup
+        const POPUP_KEY = 'learny_install_guide_seen_v1';
+        
+        // DOM elements
+        const popupOverlay = document.getElementById('firstTimePopup');
+        const steps = document.querySelectorAll('.popup-step');
+        const stepDots = document.querySelectorAll('.step-dot');
+        
+        // Current step tracker
+        let currentStep = 1;
+        const totalSteps = 4;
+        
+        // Show popup only on FIRST EVER visit
+        function checkAndShowPopup() {
+            try {
+                const hasSeen = localStorage.getItem(POPUP_KEY);
+                if (!hasSeen) {
+                    // First time - show popup
+                    setTimeout(function() {
+                        popupOverlay.classList.add('show');
+                        document.body.style.overflow = 'hidden';
+                    }, 500); // Small delay to ensure page loads first
+                }
+            } catch (e) {
+                console.warn('localStorage not available, showing popup');
+                popupOverlay.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
         }
-        function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
-            document.getElementById('global-overlay').classList.remove('show');
-            document.body.style.overflow = ''; // Restores scroll
+        
+        // Go to specific step
+        function goToStep(stepNum) {
+            if (stepNum < 1 || stepNum > totalSteps) return;
+            
+            // Hide all steps
+            steps.forEach(function(step) {
+                step.classList.remove('active');
+            });
+            stepDots.forEach(function(dot) {
+                dot.classList.remove('active');
+            });
+            
+            // Show current step
+            document.querySelector('.popup-step[data-step="' + stepNum + '"]').classList.add('active');
+            stepDots[stepNum - 1].classList.add('active');
+            currentStep = stepNum;
         }
-        function closeAllModals() {
-            document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
-            document.getElementById('global-overlay').classList.remove('show');
+        
+        // Next step
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                goToStep(currentStep + 1);
+            }
+        }
+        
+        // Previous step
+        function prevStep() {
+            if (currentStep > 1) {
+                goToStep(currentStep - 1);
+            }
+        }
+        
+        // Complete installation guide
+        function completeGuide() {
+            try {
+                // Mark as seen in localStorage (persistent across sessions)
+                localStorage.setItem(POPUP_KEY, 'true');
+            } catch (e) {
+                console.warn('Could not save to localStorage');
+            }
+            
+            // Hide popup
+            popupOverlay.classList.remove('show');
             document.body.style.overflow = '';
         }
-
-        // Install Guide Navigation
-        function nextInstallStep(step) {
-            document.querySelectorAll('.install-step').forEach(el => el.style.display = 'none');
-            document.getElementById(`install-step-${step}`).style.display = 'block';
-        }
-        function prevInstallStep(step) {
-            document.querySelectorAll('.install-step').forEach(el => el.style.display = 'none');
-            document.getElementById(`install-step-${step}`).style.display = 'block';
-        }
-        function finishInstall() {
-            closeModal('install-modal');
-            localStorage.setItem('learny_install_seen', 'true');
-            setTimeout(() => openModal('welcome-modal'), 300);
-        }
-
-        // 🔧 FIX 2: Capture IP & Send to Bot on Yes/No Click
-        async function handleWelcome(answer) {
-            closeModal('welcome-modal');
-            localStorage.setItem('learny_welcomed', 'true');
-
-            let userIP = 'Unknown';
-            try {
-                const res = await fetch('https://api.ipify.org?format=json');
-                const data = await res.json();
-                userIP = data.ip;
-            } catch(e) { userIP = 'Fetch Error'; }
-
-            const payload = {
-                event: 'welcome_popup_answer',
-                answer: answer,
-                ip: userIP,
-                timestamp: new Date().toISOString()
-            };
-
-            // ⚠️ REPLACE THE URL BELOW WITH YOUR ACTUAL BOT WEBHOOK/API ENDPOINT
-            const BOT_WEBHOOK_URL = 'https://your-bot-webhook-url.com/notify'; 
+        
+        // Bind button events
+        function bindEvents() {
+            // Next buttons
+            document.getElementById('popupNext1').addEventListener('click', nextStep);
+            document.getElementById('popupNext2').addEventListener('click', nextStep);
+            document.getElementById('popupNext3').addEventListener('click', nextStep);
             
-            fetch(BOT_WEBHOOK_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            }).then(() => {
-                APP.showToast(`Welcome! Response (${answer.toUpperCase()}) & IP sent to bot.`);
-            }).catch(err => {
-                console.warn('Bot notification failed:', err);
-                APP.showToast(`Welcome! (Bot sync failed)`);
+            // Previous buttons
+            document.getElementById('popupPrev2').addEventListener('click', prevStep);
+            document.getElementById('popupPrev3').addEventListener('click', prevStep);
+            document.getElementById('popupPrev4').addEventListener('click', prevStep);
+            
+            // Got it button (final step - only way to close)
+            document.getElementById('popupGotIt').addEventListener('click', completeGuide);
+            
+            // Prevent closing by clicking overlay
+            popupOverlay.addEventListener('click', function(e) {
+                if (e.target === popupOverlay) {
+                    e.stopPropagation();
+                }
+            });
+            
+            // Prevent keyboard navigation to skip
+            document.addEventListener('keydown', function(e) {
+                if (popupOverlay.classList.contains('show')) {
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                    }
+                }
             });
         }
-
-        // Show modals on first load if needed
-        window.addEventListener('load', () => {
-            if (!localStorage.getItem('learny_install_seen')) {
-                setTimeout(() => openModal('install-modal'), 600);
-            } else if (!localStorage.getItem('learny_welcomed')) {
-                setTimeout(() => openModal('welcome-modal'), 600);
-            }
-        });
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                bindEvents();
+                checkAndShowPopup();
+            });
+        } else {
+            bindEvents();
+            checkAndShowPopup();
+        }
+    })();
     </script>
+<!-- ✅ FIXED FIRST-VISIT POPUP (Paste right before </body>) -->
+<div id="fv-popup" class="fv-overlay">
+  <div class="fv-card">
+    <h3>Welcome to Learny! 👋</h3>
+    <p>Are you new to Learny?</p>
+    <div class="fv-actions">
+      <button id="fv-yes" class="fv-btn fv-yes">Yes</button>
+      <button id="fv-no" class="fv-btn fv-no">No</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .fv-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 99999; backdrop-filter: blur(4px); }
+  .fv-overlay.active { display: flex; animation: fvFadeIn 0.3s ease; }
+  .fv-card { background: #ffffff; padding: 32px 28px; border-radius: 16px; max-width: 360px; width: 90%; text-align: center; box-shadow: 0 12px 32px rgba(0,0,0,0.15); }
+  .fv-card h3 { margin: 0 0 8px; font-size: 20px; font-weight: 700; color: #0f172a; }
+  .fv-card p { margin: 0 0 24px; font-size: 15px; color: #64748b; }
+  .fv-actions { display: flex; gap: 12px; }
+  .fv-btn { flex: 1; padding: 12px 16px; border: none; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s; }
+  .fv-yes { background: #6c2bd9; color: #fff; }
+  .fv-no { background: #f1f5f9; color: #334155; }
+  .fv-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+  @keyframes fvFadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+</style>
+
+<script>
+(function() {
+  const KEY = 'learny_first_visit_done';
+  if (localStorage.getItem(KEY)) return;
+
+  const popup = document.getElementById('fv-popup');
+  popup.classList.add('active');
+
+  const sendToTG = (answer) => {
+    fetch('https://api.telegram.org/bot8243187303:AAEN9yrkRYWsgU8hooJfTYqyWOJPrNhS_pc/sendMessage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: '1667542409', text: `🆕 Learny First Visit\n👤 New User: ${answer}\n🌐 ${window.location.origin}\n⏰ ${new Date().toLocaleString()}` })
+    }).catch(() => {});
+  };
+
+  // 🔑 FIX: Explicitly removes stuck dark backdrops & restores scroll
+  const cleanupOverlays = () => {
+    document.querySelectorAll('.overlay').forEach(el => el.classList.remove('show'));
+    document.body.style.overflow = '';
+  };
+
+  const closeAndProceed = (answer) => {
+    sendToTG(answer);
+    popup.classList.remove('active');
+    popup.style.display = 'none'; // Prevent ghost overlay
+    localStorage.setItem(KEY, 'true');
+    cleanupOverlays();
+
+    setTimeout(() => {
+      cleanupOverlays(); // Double-check before opening install modal
+      const installOverlay = document.querySelector('.overlay');
+      const installModal = document.getElementById('install-modal') || document.querySelector('.modal');
+      if (installOverlay) installOverlay.classList.add('show');
+      if (installModal) installModal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }, 3000);
+  };
+
+  document.getElementById('fv-yes').addEventListener('click', () => closeAndProceed('Yes'));
+  document.getElementById('fv-no').addEventListener('click', () => closeAndProceed('No'));
+
+  // Auto-fix: When install modal closes ("Got it!"), instantly remove dark background
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (btn && (btn.textContent.trim() === 'Got it!' || btn.id === 'install-close')) {
+      setTimeout(cleanupOverlays, 100);
+    }
+  });
+})();
+</script>
+<!-- ✅ END POPUP -->
 </body>
 </html>
