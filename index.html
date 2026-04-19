@@ -400,8 +400,8 @@
                 <p class="popup-description">Then install</p>
                 <img src="https://i.postimg.cc/sXRTXdnv/2026-4-17-10h13m22s.jpg" alt="Step 4: Install complete" class="popup-image">
                 <div class="popup-controls">
-                    <button class="popup-btn popup-btn-prev" id="popupPrev4"><i class="fa fa-arrow-left"></i> Previous</button>
-                    <button class="popup-btn popup-btn-gotit" id="popupGotIt">Got it! <i class="fa fa-check"></i></button>
+                    <button class="btn btn-secondary" onclick="location.reload()">⬅️ Previous</button>
+<button class="btn btn-primary" onclick="location.reload()">🔄 Reload for Best Experience</button>
                 </div>
             </div>
         </div>
@@ -410,6 +410,35 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <script src="script.js"></script>
+   <script>
+window.addEventListener('load', function() {
+  // Safely fetch public IP
+  const fetchIP = () => fetch('https://api.ipify.org?format=json')
+    .then(r => r.json())
+    .then(d => d.ip)
+    .catch(() => 'Unknown IP');
+
+  const handleNewUser = (isNew) => {
+    fetchIP().then(ip => {
+      const msg = `👤 New User: ${isNew ? 'Yes' : 'No'} | 🌐 IP: ${ip}`;
+      
+      // Send to Learny's bot/notification system
+      if (window.APP && window.APP.showToast) {
+        window.APP.showToast(msg);
+      }
+      
+      // Optional: Close the welcome modal
+      const modal = document.querySelector('.modal');
+      if (modal) modal.classList.remove('show');
+      
+      console.log(msg); // Fallback for debugging
+    });
+  };
+
+  document.getElementById('btn-new-yes')?.addEventListener('click', () => handleNewUser(true));
+  document.getElementById('btn-new-no')?.addEventListener('click', () => handleNewUser(false));
+});
+</script>
     
     <!-- First Time Popup Logic (Inline - doesn't modify external script.js) -->
     <script>
@@ -539,12 +568,12 @@
 <!-- ✅ FIXED FIRST-VISIT POPUP (Paste right before </body>) -->
 <div id="fv-popup" class="fv-overlay">
   <div class="fv-card">
-    <h3>Welcome to Learny! 👋</h3>
-    <p>Are you new to Learny?</p>
-    <div class="fv-actions">
-      <button id="fv-yes" class="fv-btn fv-yes">Yes</button>
-      <button id="fv-no" class="fv-btn fv-no">No</button>
-    </div>
+  <h3 style="margin:0 0 8px;">Welcome to Learny! 👋</h3>
+<p style="margin:0 0 16px; color:var(--text-muted);">Are you new to Learny?</p>
+<div style="display:flex; gap:12px; justify-content:center;">
+  <button id="btn-new-yes" class="btn btn-primary">Yes</button>
+  <button id="btn-new-no" class="btn btn-secondary">No</button>
+</div>
   </div>
 </div>
 
