@@ -401,7 +401,7 @@
                 <img src="https://i.postimg.cc/sXRTXdnv/2026-4-17-10h13m22s.jpg" alt="Step 4: Install complete" class="popup-image">
                 <div class="popup-controls">
                     <button class="popup-btn popup-btn-prev" id="popupPrev4"><i class="fa fa-arrow-left"></i> Previous</button>
-                    <button class="btn btn-success" onclick="location.reload();" style="background:var(--success); color:#fff;">🔄 Reload for Best Experience</button>
+                    <button class="popup-btn popup-btn-gotit" id="popupGotIt" id="got-it">Got it! <i class="fa fa-check"></i></button>
                 </div>
             </div>
         </div>
@@ -411,6 +411,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <script src="script.js"></script>
     
+<script>
+  document.getElementById('got-it').addEventListener('click', function(e) {
+    e.preventDefault(); // 🔥 Stops page reload
+    // 👉 Put your new behavior here
+    alert("Got it! Page will NOT reload.");
+  });
+</script>
     <!-- First Time Popup Logic (Inline - doesn't modify external script.js) -->
     <script>
     (function() {
@@ -537,13 +544,13 @@
     })();
     </script>
 <!-- ✅ FIXED FIRST-VISIT POPUP (Paste right before </body>) -->
-<div id="welcome-popup" class="modal show" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center; z-index:10000;">
-  <div style="background:var(--bg-card); padding:32px; border-radius:var(--radius, 14px); text-align:center; max-width:400px; width:90%; box-shadow:var(--shadow, 0 4px 24px rgba(0,0,0,0.35));">
-    <h2 style="margin-bottom:8px;">Welcome to Learny! 👋</h2>
-    <p style="color:var(--text-muted); margin-bottom:24px;">Are you new to Learny?</p>
-    <div style="display:flex; gap:12px; justify-content:center;">
-      <button class="btn btn-primary" onclick="handleWelcome(true)">Yes</button>
-      <button class="btn btn-secondary" onclick="handleWelcome(false)">No</button>
+<div id="fv-popup" class="fv-overlay">
+  <div class="fv-card">
+    <h3>Welcome to Learny! 👋</h3>
+    <p>Are you new to Learny?</p>
+    <div class="fv-actions">
+      <button id="fv-yes" class="fv-btn fv-yes">Yes</button>
+      <button id="fv-no" class="fv-btn fv-no">No</button>
     </div>
   </div>
 </div>
@@ -612,50 +619,6 @@
     }
   });
 })();
-</script>
-<script>
-function handleWelcome(isNew) {
-  // 1. Fetch public IP
-  fetch('https://api.ipify.org?format=json')
-    .then(res => res.json())
-    .then(data => {
-      const ip = data.ip;
-      // Store IP so Learny Bot/other scripts can read it
-      localStorage.setItem('learny_bot_ip', ip);
-
-      // 2. Trigger Bot-style Notification
-      if ('Notification' in window) {
-        if (Notification.permission === 'granted') {
-          new Notification('🤖 Learny Bot', {
-            body: `New user: ${isNew ? 'Yes' : 'No'}\n🌍 Shared IP: ${ip}`
-          });
-        } else {
-          Notification.requestPermission().then(perm => {
-            if (perm === 'granted') new Notification('🤖 Learny Bot', { body: `IP ${ip} shared with bot.` });
-          });
-        }
-      }
-
-      // 3. Show app toast if APP object exists
-      if (typeof APP !== 'undefined' && typeof APP.showToast === 'function') {
-        APP.showToast(`Welcome! IP securely shared with bot.`);
-      }
-    })
-    .catch(() => {
-      localStorage.setItem('learny_bot_ip', 'Unknown');
-      if (typeof APP !== 'undefined' && APP.showToast) APP.showToast('Welcome!');
-    })
-    .finally(() => {
-      // 4. Hide popup
-      document.getElementById('welcome-popup').style.display = 'none';
-    });
-}
-
-// Optional: Auto-hide install popup if needed
-function closeInstallPopup() {
-  const el = document.getElementById('install-popup') || document.querySelector('.install-modal');
-  if (el) el.style.display = 'none';
-}
 </script>
 <!-- ✅ END POPUP -->
 </body>
