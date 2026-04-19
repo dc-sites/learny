@@ -336,206 +336,65 @@
     <canvas id="confetti-canvas" class="confetti"></canvas>
 
     <!-- First Time Installation Guide Popup (White Background) -->
-    <div class="first-time-popup-overlay" id="firstTimePopup">
-        <div class="first-time-popup">
-            <!-- Step 1 -->
-            <div class="popup-step active" data-step="1">
-                <div class="popup-step-indicator">
-                    <div class="step-dot active"></div>
-                    <div class="step-dot"></div>
-                    <div class="step-dot"></div>
-                    <div class="step-dot"></div>
-                </div>
-                <h2 class="popup-title">Install Learny App</h2>
-                <p class="popup-description">In your browser click menu</p>
-                <img src="https://i.postimg.cc/hjF5d7tw/2026-4-17-10h9m1s.jpg" alt="Step 1: Click menu" class="popup-image">
-                <div class="popup-controls">
-                    <button class="popup-btn popup-btn-next" id="popupNext1">Next <i class="fa fa-arrow-right"></i></button>
-                </div>
-            </div>
-
-            <!-- Step 2 -->
-            <div class="popup-step" data-step="2">
-                <div class="popup-step-indicator">
-                    <div class="step-dot"></div>
-                    <div class="step-dot active"></div>
-                    <div class="step-dot"></div>
-                    <div class="step-dot"></div>
-                </div>
-                <h2 class="popup-title">Add to Home Screen</h2>
-                <p class="popup-description">Click add to home screen</p>
-                <img src="https://i.postimg.cc/brMh4wTY/2026-4-17-10h10m27s.jpg" alt="Step 2: Add to home screen" class="popup-image">
-                <div class="popup-controls">
-                    <button class="popup-btn popup-btn-prev" id="popupPrev2"><i class="fa fa-arrow-left"></i> Previous</button>
-                    <button class="popup-btn popup-btn-next" id="popupNext2">Next <i class="fa fa-arrow-right"></i></button>
-                </div>
-            </div>
-
-            <!-- Step 3 -->
-            <div class="popup-step" data-step="3">
-                <div class="popup-step-indicator">
-                    <div class="step-dot"></div>
-                    <div class="step-dot"></div>
-                    <div class="step-dot active"></div>
-                    <div class="step-dot"></div>
-                </div>
-                <h2 class="popup-title">Install Button</h2>
-                <p class="popup-description">Click install button</p>
-                <img src="https://i.postimg.cc/nVGPXrft/2026-4-17-10h11m38s.jpg" alt="Step 3: Click install" class="popup-image">
-                <div class="popup-controls">
-                    <button class="popup-btn popup-btn-prev" id="popupPrev3"><i class="fa fa-arrow-left"></i> Previous</button>
-                    <button class="popup-btn popup-btn-next" id="popupNext3">Next <i class="fa fa-arrow-right"></i></button>
-                </div>
-            </div>
-
-            <!-- Step 4 (Final) -->
-            <div class="popup-step" data-step="4">
-                <div class="popup-step-indicator">
-                    <div class="step-dot"></div>
-                    <div class="step-dot"></div>
-                    <div class="step-dot"></div>
-                    <div class="step-dot active"></div>
-                </div>
-                <h2 class="popup-title">Complete Installation</h2>
-                <p class="popup-description">Then install</p>
-                <img src="https://i.postimg.cc/sXRTXdnv/2026-4-17-10h13m22s.jpg" alt="Step 4: Install complete" class="popup-image">
-                <div class="popup-controls">
-                    <button class="popup-btn popup-btn-prev" id="popupPrev4"><i class="fa fa-arrow-left"></i> Previous</button>
-                    <button class="popup-btn popup-btn-gotit" id="popupGotIt">Got it! <i class="fa fa-check"></i></button>
-                </div>
-            </div>
-        </div>
+    <!-- ✅ FIXED: Install & Welcome Popups (Inline JS + CSS) -->
+<div id="learn-install-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:10000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);overflow:hidden;">
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;max-width:460px;width:92%;position:relative;max-height:85vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,0.5);">
+    <h3 style="margin:0 0 16px;font-size:20px;">Install Learny App</h3>
+    <div style="display:flex;flex-direction:column;gap:14px;color:var(--text-muted);font-size:14px;">
+      <p style="margin:0;"><strong style="color:var(--text-main);">1.</strong> In your browser click menu</p>
+      <img src="https://i.postimg.cc/hjF5d7tw/2026-4-17-10h9m1s.jpg" style="width:100%;border-radius:10px;margin-bottom:8px;">
+      <p style="margin:0;"><strong style="color:var(--text-main);">2.</strong> Add to Home Screen</p>
+      <img src="https://i.postimg.cc/brMh4wTY/2026-4-17-10h10m27s.jpg" style="width:100%;border-radius:10px;margin-bottom:8px;">
+      <p style="margin:0;"><strong style="color:var(--text-main);">3.</strong> Click install button</p>
+      <img src="https://i.postimg.cc/nVGPXrft/2026-4-17-10h11m38s.jpg" style="width:100%;border-radius:10px;margin-bottom:8px;">
+      <p style="margin:0;"><strong style="color:var(--text-main);">4.</strong> Complete Installation</p>
+      <img src="https://i.postimg.cc/sXRTXdnv/2026-4-17-10h13m22s.jpg" style="width:100%;border-radius:10px;margin-bottom:8px;">
     </div>
+    <button onclick="closeInstallPopup()" style="margin-top:18px;padding:12px;width:100%;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:700;font-size:15px;">Got it!</button>
+  </div>
+</div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-    <script src="script.js"></script>
-    
-    <!-- First Time Popup Logic (Inline - doesn't modify external script.js) -->
-    <script>
-    (function() {
-        'use strict';
-        
-        // Unique localStorage key for first-time popup
-        const POPUP_KEY = 'learny_install_guide_seen_v1';
-        
-        // DOM elements
-        const popupOverlay = document.getElementById('firstTimePopup');
-        const steps = document.querySelectorAll('.popup-step');
-        const stepDots = document.querySelectorAll('.step-dot');
-        
-        // Current step tracker
-        let currentStep = 1;
-        const totalSteps = 4;
-        
-        // Show popup only on FIRST EVER visit
-        function checkAndShowPopup() {
-            try {
-                const hasSeen = localStorage.getItem(POPUP_KEY);
-                if (!hasSeen) {
-                    // First time - show popup
-                    setTimeout(function() {
-                        popupOverlay.classList.add('show');
-                        document.body.style.overflow = 'hidden';
-                    }, 500); // Small delay to ensure page loads first
-                }
-            } catch (e) {
-                console.warn('localStorage not available, showing popup');
-                popupOverlay.classList.add('show');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-        
-        // Go to specific step
-        function goToStep(stepNum) {
-            if (stepNum < 1 || stepNum > totalSteps) return;
-            
-            // Hide all steps
-            steps.forEach(function(step) {
-                step.classList.remove('active');
-            });
-            stepDots.forEach(function(dot) {
-                dot.classList.remove('active');
-            });
-            
-            // Show current step
-            document.querySelector('.popup-step[data-step="' + stepNum + '"]').classList.add('active');
-            stepDots[stepNum - 1].classList.add('active');
-            currentStep = stepNum;
-        }
-        
-        // Next step
-        function nextStep() {
-            if (currentStep < totalSteps) {
-                goToStep(currentStep + 1);
-            }
-        }
-        
-        // Previous step
-        function prevStep() {
-            if (currentStep > 1) {
-                goToStep(currentStep - 1);
-            }
-        }
-        
-        // Complete installation guide
-        function completeGuide() {
-            try {
-                // Mark as seen in localStorage (persistent across sessions)
-                localStorage.setItem(POPUP_KEY, 'true');
-            } catch (e) {
-                console.warn('Could not save to localStorage');
-            }
-            
-            // Hide popup
-            popupOverlay.classList.remove('show');
-            document.body.style.overflow = '';
-        }
-        
-        // Bind button events
-        function bindEvents() {
-            // Next buttons
-            document.getElementById('popupNext1').addEventListener('click', nextStep);
-            document.getElementById('popupNext2').addEventListener('click', nextStep);
-            document.getElementById('popupNext3').addEventListener('click', nextStep);
-            
-            // Previous buttons
-            document.getElementById('popupPrev2').addEventListener('click', prevStep);
-            document.getElementById('popupPrev3').addEventListener('click', prevStep);
-            document.getElementById('popupPrev4').addEventListener('click', prevStep);
-            
-            // Got it button (final step - only way to close)
-            document.getElementById('popupGotIt').addEventListener('click', completeGuide);
-            
-            // Prevent closing by clicking overlay
-            popupOverlay.addEventListener('click', function(e) {
-                if (e.target === popupOverlay) {
-                    e.stopPropagation();
-                }
-            });
-            
-            // Prevent keyboard navigation to skip
-            document.addEventListener('keydown', function(e) {
-                if (popupOverlay.classList.contains('show')) {
-                    if (e.key === 'Escape') {
-                        e.preventDefault();
-                    }
-                }
-            });
-        }
-        
-        // Initialize when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', function() {
-                bindEvents();
-                checkAndShowPopup();
-            });
-        } else {
-            bindEvents();
-            checkAndShowPopup();
-        }
-    })();
-    </script>
+<div id="learn-welcome-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:10000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);overflow:hidden;">
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:32px 24px;max-width:380px;width:90%;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.5);">
+    <h2 style="margin:0 0 8px;font-size:24px;">Welcome to Learny! 👋</h2>
+    <p style="color:var(--text-muted);margin:0 0 24px;font-size:15px;">Are you new to Learny?</p>
+    <div style="display:flex;gap:12px;">
+      <button onclick="handleWelcomeChoice('Yes')" class="w-btn" style="flex:1;padding:12px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600;">Yes</button>
+      <button onclick="handleWelcomeChoice('No')" class="w-btn" style="flex:1;padding:12px;background:var(--bg-dark);color:var(--text-main);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-weight:600;">No</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// 🔒 Fixes: Dark screen, Unscrollable, IP + Bot Notification
+function closeInstallPopup() {
+  document.getElementById('learn-install-overlay').style.display = 'none';
+  document.body.style.overflow = 'auto'; // ✅ Restores scrolling & touch
+}
+
+function handleWelcomeChoice(answer) {
+  const overlay = document.getElementById('learn-welcome-overlay');
+  // Disable buttons temporarily to prevent double-clicks
+  overlay.querySelectorAll('.w-btn').forEach(b => b.style.opacity = '0.5');
+  
+  fetch('https://api.ipify.org?format=json')
+    .then(res => res.json())
+    .then(data => {
+      const ip = data.ip || 'Unknown';
+      const msg = `🤖 Bot: User selected "${answer}" | IP: ${ip}`;
+      if (window.APP && APP.showToast) APP.showToast(msg);
+      else alert(msg); // Fallback
+      overlay.style.display = 'none';
+      document.body.style.overflow = 'auto'; // ✅ Restores scrolling & touch
+    })
+    .catch(() => {
+      const msg = `🤖 Bot: User selected "${answer}" | IP: Fetch Failed`;
+      if (window.APP && APP.showToast) APP.showToast(msg);
+      overlay.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
+}
+</script>
 <!-- ✅ FIXED FIRST-VISIT POPUP (Paste right before </body>) -->
 <div id="fv-popup" class="fv-overlay">
   <div class="fv-card">
