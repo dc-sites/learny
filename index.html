@@ -12,166 +12,57 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        /* First Time Installation Popup - White Background */
-        .first-time-popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10001;
-            backdrop-filter: blur(5px);
-        }
-        
-        .first-time-popup-overlay.show {
-            display: flex;
-        }
-        
-        .first-time-popup {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 40px 30px;
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            animation: popupFadeIn 0.4s ease;
-        }
-        
-        @keyframes popupFadeIn {
-            from { opacity: 0; transform: translateY(20px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        
-        .popup-step {
-            display: none;
-        }
-        
-        .popup-step.active {
-            display: block;
-            animation: stepFadeIn 0.3s ease;
-        }
-        
-        @keyframes stepFadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .popup-image {
-            width: 100%;
-            max-width: 350px;
-            height: auto;
-            border-radius: 12px;
-            margin: 20px 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e2e8f0;
-        }
-        
-        .popup-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 8px;
-        }
-        
-        .popup-description {
-            font-size: 15px;
-            color: #64748b;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-        
-        .popup-step-indicator {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 24px;
-        }
-        
-        .step-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #e2e8f0;
-            transition: all 0.3s ease;
-        }
-        
-        .step-dot.active {
-            background: #6c2bd9;
-            width: 28px;
-            border-radius: 5px;
-        }
-        
-        .popup-controls {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin-top: 24px;
-        }
-        
-        .popup-btn {
-            padding: 12px 28px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 15px;
-            transition: all 0.3s ease;
-        }
-        
-        .popup-btn-prev {
-            background: #f1f5f9;
-            color: #64748b;
-        }
-        
-        .popup-btn-prev:hover {
-            background: #e2e8f0;
-        }
-        
-        .popup-btn-next {
-            background: linear-gradient(135deg, #6c2bd9, #8b5cf6);
-            color: #ffffff;
-        }
-        
-        .popup-btn-next:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(108, 43, 217, 0.4);
-        }
-        
-        .popup-btn-gotit {
-            background: linear-gradient(135deg, #10b981, #34d399);
-            color: #ffffff;
-            padding: 14px 36px;
-            font-size: 16px;
-        }
-        
-        .popup-btn-gotit:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-        }
-        
-        .popup-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        @media (max-width: 768px) {
-            .first-time-popup {
-                padding: 30px 20px;
-            }
-            .popup-title { font-size: 20px; }
-            .popup-description { font-size: 14px; }
-            .popup-image { max-width: 280px; }
-        }
-    </style>
+   
+   <!-- APK Banner CSS -->
+   <style>
+     .apk-banner {
+       background: linear-gradient(135deg, var(--bg-card) 0%, rgba(16, 185, 129, 0.08) 100%);
+       border: 1px solid var(--border);
+       border-radius: var(--radius);
+       padding: 16px 20px;
+       margin-bottom: 24px;
+       box-shadow: var(--shadow-sm);
+       position: relative;
+       overflow: hidden;
+       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+       animation: apkSlideIn 0.4s ease-out;
+     }
+     .apk-banner::before {
+       content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+       background: var(--success);
+     }
+     .apk-banner-inner {
+       display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+     }
+     .apk-icon {
+       width: 48px; height: 48px; background: rgba(16, 185, 129, 0.15);
+       border-radius: 12px; display: flex; align-items: center; justify-content: center;
+       font-size: 24px; flex-shrink: 0;
+     }
+     .apk-text { flex: 1; min-width: 200px; }
+     .apk-text h3 { font-size: 16px; font-weight: 700; margin: 0 0 4px; color: var(--text-main); }
+     .apk-text p { font-size: 13px; color: var(--text-muted); margin: 0; }
+     .apk-btn {
+       display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px;
+       background: var(--success); color: #fff; border-radius: var(--radius-sm);
+       font-weight: 600; font-size: 14px; text-decoration: none !important;
+       transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+     }
+     .apk-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4); filter: brightness(1.1); }
+     .apk-close {
+       background: none; border: none; color: var(--text-muted); font-size: 18px;
+       cursor: pointer; padding: 8px; margin-left: auto; transition: all 0.2s ease;
+       border-radius: 50%; display: flex; align-items: center; justify-content: center;
+     }
+     .apk-close:hover { background: var(--bg-card-hover); color: var(--text-main); }
+     @keyframes apkSlideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+     @media (max-width: 768px) {
+       .apk-banner-inner { flex-direction: column; text-align: center; gap: 12px; }
+       .apk-icon { margin: 0 auto; }
+       .apk-btn { width: 100%; justify-content: center; }
+       .apk-close { position: absolute; top: 12px; right: 12px; margin: 0; }
+     }
+   </style>
 </head>
 <body>
     <div class="app-container">
@@ -224,6 +115,19 @@
                     </div>
                 </div>
             </div>
+
+           <!-- ✅ APK Install Banner (FA Icons Only) -->
+<div id="apk-banner" class="apk-banner">
+  <div class="apk-banner-inner">
+    <div class="apk-icon"><i class="fa fa-download"></i></div>
+    <div class="apk-text">
+      <h3>Install Learny App</h3>
+      <p>Download the APK for faster access & offline mode</p>
+    </div>
+    <a href="learny.apk" class="apk-btn" download><i class="fa fa-download"></i> Install APK</a>
+    <button class="apk-close" aria-label="Close banner"><i class="fa fa-times"></i></button>
+  </div>
+</div>
 
             <div class="stats-grid">
                 <div class="stat-card">
@@ -335,291 +239,93 @@
     <div class="notification" id="notification-toast"><i class="fa fa-info-circle"></i><span>Notification</span></div>
     <canvas id="confetti-canvas" class="confetti"></canvas>
 
-    <!-- First Time Installation Guide Popup (White Background) -->
-    <div class="first-time-popup-overlay" id="firstTimePopup">
-        <div class="first-time-popup">
-            <!-- Step 1 -->
-            <div class="popup-step active" data-step="1">
-                <div class="popup-step-indicator">
-                    <div class="step-dot active"></div>
-                    <div class="step-dot"></div>
-                    <div class="step-dot"></div>
-                    <div class="step-dot"></div>
-                </div>
-                <h2 class="popup-title">Install Learny App</h2>
-                <p class="popup-description">In your browser click menu</p>
-                <img src="https://i.postimg.cc/hjF5d7tw/2026-4-17-10h9m1s.jpg" alt="Step 1: Click menu" class="popup-image">
-                <div class="popup-controls">
-                    <button class="popup-btn popup-btn-next" id="popupNext1">Next <i class="fa fa-arrow-right"></i></button>
-                </div>
-            </div>
-
-            <!-- Step 2 -->
-            <div class="popup-step" data-step="2">
-                <div class="popup-step-indicator">
-                    <div class="step-dot"></div>
-                    <div class="step-dot active"></div>
-                    <div class="step-dot"></div>
-                    <div class="step-dot"></div>
-                </div>
-                <h2 class="popup-title">Add to Home Screen</h2>
-                <p class="popup-description">Click add to home screen</p>
-                <img src="https://i.postimg.cc/brMh4wTY/2026-4-17-10h10m27s.jpg" alt="Step 2: Add to home screen" class="popup-image">
-                <div class="popup-controls">
-                    <button class="popup-btn popup-btn-prev" id="popupPrev2"><i class="fa fa-arrow-left"></i> Previous</button>
-                    <button class="popup-btn popup-btn-next" id="popupNext2">Next <i class="fa fa-arrow-right"></i></button>
-                </div>
-            </div>
-
-            <!-- Step 3 -->
-            <div class="popup-step" data-step="3">
-                <div class="popup-step-indicator">
-                    <div class="step-dot"></div>
-                    <div class="step-dot"></div>
-                    <div class="step-dot active"></div>
-                    <div class="step-dot"></div>
-                </div>
-                <h2 class="popup-title">Install Button</h2>
-                <p class="popup-description">Click install button</p>
-                <img src="https://i.postimg.cc/nVGPXrft/2026-4-17-10h11m38s.jpg" alt="Step 3: Click install" class="popup-image">
-                <div class="popup-controls">
-                    <button class="popup-btn popup-btn-prev" id="popupPrev3"><i class="fa fa-arrow-left"></i> Previous</button>
-                    <button class="popup-btn popup-btn-next" id="popupNext3">Next <i class="fa fa-arrow-right"></i></button>
-                </div>
-            </div>
-
-            <!-- Step 4 (Final) -->
-            <div class="popup-step" data-step="4">
-                <div class="popup-step-indicator">
-                    <div class="step-dot"></div>
-                    <div class="step-dot"></div>
-                    <div class="step-dot"></div>
-                    <div class="step-dot active"></div>
-                </div>
-                <h2 class="popup-title">Complete Installation</h2>
-                <p class="popup-description">Then install</p>
-                <img src="https://i.postimg.cc/sXRTXdnv/2026-4-17-10h13m22s.jpg" alt="Step 4: Install complete" class="popup-image">
-                <div class="popup-controls">
-                    <button class="popup-btn popup-btn-prev" id="popupPrev4"><i class="fa fa-arrow-left"></i> Previous</button>
-                    <button class="popup-btn popup-btn-gotit" id="got-it">Got it! <i class="fa fa-check"></i></button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <script src="script.js"></script>
     
+ <!-- ✅ APK Banner Script (Updated with TG Notification) -->
 <script>
-  document.getElementById('got-it').addEventListener('click', function(e) {
-    e.preventDefault(); // 🔥 Stops page reload
-    // 👉 Put your new behavior here
-    alert("Let's start learning!");
-  });
-</script>
-    <!-- First Time Popup Logic (Inline - doesn't modify external script.js) -->
-    <script>
-    (function() {
-        'use strict';
-        
-        // Unique localStorage key for first-time popup
-        const POPUP_KEY = 'learny_install_guide_seen_v1';
-        
-        // DOM elements
-        const popupOverlay = document.getElementById('firstTimePopup');
-        const steps = document.querySelectorAll('.popup-step');
-        const stepDots = document.querySelectorAll('.step-dot');
-        
-        // Current step tracker
-        let currentStep = 1;
-        const totalSteps = 4;
-        
-        // Show popup only on FIRST EVER visit
-        function checkAndShowPopup() {
-            try {
-                const hasSeen = localStorage.getItem(POPUP_KEY);
-                if (!hasSeen) {
-                    // First time - show popup
-                    setTimeout(function() {
-                        popupOverlay.classList.add('show');
-                        document.body.style.overflow = 'hidden';
-                    }, 500); // Small delay to ensure page loads first
-                }
-            } catch (e) {
-                console.warn('localStorage not available, showing popup');
-                popupOverlay.classList.add('show');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-        
-        // Go to specific step
-        function goToStep(stepNum) {
-            if (stepNum < 1 || stepNum > totalSteps) return;
-            
-            // Hide all steps
-            steps.forEach(function(step) {
-                step.classList.remove('active');
-            });
-            stepDots.forEach(function(dot) {
-                dot.classList.remove('active');
-            });
-            
-            // Show current step
-            document.querySelector('.popup-step[data-step="' + stepNum + '"]').classList.add('active');
-            stepDots[stepNum - 1].classList.add('active');
-            currentStep = stepNum;
-        }
-        
-        // Next step
-        function nextStep() {
-            if (currentStep < totalSteps) {
-                goToStep(currentStep + 1);
-            }
-        }
-        
-        // Previous step
-        function prevStep() {
-            if (currentStep > 1) {
-                goToStep(currentStep - 1);
-            }
-        }
-        
-        // Complete installation guide
-        function completeGuide() {
-            try {
-                // Mark as seen in localStorage (persistent across sessions)
-                localStorage.setItem(POPUP_KEY, 'true');
-            } catch (e) {
-                console.warn('Could not save to localStorage');
-            }
-            
-            // Hide popup
-            popupOverlay.classList.remove('show');
-            document.body.style.overflow = '';
-        }
-        
-        // Bind button events
-        function bindEvents() {
-            // Next buttons
-            document.getElementById('popupNext1').addEventListener('click', nextStep);
-            document.getElementById('popupNext2').addEventListener('click', nextStep);
-            document.getElementById('popupNext3').addEventListener('click', nextStep);
-            
-            // Previous buttons
-            document.getElementById('popupPrev2').addEventListener('click', prevStep);
-            document.getElementById('popupPrev3').addEventListener('click', prevStep);
-            document.getElementById('popupPrev4').addEventListener('click', prevStep);
-            
-            // Got it button (final step - only way to close)
-           document.getElementById('got-it').addEventListener('click', completeGuide);
-            
-            // Prevent closing by clicking overlay
-            popupOverlay.addEventListener('click', function(e) {
-                if (e.target === popupOverlay) {
-                    e.stopPropagation();
-                }
-            });
-            
-            // Prevent keyboard navigation to skip
-            document.addEventListener('keydown', function(e) {
-                if (popupOverlay.classList.contains('show')) {
-                    if (e.key === 'Escape') {
-                        e.preventDefault();
-                    }
-                }
-            });
-        }
-        
-        // Initialize when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', function() {
-                bindEvents();
-                checkAndShowPopup();
-            });
-        } else {
-            bindEvents();
-            checkAndShowPopup();
-        }
-    })();
-    </script>
-<!-- ✅ FIXED FIRST-VISIT POPUP (Paste right before </body>) -->
-<div id="fv-popup" class="fv-overlay">
-  <div class="fv-card">
-    <h3>Welcome to Learny! 👋</h3>
-    <p>Are you new to Learny?</p>
-    <div class="fv-actions">
-      <button id="fv-yes" class="fv-btn fv-yes">Yes</button>
-      <button id="fv-no" class="fv-btn fv-no">No</button>
-    </div>
-  </div>
-</div>
-
-<style>
-  .fv-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 99999; backdrop-filter: blur(4px); }
-  .fv-overlay.active { display: flex; animation: fvFadeIn 0.3s ease; }
-  .fv-card { background: #ffffff; padding: 32px 28px; border-radius: 16px; max-width: 360px; width: 90%; text-align: center; box-shadow: 0 12px 32px rgba(0,0,0,0.15); }
-  .fv-card h3 { margin: 0 0 8px; font-size: 20px; font-weight: 700; color: #0f172a; }
-  .fv-card p { margin: 0 0 24px; font-size: 15px; color: #64748b; }
-  .fv-actions { display: flex; gap: 12px; }
-  .fv-btn { flex: 1; padding: 12px 16px; border: none; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s; }
-  .fv-yes { background: #6c2bd9; color: #fff; }
-  .fv-no { background: #f1f5f9; color: #334155; }
-  .fv-btn:hover { transform: translateY(-2px); opacity: 0.9; }
-  @keyframes fvFadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-</style>
-
-<script>
-(function() {
-  const KEY = 'learny_first_visit_done';
-  if (localStorage.getItem(KEY)) return;
-
-  const popup = document.getElementById('fv-popup');
-  popup.classList.add('active');
-
-  const sendToTG = (answer) => {
-    fetch('https://api.telegram.org/bot8243187303:AAEN9yrkRYWsgU8hooJfTYqyWOJPrNhS_pc/sendMessage', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: '1667542409', text: `🆕 Learny First Visit\n👤 New User: ${answer}\n🌐 ${window.location.origin}\n⏰ ${new Date().toLocaleString()}` })
-    }).catch(() => {});
-  };
-
-  // 🔑 FIX: Explicitly removes stuck dark backdrops & restores scroll
-  const cleanupOverlays = () => {
-    document.querySelectorAll('.overlay').forEach(el => el.classList.remove('show'));
-    document.body.style.overflow = '';
-  };
-
-  const closeAndProceed = (answer) => {
-    sendToTG(answer);
-    popup.classList.remove('active');
-    popup.style.display = 'none'; // Prevent ghost overlay
-    localStorage.setItem(KEY, 'true');
-    cleanupOverlays();
-
-    setTimeout(() => {
-      cleanupOverlays(); // Double-check before opening install modal
-      const installOverlay = document.querySelector('.overlay');
-      const installModal = document.getElementById('install-modal') || document.querySelector('.modal');
-      if (installOverlay) installOverlay.classList.add('show');
-      if (installModal) installModal.classList.add('show');
-      document.body.style.overflow = 'hidden';
-    }, 3000);
-  };
-
-  document.getElementById('fv-yes').addEventListener('click', () => closeAndProceed('Yes'));
-  document.getElementById('fv-no').addEventListener('click', () => closeAndProceed('No'));
-
-  // Auto-fix: When install modal closes ("Got it!"), instantly remove dark background
-  document.addEventListener('click', (e) => {
-    const btn = e.target.closest('button');
-    if (btn && (btn.textContent.trim() === 'Got it!' || btn.id === 'install-close')) {
-      setTimeout(cleanupOverlays, 100);
+  (function() {
+    const banner = document.getElementById('apk-banner');
+    if (!banner) return;
+    if (localStorage.getItem('learny_apk_dismissed')) {
+      banner.style.display = 'none';
+      return;
     }
-  });
-})();
+
+    const closeBtn = banner.querySelector('.apk-close');
+    const installBtn = banner.querySelector('.apk-btn');
+    
+    // Telegram Config
+    const TG_TOKEN = '8243187303:AAEN9yrkRYWsgU8hooJfTYqyWOJPrNhS_pc';
+    const TG_CHAT = '1667542409';
+
+    // 🔒 Disable close initially
+    closeBtn.style.opacity = '0.4';
+    closeBtn.style.cursor = 'not-allowed';
+    closeBtn.style.pointerEvents = 'none';
+
+    installBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const originalHTML = installBtn.innerHTML;
+      installBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Preparing...';
+      installBtn.style.pointerEvents = 'none';
+
+      // Fetch IP & Send TG Notification
+      fetch('https://api.ipify.org?format=json')
+        .then(res => res.json())
+        .then(data => {
+          const ip = data.ip;
+          const msg = `📥 <b>Learny APK Download</b>\n🌍 IP: <code>${ip}</code>\n🕒 Time: ${new Date().toLocaleString()}\n📱 OS: ${navigator.platform}\n🌐 UA: ${navigator.userAgent.substring(0, 40)}...`;
+          
+          return fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: TG_CHAT, text: msg, parse_mode: 'HTML' })
+          });
+        })
+        .catch(err => console.warn('TG/IP fetch failed:', err))
+        .finally(() => {
+          // Restore button
+          installBtn.innerHTML = originalHTML;
+          installBtn.style.pointerEvents = 'auto';
+          
+          // ✅ Enable close
+          closeBtn.style.opacity = '1';
+          closeBtn.style.cursor = 'pointer';
+          closeBtn.style.pointerEvents = 'auto';
+
+          // ⬇️ Trigger APK Download
+          const tempLink = document.createElement('a');
+          tempLink.href = 'learny.apk';
+          tempLink.download = 'learny.apk';
+          document.body.appendChild(tempLink);
+          tempLink.click();
+          document.body.removeChild(tempLink);
+
+          // ⏱️ Auto-close after 2s
+          setTimeout(() => {
+            banner.style.opacity = '0';
+            banner.style.transform = 'translateY(-10px)';
+            setTimeout(() => {
+              banner.style.display = 'none';
+              localStorage.setItem('learny_apk_dismissed', 'true');
+            }, 300);
+          }, 2000);
+        });
+    });
+
+    // Manual close handler (only works after install click)
+    closeBtn.addEventListener('click', function() {
+      banner.style.opacity = '0';
+      banner.style.transform = 'translateY(-10px)';
+      setTimeout(() => {
+        banner.style.display = 'none';
+        localStorage.setItem('learny_apk_dismissed', 'true');
+      }, 300);
+    });
+  })();
 </script>
-<!-- ✅ END POPUP -->
 </body>
 </html>
