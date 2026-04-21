@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "study.learny.www.twa",
+        "sha256_cert_fingerprints": ["45:AF:51:1F:D4:8A:73:52:9B:67:6E:16:A9:62:3C:E1:DE:FF:17:39:65:CC:9E:E4:91:EA:BA:46:1B:56:07:7C"]
+      }
+    }]
