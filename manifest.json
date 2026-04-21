@@ -2,7 +2,7 @@
   "name": "Learny",
   "short_name": "Learny",
   "description": "Stay focused & keep learning ✨",
-  "start_url": "./index.html",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
