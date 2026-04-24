@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learny - Tuition Classes</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tuition Page Specific Styles -->
+    <style>
+        /* Override .avatar-grid for Tuition Page: 6 desktop, 3 mobile */
+        #avatar-selector.avatar-grid {
+            grid-template-columns: repeat(6, 1fr) !important;
+            gap: 14px !important;
+            padding: 12px 0 !important;
+        }
+        
+        @media (max-width: 768px) {
+            #avatar-selector.avatar-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 10px !important;
+                padding: 8px 0 !important;
+            }
+            .avatar-option img {
+                width: 75% !important;
+                height: 75% !important;
+            }
+        }
+
+        /* Tuition Form & List Styles */
+        .tuition-form-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px;
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .tuition-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px;
+            background: var(--bg-dark);
+            border-radius: var(--radius-sm);
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+        }
+        .tuition-item:hover {
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+        .tuition-item.ongoing {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.08);
+        }
+        .tuition-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border);
+            flex-shrink: 0;
+        }
+        .tuition-item.ongoing .tuition-avatar {
+            border-color: var(--success);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+        .tuition-info { flex: 1; min-width: 0; }
+        .tuition-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .tuition-name {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+        .ongoing-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--success);
+            display: none;
+            animation: pulse-dot 1.5s infinite;
+            flex-shrink: 0;
+        }
+        .tuition-item.ongoing .ongoing-dot { display: inline-block; }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+        }
+        .tuition-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+        .tuition-day {
+            font-weight: 700;
+            color: var(--primary-light);
+            background: rgba(108, 43, 217, 0.15);
+            padding: 3px 8px;
+            border-radius: 5px;
+        }
+        .tuition-status {
+            font-weight: 700;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: var(--bg-card-hover);
+        }
+        .tuition-item.ongoing .tuition-status {
+            background: var(--success);
+            color: #fff;
+        }
+        .tuition-actions { display: flex; gap: 6px; }
+        .tuition-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            transition: all var(--transition);
+            font-size: 14px;
+        }
+        .tuition-btn:hover { color: var(--primary); background: rgba(108, 43, 217, 0.1); }
+        .tuition-btn.delete:hover { color: var(--danger); background: rgba(239, 68, 68, 0.1); }
+        .class-limit { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+        .empty-state {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-muted);
+        }
+        .empty-state i { font-size: 40px; opacity: 0.2; margin-bottom: 12px; display: block; }
+        
+        @media (max-width: 768px) {
+            .form-row { grid-template-columns: 1fr; gap: 12px; }
+            .tuition-item { flex-wrap: wrap; }
+            .tuition-actions { width: 100%; justify-content: flex-end; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">L</div>
+                <span class="sidebar-title">Learny</span>
+            </div>
+            <nav class="nav-list">
+                <div class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></div>
+                <div class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></div>
+                <div class="nav-item"><a href="bot.html"><i class="fa fa-robot"></i> LearnyAI</a></div>
+                <div class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></div>
+                <div class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></div>
+                <div class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></div>
+                <div class="nav-item"><a href="motivation.html"><i class="fa fa-lightbulb"></i> Motivation</a></div>
+                <div class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></div>
+                <div class="nav-item"><a href="pomodoro.html"><i class="fa fa-stopwatch"></i> Pomodoro</a></div>
+                <div class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></div>
+                <div class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></div>
+                <div class="nav-item"><a href="countdown.html"><i class="fa fa-calendar-alt"></i> Countdown</a></div>
+                <div class="nav-item active"><a href="tuition.html"><i class="fa fa-chalkboard-teacher"></i> Tuition</a></div>
+                <div class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></div>
+                <div class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></div>
+                <div class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></div>
+            </nav>
+            <div class="sidebar-welcome">
+                <p id="sidebar-username">Welcome, User!</p>
+                <div class="divider"></div>
+                <button class="theme-toggle btn-secondary btn-sm"><i class="fa fa-sun"></i></button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="overlay"></div>
+            
+            <header class="page-header">
+                <h1 class="page-title"><i class="fa fa-chalkboard-teacher"></i> Tuition Classes</h1>
+                <div class="header-actions">
+                    <button class="theme-toggle"><i class="fa fa-sun"></i></button>
+                </div>
+            </header>
+
+            <!-- Add Class Form -->
+            <div class="tuition-form-card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                    <h3 style="font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px;">
+                        <i class="fa fa-plus-circle" style="color:var(--primary)"></i> Add New Class
+                    </h3>
+                    <span id="class-limit" class="class-limit">0 / 5 classes</span>
+                </div>
+                <form id="tuition-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Class Name</label>
+                            <input type="text" id="class-name" class="form-control" placeholder="e.g., Mathematics Advanced" required maxlength="40">
+                        </div>
+                        <div class="form-group">
+                            <label>Day of Week</label>
+                            <select id="class-day" class="form-control" required>
+                                <option value="">Select day...</option>
+                                <option value="0">Sunday</option>
+                                <option value="1">Monday</option>
+                                <option value="2">Tuesday</option>
+                                <option value="3">Wednesday</option>
+                                <option value="4">Thursday</option>
+                                <option value="5">Friday</option>
+                                <option value="6">Saturday</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Start Time</label>
+                            <input type="time" id="class-time" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Duration</label>
+                            <select id="class-duration" class="form-control" required>
+                                <option value="1">1 Hour</option>
+                                <option value="2">2 Hours</option>
+                                <option value="3">3 Hours</option>
+                                <option value="4">4 Hours</option>
+                                <option value="5">5 Hours</option>
+                                <option value="6">6 Hours</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Select Tutor Avatar</label>
+                        <div class="avatar-grid" id="avatar-selector">
+                            <!-- Avatars injected by JS -->
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i> Add Class</button>
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='index.html'"><i class="fa fa-arrow-left"></i> Back to Dashboard</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Classes List -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-list"></i> Your Classes</h3>
+                </div>
+                <div id="tuition-list" class="tuition-list">
+                    <!-- Classes injected by JS -->
+                </div>
+                <div id="no-classes" class="empty-state" style="display:none;">
+                    <i class="fa fa-chalkboard"></i>
+                    <p>No tuition classes added yet.</p>
+                    <small>Add your first class using the form above.</small>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="site-footer">
+                Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰
+            </footer>
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification-toast" class="notification">
+        <i class="fa fa-check-circle"></i>
+        <span>Notification message</span>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Tuition-specific initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof APP !== 'undefined' && typeof APP.initTuition === 'function') {
+                APP.initTuition();
+            } else {
+                console.warn('APP.initTuition() not found. Please update script.js with tuition functions.');
+            }
+        });
+    </script>
+</body>
+</html>
