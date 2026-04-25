@@ -4,8 +4,9 @@ const APP = {
     examDate: null, countdowns: [], weeklyGoal: 35, currentTheme: 'purple',
     darkMode: false, streak: 0, lastLogin: null,
     pomoSettings: { work: 25, short: 5, long: 15, longBreakAfter: 4 },
-    profile: { 
-      name: 'User', 
+    tuitionClasses: [], // Free version array
+    profile: {
+      name: 'User',
       avatar: 'https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png',
       gender: '', age: null,
       subtext: "Let's start learning 🎯"
@@ -23,6 +24,221 @@ const APP = {
       { en: "Optimism is the faith that leads to achievement. Nothing can be done without hope and confidence.", author: "Helen Keller", si: "සුබවාදය යනු සාර්ථකත්වයට ගෙන යන විශ්වාසයයි. බලාපොරොත්තුව හා විශ්වාසය නොමැතිව කිසිවක් කළ නොහැක." }
     ]
   },
+  tuitionAvatars: [
+    'https://i.postimg.cc/jdRqmRh4/cropped-circle-image-(26).png',
+    'https://i.postimg.cc/1XJ2YM8X/cropped-circle-image-(11).png',
+    'https://i.postimg.cc/SKxc8VGx/cropped-circle-image-(19).png',
+    'https://i.postimg.cc/YC4Zb6MM/cropped-circle-image-(12).png',
+    'https://i.postimg.cc/NMtnsZT0/cropped-circle-image-(13).png',
+    'https://i.postimg.cc/qqMZnn1p/cropped-circle-image-(14).png',
+    'https://i.postimg.cc/NjrC1Qkj/cropped-circle-image-(15).png',
+    'https://i.postimg.cc/bJLmzrpK/cropped-circle-image-(16).png',
+    'https://i.postimg.cc/MHFtQLcV/cropped-circle-image-(17).png',
+'https://i.postimg.cc/2SvNfRb9/cropped-circle-image-(25).png',
+'https://i.postimg.cc/FsYQDJ9Q/cropped-circle-image-(24).png',
+'https://i.postimg.cc/g26mkL5K/cropped-circle-image-(23).png',
+'https://i.postimg.cc/59nxPV8d/cropped-circle-image-(22).png',
+'https://i.postimg.cc/Vk3sjWnS/cropped-circle-image-(20).png',
+'https://i.postimg.cc/QtqXZLP9/cropped-circle-image-(21).png',
+    'https://i.postimg.cc/c4vFSdjc/cropped-circle-image-(18).png'
+  ],
+
+  // ============ TUITION MODULE (FREE: 1 CLASS LIMIT) ============
+  initTuition() {
+    this.renderAvatarSelector();
+    document.getElementById('tuition-form')?.addEventListener('submit', e => {
+      e.preventDefault();
+      this.addTuitionClass();
+    });
+    this.renderTuitionList();
+    this.updateTuitionLimit();
+  },
+  renderAvatarSelector() {
+    const container = document.getElementById('avatar-selector');
+    if (!container) return;
+    container.innerHTML = this.tuitionAvatars.map((avatar, i) => 
+      `<div class="avatar-option" data-avatar="${avatar}" onclick="APP.selectTuitionAvatar(this)">
+        <img src="${avatar}" alt="Avatar ${i+1}">
+        <div class="avatar-check"><i class="fa fa-check"></i></div>
+      </div>`
+    ).join('');
+    if (container.querySelector('.avatar-option')) {
+      container.querySelector('.avatar-option').classList.add('selected');
+    }
+  },
+  selectTuitionAvatar(el) {
+    document.querySelectorAll('#avatar-selector .avatar-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+  },
+  addTuitionClass() {
+    const classes = this.data.tuitionClasses || [];
+    // FREE VERSION LIMIT: 1 Class
+    if (classes.length >= 1) {
+      return this.showToast('Upgrade to Premium for more classes!');
+    }
+    const name = document.getElementById('class-name').value.trim();
+    const day = parseInt(document.getElementById('class-day').value);
+    const time = document.getElementById('class-time').value;
+    const duration = parseInt(document.getElementById('class-duration').value);
+    const avatarEl = document.querySelector('#avatar-selector .avatar-option.selected');
+    const avatar = avatarEl ? avatarEl.dataset.avatar : this.tuitionAvatars[0];
+
+    if (!name || isNaN(day) || !time || !duration) {
+      return this.showToast('Please fill all fields correctly');
+    }
+    const newClass = {
+      id: Date.now().toString(),
+      name: name.slice(0, 40),
+      day: day,
+      time: time,
+      duration: duration,
+      avatar: avatar,
+      createdAt: new Date().toISOString()
+    };
+    this.data.tuitionClasses.push(newClass);
+    this.save();
+    document.getElementById('tuition-form').reset();
+    document.querySelectorAll('#avatar-selector .avatar-option').forEach((o, i) => {
+      o.classList.toggle('selected', i === 0);
+    });
+    this.renderTuitionList();
+    this.updateTuitionLimit();
+    this.renderTuitionDashboard();
+    this.showToast('Class added successfully! 🎓');
+  },
+  renderTuitionList() {
+    const list = document.getElementById('tuition-list');
+    const noClasses = document.getElementById('no-classes');
+    if (!list) return;
+    const classes = this.data.tuitionClasses || [];
+    if (classes.length === 0) {
+      if (noClasses) noClasses.style.display = 'block';
+      list.innerHTML = '';
+      return;
+    }
+    if (noClasses) noClasses.style.display = 'none';
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    list.innerHTML = classes.map(c => {
+      const { isOngoing, countdown } = this.calculateClassStatus(c);
+      const statusHtml = isOngoing
+        ? `<span class="tuition-status">● Ongoing</span>` 
+        : `<span class="tuition-status">${countdown}</span>`;
+      return `
+        <div class="tuition-item ${isOngoing ? 'ongoing' : ''}" data-id="${c.id}">
+          <img src="${c.avatar}" class="tuition-avatar" alt="Tutor">
+          <div class="tuition-info">
+            <div class="tuition-header">
+              <span class="tuition-name">${c.name}</span>
+              <span class="ongoing-dot"></span>
+            </div>
+            <div class="tuition-meta">
+              <span class="tuition-day">${days[c.day]}</span>
+              <span class="tuition-time"><i class="fa fa-clock"></i> ${this.formatTime(c.time)} • ${c.duration}h</span>
+              ${statusHtml}
+            </div>
+          </div>
+          <div class="tuition-actions">
+            <button class="tuition-btn" onclick="APP.editTuitionClass('${c.id}')" title="Edit"><i class="fa fa-edit"></i></button>
+            <button class="tuition-btn delete" onclick="APP.deleteTuitionClass('${c.id}')" title="Delete"><i class="fa fa-trash"></i></button>
+          </div>
+        </div>`;
+    }).join('');
+  },
+  renderTuitionDashboard() {
+    const list = document.getElementById('tuition-dashboard-list');
+    if (!list) return;
+    const classes = (this.data.tuitionClasses || []).slice(0, 3);
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    if (classes.length === 0) {
+      list.innerHTML = '<p class="empty-text">No classes scheduled.</p>';
+      return;
+    }
+    list.innerHTML = classes.map(c => {
+      const { isOngoing, countdown } = this.calculateClassStatus(c);
+      return `
+        <div class="tuition-item ${isOngoing ? 'ongoing' : ''}">
+          <img src="${c.avatar}" class="tuition-avatar" alt="Tutor">
+          <div class="tuition-info">
+            <div class="tuition-header">
+              <span class="tuition-name">${c.name}</span>
+              <span class="ongoing-dot"></span>
+            </div>
+            <div class="tuition-meta">
+              <span class="tuition-day">${days[c.day]}</span>
+              <span class="tuition-time"><i class="fa fa-clock"></i> ${this.formatTime(c.time)}</span>
+              <span class="tuition-status">${isOngoing ? '● Live' : countdown}</span>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  },
+  calculateClassStatus(tuitionClass) {
+    const now = new Date();
+    const currentDay = now.getDay();
+    const currentTime = now.getHours() * 60 + now.getMinutes();
+    const [classHour, classMin] = tuitionClass.time.split(':').map(Number);
+    const classStartMins = classHour * 60 + classMin;
+    const classEndMins = classStartMins + (tuitionClass.duration * 60);
+    let daysUntil = tuitionClass.day - currentDay;
+    if (daysUntil < 0) daysUntil += 7;
+    if (daysUntil === 0 && currentTime >= classStartMins) {
+      daysUntil = 7;
+    }
+    const isToday = daysUntil === 0;
+    const isOngoing = isToday && currentTime >= classStartMins && currentTime < classEndMins;
+    let countdown = '';
+    if (isOngoing) {
+      const remainingMins = classEndMins - currentTime;
+      const hrs = Math.floor(remainingMins / 60);
+      const mins = remainingMins % 60;
+      countdown = `${hrs}h ${mins}m left`;
+    } else {
+      if (daysUntil === 0) countdown = 'Today';
+      else if (daysUntil === 1) countdown = 'Tomorrow';
+      else countdown = `In ${daysUntil}d`;
+    }
+    return { isOngoing, countdown, nextOccurrence: daysUntil };
+  },
+  formatTime(timeStr) {
+    const [h, m] = timeStr.split(':').map(Number);
+    const period = h >= 12 ? 'PM' : 'AM';
+    const hour12 = h % 12 || 12;
+    return `${hour12}:${m.toString().padStart(2, '0')} ${period}`;
+  },
+  deleteTuitionClass(id) {
+    if (!confirm('Delete this tuition class?')) return;
+    this.data.tuitionClasses = (this.data.tuitionClasses || []).filter(c => c.id !== id);
+    this.save();
+    this.renderTuitionList();
+    this.updateTuitionLimit();
+    this.renderTuitionDashboard();
+    this.showToast('Class removed');
+  },
+  editTuitionClass(id) {
+    const c = (this.data.tuitionClasses || []).find(x => x.id === id);
+    if (!c) return;
+    document.getElementById('class-name').value = c.name;
+    document.getElementById('class-day').value = c.day;
+    document.getElementById('class-time').value = c.time;
+    document.getElementById('class-duration').value = c.duration;
+    document.querySelectorAll('#avatar-selector .avatar-option').forEach(o => {
+      o.classList.toggle('selected', o.dataset.avatar === c.avatar);
+    });
+    document.getElementById('tuition-form')?.scrollIntoView({ behavior: 'smooth' });
+    this.data.tuitionClasses = (this.data.tuitionClasses || []).filter(x => x.id !== id);
+    this.save();
+    this.renderTuitionList();
+    this.updateTuitionLimit();
+    this.showToast('Edit class details and save');
+  },
+  updateTuitionLimit() {
+    const limit = document.getElementById('class-limit');
+    if (limit) {
+      const count = (this.data.tuitionClasses || []).length;
+      limit.textContent = `${count} / 1 class`;
+    }
+  },
+  // ============ END TUITION MODULE ============
 
   pomo: {
     timer: null, timeLeft: 0, endTime: 0, isRunning: false, mode: 'work', sessions: 0,
@@ -42,7 +258,7 @@ const APP = {
         this.timeLeft = s.timeLeft; this.endTime = s.endTime; this.isRunning = s.isRunning;
         this.mode = s.mode; this.sessions = s.sessions || 0;
       } else {
-        this.timeLeft = (APP.data.pomoSettings?.work || 25) * 60;
+        this.timeLeft = (APP.data.pomoSettings?.work || 25) * 60; 
       }
     },
     saveState() {
@@ -74,7 +290,7 @@ const APP = {
         const l = parseInt(document.getElementById('set-long').value) || 15;
         APP.data.pomoSettings = { work: w, short: s, long: l, longBreakAfter: 4 };
         APP.save();
-        if (!this.isRunning) { this.timeLeft = this.getDuration() * 60; this.updateDisplay(); }
+        if (!this.isRunning) { this.timeLeft = this.getDuration() * 60 ; this.updateDisplay(); }
         APP.showToast('Settings saved!');
       });
       document.getElementById('export-pdf')?.addEventListener('click', () => this.exportPDF());
@@ -149,7 +365,7 @@ const APP = {
       }
       document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === this.mode));
       document.getElementById('session-count-display').textContent = this.sessions;
-      this.saveState(); this.updateDisplay();
+      this.saveState(); this.updateDisplay(); 
     },
     toggleFullscreen(on) {
       const el = document.querySelector('.pomodoro-main');
@@ -162,8 +378,11 @@ const APP = {
       if (!list) return;
       const recent = (APP.data.pomodoroSessions || []).slice(-10).reverse();
       list.innerHTML = recent.length ? recent.map(s =>
-        `<div class="session-item"><span><i class="fa fa-check-circle" style="color:var(--success)"></i> ${s.mode === 'work' ? 'Focus' : 'Break'} Session</span><span class="sess-time">${new Date(s.date).toLocaleString()} • ${s.duration}m</span></div>`
-      ).join('') : '<p style="color:var(--text-muted);text-align:center;">No sessions yet</p>';
+        `<div class="session-item">
+          <span><i class="fa fa-check-circle" style="color:var(--success)"></i> ${s.mode === 'work' ? 'Focus' : 'Break'} Session</span>
+          <span class="sess-time">${new Date(s.date).toLocaleString()} • ${s.duration}m</span>
+        </div>`
+      ).join('') : '<p class="empty-text">No sessions yet</p>';
     },
     exportPDF() {
       if (!window.jspdf) return APP.showToast('PDF library not loaded.');
@@ -177,7 +396,8 @@ const APP = {
       const totalFocus = sessions.filter(s => s.mode === 'work').length;
       doc.text(`Generated: ${new Date().toLocaleDateString()} | Total Focus Sessions: ${totalFocus}`, 14, 32);
       const tableData = sessions.slice(-20).reverse().map((s, i) => [
-        sessions.length - i, new Date(s.date).toLocaleString(), s.mode === 'work' ? 'Focus' : 'Break', `${s.duration} min`
+        sessions.length - i, new Date(s.date).toLocaleString(), s.mode === 'work' ? 'Focus' : 'Break', 
+        `${s.duration} min`
       ]);
       doc.autoTable({
         startY: 40, head: [['#', 'Date & Time', 'Type', 'Duration']], body: tableData,
@@ -195,7 +415,6 @@ const APP = {
     if (hour < 21) return 'Good evening';
     return 'Good night';
   },
-
   updateGreetingUI() {
     const profile = this.data.profile || { name: 'User', avatar: 'https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png', subtext: "Let's start learning 🎯" };
     const greeting = this.getGreeting();
@@ -203,39 +422,31 @@ const APP = {
     const avatar = profile.avatar || defaultAvatar;
     const userName = profile.name || 'User';
     const subtext = profile.subtext || "Let's start learning 🎯";
-    
     const greetingFull = document.getElementById('greeting-full');
     const greetingSub = document.getElementById('greeting-sub');
     const dashAvatar = document.getElementById('dashboard-avatar');
     const sidebarName = document.getElementById('sidebar-username');
-    
     if (greetingFull) greetingFull.textContent = `${greeting}, ${userName.charAt(0).toUpperCase() + userName.slice(1)}`;
     if (greetingSub) greetingSub.textContent = subtext;
     if (dashAvatar) dashAvatar.src = avatar;
     if (sidebarName) sidebarName.textContent = `Welcome, ${userName}!`;
-    
     const previewGreeting = document.getElementById('preview-greeting');
     const previewSubtext = document.getElementById('preview-subtext');
     const previewAvatar = document.getElementById('preview-avatar');
-    
     if (previewGreeting) previewGreeting.textContent = `${greeting}, ${userName.charAt(0).toUpperCase() + userName.slice(1)}`;
     if (previewSubtext) previewSubtext.textContent = subtext;
     if (previewAvatar) previewAvatar.src = avatar;
   },
-
   initProfile() {
     const profile = this.data.profile || { name: 'User', avatar: 'https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png', gender: '', age: null, subtext: "Let's start learning 🎯" };
-    
     const nameInput = document.getElementById('profile-name');
     const subtextInput = document.getElementById('profile-subtext');
     const genderInput = document.getElementById('profile-gender');
     const ageInput = document.getElementById('profile-age');
-    
     if (nameInput && profile.name) nameInput.value = profile.name;
     if (subtextInput && profile.subtext) subtextInput.value = profile.subtext;
     if (genderInput && profile.gender) genderInput.value = profile.gender;
     if (ageInput && profile.age) ageInput.value = profile.age;
-    
     if (subtextInput) {
       const counter = document.createElement('small');
       counter.className = 'char-counter';
@@ -247,7 +458,6 @@ const APP = {
         if (previewSub) previewSub.textContent = e.target.value || "Let's start learning 🎯";
       });
     }
-    
     document.querySelectorAll('.avatar-option').forEach(option => {
       if (profile.avatar && option.dataset.avatar === profile.avatar) option.classList.add('selected');
       option.addEventListener('click', () => {
@@ -256,7 +466,6 @@ const APP = {
         this.updateGreetingUI();
       });
     });
-    
     if (nameInput) {
       nameInput.addEventListener('input', (e) => {
         const previewGreeting = document.getElementById('preview-greeting');
@@ -269,12 +478,10 @@ const APP = {
         if (sidebarName) sidebarName.textContent = `Welcome, ${val}!`;
       });
     }
-    
     document.getElementById('profile-form')?.addEventListener('submit', (e) => {
       e.preventDefault();
       const selectedAvatar = document.querySelector('.avatar-option.selected');
-      const subtextVal = document.getElementById('profile-subtext')?.value.trim();
-      
+      const subtextVal = document.getElementById('profile-subtext')?.value.trim(); 
       this.data.profile = {
         name: document.getElementById('profile-name').value.trim() || 'User',
         avatar: selectedAvatar ? selectedAvatar.dataset.avatar : 'https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png',
@@ -289,11 +496,9 @@ const APP = {
     });
     this.updateGreetingUI();
   },
-
   init() {
     this.load(); this.fixThemeUI(); this.bindThemeToggle(); this.setupSidebar();
-    this.updateStreak(); this.requestNotif();
-    this.updateGreetingUI();
+    this.updateStreak(); this.requestNotif(); this.updateGreetingUI();
     const path = window.location.pathname.split('/').pop();
     if (path === 'index.html' || path === '') this.initDashboard();
     if (path.includes('tasks.html')) this.initTasks();
@@ -308,8 +513,8 @@ const APP = {
     if (path.includes('rate.html')) this.initRate();
     if (path.includes('motivation.html')) this.initMotivation();
     if (path.includes('profile.html')) this.initProfile();
+    if (path.includes('tuition.html')) this.initTuition(); // Free version route
   },
-
   load() {
     const saved = localStorage.getItem('learny_data');
     if (saved) {
@@ -317,9 +522,11 @@ const APP = {
       if (!parsed.profile) parsed.profile = { name: 'User', avatar: 'https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png', gender: '', age: null, subtext: "Let's start learning 🎯" };
       if (!parsed.profile.subtext) parsed.profile.subtext = "Let's start learning 🎯";
       if (!parsed.profile.avatar) parsed.profile.avatar = 'https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png';
+      if (!parsed.tuitionClasses) parsed.tuitionClasses = [];
       Object.assign(this.data, parsed);
     } else {
       this.data.profile = { name: 'User', avatar: 'https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png', gender: '', age: null, subtext: "Let's start learning 🎯" };
+      this.data.tuitionClasses = [];
     }
   },
   save() { localStorage.setItem('learny_data', JSON.stringify(this.data)); },
@@ -423,7 +630,11 @@ const APP = {
     this.data.quotes.forEach((q, i) => {
       const card = document.createElement('div'); card.className = 'quote-card fade-in-anim';
       card.style.animationDelay = `${i * 0.08}s`;
-      card.innerHTML = `<div class="quote-text">${q.en}</div><div class="quote-author">— ${q.author}</div><div class="quote-sinhala">${q.si}</div><button class="translate-btn"><i class="fa fa-language"></i> Translate to Sinhala</button>`;
+      card.innerHTML = `
+        <div class="quote-text">${q.en}</div>
+        <div class="quote-author">— ${q.author}</div>
+        <div class="quote-sinhala">${q.si}</div>
+        <button class="translate-btn"><i class="fa fa-language"></i> Translate to Sinhala</button>`;
       container.appendChild(card);
     });
     this.bindTranslateButtons();
@@ -435,7 +646,7 @@ const APP = {
         const sinhalaEl = card.querySelector('.quote-sinhala');
         sinhalaEl.classList.toggle('show');
         const isShowing = sinhalaEl.classList.contains('show');
-        btn.innerHTML = isShowing ? '<i class="fa fa-language"></i> Hide Translation' : '<i class="fa fa-language"></i> Translate to Sinhala';
+        btn.innerHTML = isShowing ? ' Hide Translation' : ' Translate to Sinhala';
       });
     });
   },
@@ -464,8 +675,12 @@ const APP = {
     document.getElementById('total-done').textContent = this.data.tasks.filter(t => t.done).length;
     document.getElementById('achievement-count').textContent = (this.data.achievements.badges || []).length;
     document.getElementById('today-tasks-list').innerHTML = tasks.length ? tasks.map(t =>
-      `<div class="task-item ${t.done ? 'done' : ''}"><div class="task-check ${t.done ? 'checked' : ''}" onclick="APP.toggleTask('${t.id}')"><i class="fa fa-check"></i></div><span class="task-text">${t.text}</span><span class="task-time"><i class="fa fa-clock"></i> ${t.time}</span></div>`
-    ).join('') : '<p style="color:var(--text-muted);text-align:center;">No tasks today</p>';
+      `<div class="task-item ${t.done ? 'done' : ''}">
+        <div class="task-check ${t.done ? 'checked' : ''}" onclick="APP.toggleTask('${t.id}')"><i class="fa fa-check"></i></div>
+        <span class="task-text">${t.text}</span>
+        <span class="task-time"><i class="fa fa-clock"></i> ${t.time}</span>
+      </div>`
+    ).join('') : '<p class="empty-text">No tasks today</p>';
     const daysToFetch = window.innerWidth <= 768 ? 7 : 10;
     const logs = [];
     for (let i = daysToFetch - 1; i >= 0; i--) {
@@ -478,7 +693,7 @@ const APP = {
     const cdList = document.getElementById('dashboard-countdowns-list');
     if (cdList) {
       if (!this.data.countdowns || this.data.countdowns.length === 0) {
-        cdList.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">No countdowns set. <a href="countdown.html" style="color:var(--primary);">Add one</a></p>';
+        cdList.innerHTML = '<p class="empty-text">No countdowns set. <a href="countdown.html">Add one</a></p>';
       } else {
         cdList.innerHTML = this.data.countdowns.slice(0, 3).map(c => {
           const diff = Math.ceil((new Date(c.date) - new Date()) / 86400000);
@@ -486,6 +701,7 @@ const APP = {
         }).join('') + (this.data.countdowns.length > 3 ? `<div style="text-align:center;margin-top:8px;"><a href="countdown.html" style="font-size:12px;color:var(--primary-light);">View all (${this.data.countdowns.length})</a></div>` : '');
       }
     }
+    this.renderTuitionDashboard();
   },
   initTasks() {
     this.renderTasks();
@@ -506,14 +722,23 @@ const APP = {
     document.getElementById('completion-rate').textContent = tasks.length ? Math.round((done / tasks.length) * 100) + '%' : '0%';
     document.getElementById('progress-bar').style.width = tasks.length ? (done / tasks.length * 100) + '%' : '0%';
     document.getElementById('tasks-list').innerHTML = tasks.map(t =>
-      `<div class="task-item ${t.done ? 'done' : ''}"><div class="task-check ${t.done ? 'checked' : ''}" onclick="APP.toggleTask('${t.id}')"><i class="fa fa-check"></i></div><span class="task-text">${t.text}</span><span class="task-time"><i class="fa fa-clock"></i> ${t.time}</span><button class="task-delete" onclick="APP.deleteTask('${t.id}')"><i class="fa fa-trash"></i></button></div>`
-    ).join('') || '<p style="color:var(--text-muted);text-align:center;">No tasks</p>';
+      `<div class="task-item ${t.done ? 'done' : ''}">
+        <div class="task-check ${t.done ? 'checked' : ''}" onclick="APP.toggleTask('${t.id}')"><i class="fa fa-check"></i></div>
+        <span class="task-text">${t.text}</span>
+        <span class="task-time"><i class="fa fa-clock"></i> ${t.time}</span>
+        <button class="task-delete" onclick="APP.deleteTask('${t.id}')"><i class="fa fa-trash"></i></button>
+      </div>`
+    ).join('') || '<p class="empty-text">No tasks</p>';
   },
   toggleTask(id) {
     const t = this.data.tasks.find(x => x.id === id);
     if (t) { t.done = !t.done; this.save(); this.renderTasks(); if (t.done) this.showToast('Task completed!'); }
   },
-  deleteTask(id) { this.data.tasks = this.data.tasks.filter(x => x.id !== id); this.save(); this.renderTasks(); },
+  deleteTask(id) { 
+    if(confirm('Delete this task?')) {
+      this.data.tasks = this.data.tasks.filter(x => x.id !== id); this.save(); this.renderTasks(); 
+    }
+  },
   initTime() {
     const dateInput = document.getElementById('date-input');
     const hoursInput = document.getElementById('hours-input');
@@ -597,9 +822,9 @@ const APP = {
     this.assistantUser = n;
     this.showAssistant(`Hi ${n}! Ready to crush your goals?`, [{ t: 'Study Timetable', a: () => this.timetable() }, { t: 'Subject Tips', a: () => this.subjectTips() }]);
   },
-  askMain() { this.showAssistant("I can help you. Pick a topic:", [{ t: 'Timetable', a: () => this.timetable() }, { t: 'Tips', a: () => this.subjectTips() }]); },
-  timetable() { this.showAssistant("Try: 6-8AM Review | 10-12 Practice | 3-5 Learn New | 8-9 Review.", [{ t: 'Sounds good', a: () => this.askMain() }, { t: 'Too early', a: () => this.showAssistant("Shift it to your peak hours. Consistency > Timing.", [{ t: 'Got it', a: () => this.askMain() }]) }]); },
-  subjectTips() { this.showAssistant("Pick a subject:", [{ t: 'Math', a: () => this.showAssistant("Daily practice. Focus on weak areas first.", [{ t: 'Back', a: () => this.subjectTips() }]) }, { t: 'Science', a: () => this.showAssistant("Understand concepts, then apply.", [{ t: 'Back', a: () => this.subjectTips() }]) }]); },
+  askMain() { this.showAssistant("I can help you. Pick a topic: ", [{ t: 'Timetable', a: () => this.timetable() }, { t: 'Tips', a: () => this.subjectTips() }]); },
+  timetable() { this.showAssistant("Try: 6-8AM Review | 10-12 Practice | 3-5 Learn New | 8-9 Review. ", [{ t: 'Sounds good', a: () => this.askMain() }, { t: 'Too early', a: () => this.showAssistant("Shift it to your peak hours. Consistency > Timing. ", [{ t: 'Got it', a: () => this.askMain() }]) }]); },
+  subjectTips() { this.showAssistant("Pick a subject: ", [{ t: 'Math', a: () => this.showAssistant("Daily practice. Focus on weak areas first. ", [{ t: 'Back', a: () => this.subjectTips() }]) }, { t: 'Science', a: () => this.showAssistant("Understand concepts, then apply. ", [{ t: 'Back', a: () => this.subjectTips() }]) }]); },
   showAssistant(txt, opts) {
     const c = document.getElementById('chat-messages'); if (!c) return;
     const m = document.createElement('div'); m.className = 'message bot'; m.innerHTML = txt.replace(/\n/g, '<br>'); c.appendChild(m);
@@ -629,7 +854,9 @@ const APP = {
       document.getElementById('mark-lowest').textContent = Math.min(...vals);
       document.getElementById('mark-avg').textContent = (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1);
     }
-    document.getElementById('mark-tbody').innerHTML = this.data.marks.slice(-5).reverse().map(m => `<tr><td>${m.s}</td><td>${m.m}</td><td>${m.d}</td></tr>`).join('');
+    document.getElementById('mark-tbody').innerHTML = this.data.marks.slice(-5).reverse().map(m => 
+      `<tr><td>${m.s}</td><td>${m.m}</td><td>${m.d}</td></tr>`
+    ).join('');
   },
   initMusic() {
     this.audio = new Audio();
@@ -652,7 +879,14 @@ const APP = {
   },
   renderPlaylist() {
     document.getElementById('music-playlist').innerHTML = this.playlist.map((t,i) =>
-      `<div class="playlist-item ${i===this.track?'active':''}" onclick="APP.playTrack(${i})"><div class="playlist-num">${i+1}</div><div class="playlist-info"><div class="playlist-name">${t.n}</div><div class="playlist-duration"><i class="fa fa-music"></i> Ready</div></div><i class="fa fa-play" style="color:var(--primary)"></i></div>`
+      `<div class="playlist-item ${i===this.track?'active':''}" onclick="APP.playTrack(${i})">
+        <div class="playlist-num">${i+1}</div>
+        <div class="playlist-info">
+          <div class="playlist-name">${t.n}</div>
+          <div class="playlist-duration"><i class="fa fa-music"></i> Ready</div>
+        </div>
+        <i class="fa fa-play" style="color:var(--primary)"></i>
+      </div>`
     ).join('');
   },
   playTrack(i) { this.track = i; this.audio.src = this.playlist[i].s; this.audio.play(); document.getElementById('music-title').textContent = this.playlist[i].n; this.renderPlaylist(); },
@@ -689,21 +923,20 @@ const APP = {
       const item = document.createElement('div');
       item.className = `countdown-item ${isPast ? 'expired' : ''}`;
       item.innerHTML = `
-        <div class="countdown-header">
-          <h3 class="countdown-title">${c.name}</h3>
-          <div class="countdown-actions">
-            <button class="btn btn-sm btn-secondary share-btn" data-id="${c.id}"><i class="fa fa-share-alt"></i> Share</button>
-            <button class="btn btn-sm btn-danger delete-btn" data-id="${c.id}"><i class="fa fa-trash"></i></button>
-          </div>
-        </div>
-        <div class="countdown-grid">
-          <div class="countdown-box"><div class="countdown-value">${isPast ? 0 : diff}</div><div class="countdown-label">Days</div></div>
-          <div class="countdown-box"><div class="countdown-value">${weeks}</div><div class="countdown-label">Weeks</div></div>
-          <div class="countdown-box"><div class="countdown-value">${hours}</div><div class="countdown-label">Hours</div></div>
-          <div class="countdown-box"><div class="countdown-value">${mins}</div><div class="countdown-label">Minutes</div></div>
-        </div>
-        <div class="countdown-date">Target: ${new Date(c.date).toLocaleDateString()}</div>
-      `;
+        <div class="countdown-header"> 
+          <h3 class="countdown-title">${c.name}</h3> 
+          <div class="countdown-actions"> 
+            <button class="btn btn-sm btn-secondary share-btn" data-id="${c.id}"><i class="fa fa-share-alt"></i> Share</button> 
+            <button class="btn btn-sm btn-danger delete-btn" data-id="${c.id}"><i class="fa fa-trash"></i></button> 
+          </div> 
+        </div> 
+        <div class="countdown-grid"> 
+          <div class="countdown-box"><div class="countdown-value">${isPast ? 0 : diff}</div><div class="countdown-label">Days</div></div> 
+          <div class="countdown-box"><div class="countdown-value">${weeks}</div><div class="countdown-label">Weeks</div></div> 
+          <div class="countdown-box"><div class="countdown-value">${hours}</div><div class="countdown-label">Hours</div></div> 
+          <div class="countdown-box"><div class="countdown-value">${mins}</div><div class="countdown-label">Minutes</div></div> 
+        </div> 
+        <div class="countdown-date">Target: ${new Date(c.date).toLocaleDateString()}</div>`;
       list.appendChild(item);
     });
     document.querySelectorAll('.share-btn').forEach(btn => { btn.onclick = () => this.shareCountdown(btn.dataset.id); });
