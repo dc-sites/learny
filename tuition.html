@@ -2,7 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+<meta name="theme-color" content="#6c2bd9">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="./icon-512.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Learny - Tuition Classes</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -167,13 +172,13 @@
                 <span class="sidebar-title">Learny</span>
             </div>
             <nav class="nav-list">
-                <div class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></div>
+                <div class="nav-item"><a href="index.html"><i class="fa fa-tachometer"></i> Dashboard</a></div>
                 <div class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></div>
-                <div class="nav-item"><a href="bot.html"><i class="fa fa-robot"></i> LearnyAI</a></div>
+                <div class="nav-item"><a href="bot.html"><i class="fa fa-brain"></i> LearnyAI</a></div>
                 <div class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></div>
                 <div class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></div>
                 <div class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></div>
-                <div class="nav-item active"><a href="tuition.html"><i class="fa fa-chalkboard-teacher"></i> Tuition</a></div>
+<div class="nav-item active"><a href="tuition.html"><i class="fa fa-chalkboard-teacher"></i> Tuition</a></div>
                 <div class="nav-item"><a href="motivation.html"><i class="fa fa-lightbulb"></i> Motivation</a></div>
                 <div class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></div>
                 <div class="nav-item"><a href="pomodoro.html"><i class="fa fa-stopwatch"></i> Pomodoro</a></div>
@@ -184,11 +189,12 @@
                 <div class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></div>
                 <div class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></div>
                 <div class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></div>
+                <li class="nav-item premium-nav-item"><a href="premium.html" class="premium-link"><i class="fa fa-gem" style="color: var(--warning);"></i> Get Premium</a></li>
             </nav>
             <div class="sidebar-welcome">
                 <p id="sidebar-username">Welcome, User!</p>
-                <div class="divider"></div>
-                <button class="theme-toggle btn-secondary btn-sm"><i class="fa fa-sun"></i></button>
+                
+                
             </div>
         </aside>
 
@@ -197,7 +203,8 @@
             <div class="overlay"></div>
             
             <header class="page-header">
-                <h1 class="page-title"><i class="fa fa-chalkboard-teacher"></i> Tuition Classes</h1>
+                <button class="hamburger"><i class="fa fa-bars"></i></button>
+<h1 class="page-title"><i class="fa fa-chalkboard-teacher"></i> Tuition Classes</h1>
                 <div class="header-actions">
                     <button class="theme-toggle"><i class="fa fa-sun"></i></button>
                 </div>
@@ -257,6 +264,7 @@
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i> Add Class</button>
                         <button type="button" class="btn btn-secondary" onclick="window.location.href='index.html'"><i class="fa fa-arrow-left"></i> Back to Dashboard</button>
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='rate.html'"><i class="fa fa-phone"></i> Request Avatar</button>
                     </div>
                 </form>
             </div>
