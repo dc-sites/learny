@@ -32,6 +32,7 @@ const APP = {
     'https://i.postimg.cc/NMtnsZT0/cropped-circle-image-(13).png',
     'https://i.postimg.cc/qqMZnn1p/cropped-circle-image-(14).png',
     'https://i.postimg.cc/NjrC1Qkj/cropped-circle-image-(15).png',
+    'https://i.postimg.cc/dt0WvfnC/cropped-circle-image-(28).png',
     'https://i.postimg.cc/bJLmzrpK/cropped-circle-image-(16).png',
     'https://i.postimg.cc/MHFtQLcV/cropped-circle-image-(17).png',
 'https://i.postimg.cc/2SvNfRb9/cropped-circle-image-(25).png',
