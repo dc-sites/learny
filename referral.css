@@ -1,8 +1,16 @@
-/* Referral Page Styles */
+/* Referral Page Styles - Matches your style.css */
 .referral-input-box {
   display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
 }
-.referral-input-box input { flex: 1; min-width: 200px; }
+.referral-input-box input { 
+  flex: 1; min-width: 200px; 
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  padding: 12px 14px;
+  font-size: 14px;
+}
 
 /* Wheel */
 .wheel-wrapper {
@@ -13,6 +21,7 @@
   width: 100%; height: 100%; border-radius: 50%;
   box-shadow: 0 8px 30px rgba(108, 43, 217, 0.4);
   transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1);
+  background: var(--bg-card);
 }
 .wheel-pointer {
   position: absolute; top: -18px; left: 50%;
@@ -32,8 +41,12 @@
 /* Modal */
 #result-modal {
   text-align: center; padding: 30px 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
-#result-modal h3 { font-size: 24px; margin-bottom: 12px; }
+#result-modal h3 { font-size: 24px; margin-bottom: 12px; color: var(--text-main); }
 #result-modal p { color: var(--text-muted); margin-bottom: 16px; }
 #res-prize { color: var(--primary-light); font-weight: 700; font-size: 18px; }
 #contact-box {
@@ -45,4 +58,5 @@
 @media (max-width: 768px) {
   .referral-input-box { flex-direction: column; align-items: stretch; }
   .wheel-wrapper { width: 280px; height: 280px; }
+  #spin-canvas { width: 280px; height: 280px; }
 }
