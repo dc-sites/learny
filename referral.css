@@ -1,0 +1,171 @@
+/* ========================================
+REFERRAL PAGE STYLES
+======================================== */
+.referral-stats {
+  margin-bottom: 24px;
+}
+
+.referral-link-box {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.referral-link-box input {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* ========================================
+SPIN WHEEL STYLES
+======================================== */
+.wheel-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto 24px;
+  display: flex;
+  justify-content: center;
+}
+
+#wheel-canvas {
+  max-width: 100%;
+  height: auto;
+  border-radius: 50%;
+  box-shadow: 0 8px 32px rgba(108, 43, 217, 0.3);
+  transition: transform 0.1s ease;
+}
+
+.wheel-pointer {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 40px solid var(--warning);
+  z-index: 10;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+}
+
+.wheel-pointer::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.wheel-controls {
+  text-align: center;
+}
+
+#spin-btn {
+  min-width: 200px;
+  transition: all var(--transition);
+}
+
+#spin-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+#spin-btn:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(108, 43, 217, 0.5);
+}
+
+#spin-message {
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* ========================================
+RESULT MODAL STYLES
+======================================== */
+.modal-content {
+  text-align: center;
+  padding: 30px 24px;
+}
+
+.modal-content h3 {
+  font-size: 24px;
+  margin-bottom: 16px;
+  color: var(--text-main);
+}
+
+.modal-content p {
+  font-size: 16px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+#prize-name {
+  color: var(--primary-light);
+  font-weight: 700;
+}
+
+#contact-support-section {
+  margin: 20px 0;
+  padding: 16px;
+  background: var(--bg-dark);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+#contact-support-section .btn {
+  margin-top: 12px;
+}
+
+/* ========================================
+PRIZE SEGMENT COLORS (for wheel)
+======================================== */
+.wheel-segment-lifetime { fill: #ffd700; }
+.wheel-segment-tryagain { fill: #64748b; }
+.wheel-segment-1year { fill: #10b981; }
+.wheel-segment-1month { fill: #3b82f6; }
+
+/* ========================================
+ANIMATIONS
+======================================== */
+@keyframes wheelSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(2880deg); } /* 8 full rotations */
+}
+
+.wheel-spinning {
+  animation: wheelSpin 4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+/* ========================================
+MOBILE RESPONSIVE
+======================================== */
+@media (max-width: 768px) {
+  .referral-link-box {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .wheel-container {
+    max-width: 300px;
+  }
+  
+  #wheel-canvas {
+    width: 100%;
+    height: auto;
+  }
+  
+  .wheel-pointer {
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 30px solid var(--warning);
+  }
+}
