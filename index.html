@@ -395,81 +395,44 @@
     });
   })();
 </script>
-<!-- 🔗 Referral Link Handler for index.html -->
+
+<!-- 🔗 REFERRAL SYSTEM - ADDED (DOES NOT MODIFY YOUR CODE) -->
 <script>
+// 1. Referral Link Handler: Detect ?ref= and store for APK install tracking
 (function() {
-  // Generate or get user ID
   let userId = localStorage.getItem('learny_user_id');
   if (!userId) {
     userId = 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now().toString(36);
     localStorage.setItem('learny_user_id', userId);
   }
-
-  // Check if user came via referral link
   const params = new URLSearchParams(window.location.search);
   const referrerId = params.get('ref');
-  
   if (referrerId && referrerId !== userId) {
-    // Store referrer for APK install tracking
     sessionStorage.setItem('referred_by', referrerId);
-    
-    // Prevent double-counting
-    const alreadyCounted = localStorage.getItem('referral_counted_' + userId);
-    if (!alreadyCounted) {
-      // Credit the referrer immediately
+  }
+})();
+
+// 2. APK Install Handler: Credit referrer when APK button is clicked
+document.getElementById('install-apk-btn')?.addEventListener('click', function() {
+  const referrer = sessionStorage.getItem('referred_by');
+  if (referrer) {
+    const currentUserId = localStorage.getItem('learny_user_id');
+    if (currentUserId && !localStorage.getItem('referral_counted_' + currentUserId)) {
       const refData = JSON.parse(localStorage.getItem('learny_referrals') || '{}');
-      if (!refData[referrerId]) refData[referrerId] = { points: 0, referred: 0 };
-      refData[referrerId].points += 1;
-      refData[referrerId].referred += 1;
+      if (!refData[referrer]) refData[referrer] = { points: 0, referred: 0 };
+      refData[referrer].points += 1;
+      refData[referrer].referred += 1;
       localStorage.setItem('learny_referrals', JSON.stringify(refData));
-      localStorage.setItem('referral_counted_' + userId, '1');
-      
-      // Optional: Show toast notification
+      localStorage.setItem('referral_counted_' + currentUserId, '1');
       if (typeof APP !== 'undefined' && APP.showToast) {
         APP.showToast('🎉 Referral credited!');
       }
     }
+    sessionStorage.removeItem('referred_by');
   }
-})();
+});
 </script>
-    <!-- 🔗 Referral Link Handler - MUST BE ADDED -->
-<script>
-(function() {
-  // Generate or get current user ID
-  let userId = localStorage.getItem('learny_user_id');
-  if (!userId) {
-    userId = 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now().toString(36);
-    localStorage.setItem('learny_user_id', userId);
-  }
+<!-- 🔗 END REFERRAL SYSTEM -->
 
-  // Check if user came via referral link (?ref=...)
-  const params = new URLSearchParams(window.location.search);
-  const referrerId = params.get('ref');
-  
-  if (referrerId && referrerId !== userId) {
-    // Store referrer for APK install tracking
-    sessionStorage.setItem('referred_by', referrerId);
-    
-    // Prevent double-counting this user
-    const alreadyCounted = localStorage.getItem('referral_counted_' + userId);
-    if (!alreadyCounted) {
-      // Credit the referrer immediately in localStorage
-      const refData = JSON.parse(localStorage.getItem('learny_referrals') || '{}');
-      if (!refData[referrerId]) {
-        refData[referrerId] = { points: 0, referred: 0 };
-      }
-      refData[referrerId].points += 1;
-      refData[referrerId].referred += 1;
-      localStorage.setItem('learny_referrals', JSON.stringify(refData));
-      localStorage.setItem('referral_counted_' + userId, '1');
-      
-      // Optional: Show toast if APP exists
-      if (typeof APP !== 'undefined' && APP.showToast) {
-        APP.showToast('🎉 Referral credited!');
-      }
-    }
-  }
-})();
-</script>
 </body>
 </html>
