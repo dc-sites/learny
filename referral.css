@@ -1,393 +1,171 @@
 /* ========================================
 REFERRAL PAGE STYLES
 ======================================== */
-
-/* Stats Cards Enhancement */
-.referral-stats .stat-card {
-    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(108, 43, 217, 0.08) 100%);
-    border: 1px solid var(--primary);
-}
-
-.referral-stats .stat-icon.purple {
-    background: rgba(108, 43, 217, 0.25);
-    color: var(--primary-light);
-}
-
-/* Referral Link Card */
-.referral-link-card {
-    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(245, 158, 11, 0.05) 100%);
-    border: 1px solid var(--warning);
+.referral-stats {
+  margin-bottom: 24px;
 }
 
 .referral-link-box {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-bottom: 16px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
-.referral-link-box .form-control {
-    flex: 1;
-    min-width: 200px;
-    font-family: monospace;
-    font-size: 13px;
-    background: var(--bg-dark);
+.referral-link-box input {
+  flex: 1;
+  min-width: 200px;
 }
 
-.referral-hint {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin: 0;
-    padding: 12px;
-    background: rgba(108, 43, 217, 0.1);
-    border-radius: var(--radius-sm);
-    border-left: 3px solid var(--primary);
-}
-
-.referral-hint strong {
-    color: var(--warning);
-}
-
-/* Wheel Container */
-.wheel-card {
-    text-align: center;
-}
-
+/* ========================================
+SPIN WHEEL STYLES
+======================================== */
 .wheel-container {
-    position: relative;
-    width: 100%;
-    max-width: 400px;
-    margin: 0 auto 24px;
-}
-
-.wheel-pointer {
-    position: absolute;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-    font-size: 32px;
-    color: var(--warning);
-    text-shadow: 0 2px 8px rgba(0,0,0,0.4);
-    animation: pulse 1.5s infinite;
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto 24px;
+  display: flex;
+  justify-content: center;
 }
 
 #wheel-canvas {
-    width: 100%;
-    height: auto;
-    border-radius: 50%;
-    box-shadow: var(--shadow);
-    transition: transform 0.3s ease;
+  max-width: 100%;
+  height: auto;
+  border-radius: 50%;
+  box-shadow: 0 8px 32px rgba(108, 43, 217, 0.3);
+  transition: transform 0.1s ease;
 }
 
-#wheel-canvas.spinning {
-    animation: none;
+.wheel-pointer {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 40px solid var(--warning);
+  z-index: 10;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
 }
 
-.wheel-center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 70px;
-    height: 70px;
-    background: var(--bg-card);
-    border: 4px solid var(--primary);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-    color: var(--primary-light);
-    box-shadow: var(--shadow-sm);
-    z-index: 5;
+.wheel-pointer::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border-radius: 50%;
 }
 
-/* Wheel Controls */
 .wheel-controls {
-    margin: 20px 0;
+  text-align: center;
 }
 
 #spin-btn {
-    min-width: 200px;
-    padding: 14px 32px;
-    font-size: 16px;
+  min-width: 200px;
+  transition: all var(--transition);
 }
 
 #spin-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none !important;
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
 }
 
 #spin-btn:not(:disabled):hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 24px rgba(108, 43, 217, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(108, 43, 217, 0.5);
 }
 
-.spin-message {
-    font-size: 14px;
-    color: var(--text-muted);
-    margin: 12px 0 0;
-    font-weight: 500;
+#spin-message {
+  font-size: 14px;
+  margin-top: 10px;
 }
 
-.spin-message.earned {
-    color: var(--success);
-    animation: fadeIn 0.4s ease;
+/* ========================================
+RESULT MODAL STYLES
+======================================== */
+.modal-content {
+  text-align: center;
+  padding: 30px 24px;
 }
 
-/* Wheel Prizes List */
-.wheel-prizes {
-    text-align: left;
-    padding: 16px;
-    background: var(--bg-dark);
-    border-radius: var(--radius-sm);
-    margin-top: 16px;
+.modal-content h3 {
+  font-size: 24px;
+  margin-bottom: 16px;
+  color: var(--text-main);
 }
 
-.wheel-prizes h4 {
-    margin: 0 0 12px;
-    color: var(--text-main);
-    font-size: 14px;
+.modal-content p {
+  font-size: 16px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
 }
 
-.wheel-prizes ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+#prize-name {
+  color: var(--primary-light);
+  font-weight: 700;
 }
 
-.wheel-prizes li {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    color: var(--text-muted);
+#contact-support-section {
+  margin: 20px 0;
+  padding: 16px;
+  background: var(--bg-dark);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
 }
 
-.prize-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    flex-shrink: 0;
+#contact-support-section .btn {
+  margin-top: 12px;
 }
 
-.prize-dot.golden { background: linear-gradient(135deg, #ffd700, #fbbf24); }
-.prize-dot.silver { background: linear-gradient(135deg, #c0c0c0, #94a3b8); }
-.prize-dot.bronze { background: linear-gradient(135deg, #cd7f32, #b45309); }
-.prize-dot.gray { background: linear-gradient(135deg, #64748b, #475569); }
+/* ========================================
+PRIZE SEGMENT COLORS (for wheel)
+======================================== */
+.wheel-segment-lifetime { fill: #ffd700; }
+.wheel-segment-tryagain { fill: #64748b; }
+.wheel-segment-1year { fill: #10b981; }
+.wheel-segment-1month { fill: #3b82f6; }
 
-/* Result Modal */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.75);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-    backdrop-filter: blur(4px);
-    animation: fadeIn 0.3s ease;
+/* ========================================
+ANIMATIONS
+======================================== */
+@keyframes wheelSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(2880deg); } /* 8 full rotations */
 }
 
-.modal-overlay.hidden {
-    display: none;
+.wheel-spinning {
+  animation: wheelSpin 4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
-.result-modal {
-    background: var(--bg-card);
-    border: 2px solid var(--warning);
-    border-radius: var(--radius);
-    padding: 32px 28px;
-    max-width: 400px;
-    width: 90%;
-    text-align: center;
-    animation: popupSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 12px 40px rgba(245, 158, 11, 0.4);
-}
-
-@keyframes popupSlide {
-    from {
-        opacity: 0;
-        transform: translateY(-30px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-.result-icon {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 20px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 36px;
-    animation: bounce 0.6s ease;
-}
-
-.result-icon.try-again {
-    background: linear-gradient(135deg, var(--bg-dark), var(--bg-card-hover));
-    color: var(--warning);
-    border: 3px solid var(--warning);
-}
-
-@keyframes bounce {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.15); }
-}
-
-.result-modal h3 {
-    font-size: 22px;
-    margin: 0 0 12px;
-    color: var(--text-main);
-}
-
-.result-modal p {
-    color: var(--text-muted);
-    font-size: 14px;
-    margin: 0 0 24px;
-    line-height: 1.6;
-}
-
-.result-modal .btn {
-    margin: 4px;
-    min-width: 140px;
-}
-
-.result-modal .btn-success {
-    background: #25D366;
-    color: #fff;
-}
-
-.result-modal .btn-success:hover {
-    background: #128C7E;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
-}
-
-/* Toast Notification */
-.referral-toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    padding: 14px 20px;
-    background: var(--bg-card);
-    border: 1px solid var(--success);
-    border-radius: var(--radius-sm);
-    box-shadow: var(--shadow);
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transform: translateX(150%);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    color: var(--text-main);
-}
-
-.referral-toast.show {
-    transform: translateX(0);
-}
-
-.referral-toast i {
-    color: var(--success);
-    font-size: 18px;
-}
-
-/* Referral History Table */
-.referral-history tbody td {
-    color: var(--text-muted);
-    font-size: 14px;
-}
-
-.referral-history .status-badge {
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.referral-history .status-badge.completed {
-    background: rgba(16, 185, 129, 0.2);
-    color: var(--success);
-}
-
-.referral-history .status-badge.pending {
-    background: rgba(245, 158, 11, 0.2);
-    color: var(--warning);
-}
-
-/* Mobile Responsive */
+/* ========================================
+MOBILE RESPONSIVE
+======================================== */
 @media (max-width: 768px) {
-    .referral-link-box {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .referral-link-box .btn {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .wheel-prizes ul {
-        grid-template-columns: 1fr;
-    }
-    
-    .result-modal {
-        padding: 24px 20px;
-        margin: 16px;
-    }
-    
-    .result-icon {
-        width: 65px;
-        height: 65px;
-        font-size: 28px;
-    }
-}
-
-@media (max-width: 480px) {
-    .wheel-container {
-        max-width: 320px;
-    }
-    
-    .wheel-center {
-        width: 55px;
-        height: 55px;
-        font-size: 22px;
-    }
-    
-    #spin-btn {
-        width: 100%;
-        font-size: 15px;
-    }
-}
-
-/* Light Mode Support */
-body.light .referral-link-card {
-    background: linear-gradient(135deg, #ffffff 0%, rgba(245, 158, 11, 0.08) 100%);
-    border-color: var(--warning);
-}
-
-body.light .referral-hint {
-    background: rgba(108, 43, 217, 0.08);
-}
-
-body.light .wheel-prizes {
-    background: #f8fafc;
-}
-
-body.light .result-modal {
-    background: #ffffff;
-    box-shadow: 0 12px 40px rgba(245, 158, 11, 0.3);
+  .referral-link-box {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .wheel-container {
+    max-width: 300px;
+  }
+  
+  #wheel-canvas {
+    width: 100%;
+    height: auto;
+  }
+  
+  .wheel-pointer {
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 30px solid var(--warning);
+  }
 }
