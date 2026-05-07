@@ -396,32 +396,32 @@
   })();
 </script>
 
-<!-- 🔗 REFERRAL TRACKING SCRIPT (ADD TO BOTTOM OF index.html) -->
+<!-- 🔗 REFERRAL TRACKING - ADD TO index.html -->
 <script>
 (function() {
-  // 1. Ensure every visitor has a unique ID
+  // Generate user ID if missing
   let userId = localStorage.getItem('learny_user_id');
   if (!userId) {
     userId = 'usr_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
     localStorage.setItem('learny_user_id', userId);
   }
 
-  // 2. Detect referral link & store temporarily
+  // Detect referral link & store temporarily
   const params = new URLSearchParams(window.location.search);
   const referrer = params.get('ref');
   if (referrer && referrer !== userId) {
     sessionStorage.setItem('learny_referred_by', referrer);
   }
 
-  // 3. Credit ONLY when APK install button is clicked
+  // Credit ONLY when APK install button is clicked
   const apkBtn = document.getElementById('install-apk-btn');
   if (apkBtn) {
     apkBtn.addEventListener('click', function() {
       const ref = sessionStorage.getItem('learny_referred_by');
-      if (!ref) return; // Not from referral
+      if (!ref) return;
 
       const countedKey = 'ref_counted_' + userId;
-      if (localStorage.getItem(countedKey)) return; // Already credited
+      if (localStorage.getItem(countedKey)) return;
 
       try {
         const data = JSON.parse(localStorage.getItem('learny_referrals') || '{}');
@@ -430,7 +430,7 @@
         data[ref].referred += 1;
         localStorage.setItem('learny_referrals', JSON.stringify(data));
         localStorage.setItem(countedKey, '1');
-        sessionStorage.removeItem('learny_referred_by'); // Clear after use
+        sessionStorage.removeItem('learny_referred_by');
 
         if (typeof APP !== 'undefined' && APP.showToast) APP.showToast('🎉 Referral credited! +1 Point');
       } catch(e) { console.error('Referral credit failed:', e); }
@@ -438,7 +438,7 @@
   }
 })();
 </script>
-<!-- 🔗 END REFERRAL TRACKING SCRIPT -->
+<!-- 🔗 END REFERRAL TRACKING -->
 
 </body>
 </html>
