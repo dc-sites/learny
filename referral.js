@@ -4,13 +4,13 @@ const ReferralSystem = {
   referred: 0,
   isSpinning: false,
   
-  // 5 Segments: [Label, Color, PrizeKey]
+  // 5 Segments: [Label, Color, PrizeKey] - Always lands on Try Again (index 1 or 4)
   segments: [
     { text: 'Lifetime Premium', color: '#f59e0b', key: 'lifetime' },
     { text: 'Try Again', color: '#64748b', key: 'tryagain' },
     { text: '1 Year Premium', color: '#10b981', key: '1year' },
     { text: '1 Month Premium', color: '#3b82f6', key: '1month' },
-    { text: 'Try Again', color: '#64748b', key: 'tryagain' } // Always lands here
+    { text: 'Try Again', color: '#64748b', key: 'tryagain' }
   ],
 
   init() {
@@ -19,7 +19,7 @@ const ReferralSystem = {
     this.setupUI();
     this.drawWheel();
     this.bindEvents();
-    this.updateUI(); // ✅ Critical: Call this LAST to set button state
+    this.updateUI(); // ✅ Critical: Sets button state on load
 
     // Sync across tabs in real-time
     window.addEventListener('storage', (e) => {
@@ -56,7 +56,7 @@ const ReferralSystem = {
     const input = document.getElementById('ref-link-input');
     if (input) input.value = url;
     
-    // Sync username if available from APP
+    // Sync username from APP
     try {
       if (typeof APP !== 'undefined' && APP.data?.profile?.name) {
         const name = APP.data.profile.name;
@@ -116,37 +116,34 @@ const ReferralSystem = {
   },
 
   spinWheel() {
-    // ✅ STRICT CHECK: Must have 2+ points AND not already spinning
+    // ✅ STRICT: Must have 2+ points AND not spinning
     if (this.isSpinning || this.points < 2) {
       this.showToast('Need 2 points to spin!');
       return;
     }
     
     this.isSpinning = true;
-    this.points -= 2; // Deduct points immediately
+    this.points -= 2; // Deduct immediately
     this.saveData();
-    this.updateUI(); // Update button state immediately
+    this.updateUI(); // Update button state NOW
     
     const canvas = document.getElementById('spin-canvas');
     
-    // Force landing on "Try Again" (index 1 or 4)
+    // Force land on "Try Again" (index 1 or 4)
     const targetIdx = Math.random() > 0.5 ? 1 : 4;
     const segAngle = 360 / this.segments.length;
     const centerOfTarget = (targetIdx * segAngle) + (segAngle / 2);
-    const totalRotation = 360 * 8 + (360 - centerOfTarget); // 8 full spins + alignment
+    const totalRotation = 360 * 8 + (360 - centerOfTarget);
     
-    // Apply rotation animation
     canvas.style.transition = 'transform 4s cubic-bezier(0.25, 0.1, 0.25, 1)';
     canvas.style.transform = `rotate(${totalRotation}deg)`;
     
-    // Show result after animation
     setTimeout(() => {
       this.showResult('tryagain');
-      // Reset canvas transform for next spin
       canvas.style.transition = 'none';
       canvas.style.transform = `rotate(${totalRotation % 360}deg)`;
       this.isSpinning = false;
-      this.updateUI(); // Re-enable button if enough points remain
+      this.updateUI(); // Re-enable if enough points remain
     }, 4000);
   },
 
@@ -157,13 +154,12 @@ const ReferralSystem = {
     const prize = document.getElementById('res-prize');
     const contact = document.getElementById('contact-box');
     
-    // Reset modal
     contact?.classList.add('hidden');
     
     if (key === 'tryagain') {
       title.textContent = '😔 Better Luck Next Time!';
       prize.textContent = 'Try Again';
-      contact?.classList.remove('hidden'); // Show WhatsApp button ONLY for Try Again
+      contact?.classList.remove('hidden'); // Show WhatsApp ONLY for Try Again
     } else {
       title.textContent = '🎉 Congratulations!';
       const labels = {
@@ -187,7 +183,6 @@ const ReferralSystem = {
     if (refPointsEl) refPointsEl.textContent = this.points;
     if (totalRefEl) totalRefEl.textContent = this.referred;
     
-    // Calculate available spins
     const spins = Math.floor(this.points / 2);
     if (spinsEl) spinsEl.textContent = spins;
     
@@ -199,7 +194,6 @@ const ReferralSystem = {
       spinBtn.disabled = (this.points < 2) || this.isSpinning;
     }
     
-    // Update status message
     if (spinStatus) {
       if (this.isSpinning) {
         spinStatus.textContent = 'Spinning...';
@@ -250,7 +244,7 @@ const ReferralSystem = {
       };
     }
     
-    // ✅ COPY BUTTON - Fixed to work without APP dependency
+    // ✅ COPY BUTTON - Works without APP dependency
     const copyBtn = document.getElementById('copy-btn');
     if (copyBtn) {
       copyBtn.onclick = () => {
@@ -261,7 +255,7 @@ const ReferralSystem = {
           navigator.clipboard.writeText(input.value)
             .then(() => this.showToast('Link copied to clipboard! 📋'))
             .catch(() => {
-              // Fallback for older browsers
+              // Fallback
               document.execCommand('copy');
               this.showToast('Link copied! 📋');
             });
@@ -269,7 +263,7 @@ const ReferralSystem = {
       };
     }
     
-    // ✅ SHARE BUTTON - Fixed with fallback
+    // ✅ SHARE BUTTON - With fallback
     const shareBtn = document.getElementById('share-btn');
     if (shareBtn) {
       shareBtn.onclick = () => {
@@ -277,13 +271,8 @@ const ReferralSystem = {
         const text = `🎓 Join Learny Study App!\nUse my referral link: ${link}\n\nInstall the APK & help me earn rewards! 🚀`;
         
         if (navigator.share) {
-          navigator.share({ 
-            title: 'Learny Referral', 
-            text: text,
-            url: link 
-          }).catch(() => {}); // Ignore cancel
+          navigator.share({ title: 'Learny Referral', text, url: link }).catch(() => {});
         } else {
-          // Fallback: copy to clipboard
           navigator.clipboard.writeText(text)
             .then(() => this.showToast('Referral text copied! Paste to share 📋'))
             .catch(() => {
@@ -300,23 +289,21 @@ const ReferralSystem = {
       };
     }
     
-    // Theme toggle sync (optional)
+    // Theme toggle sync
     document.querySelectorAll('.theme-toggle').forEach(btn => {
       btn.onclick = () => {
-        // Try to sync with main APP if available
         if (typeof APP !== 'undefined') {
           APP.data.darkMode = !APP.data.darkMode;
           document.body.classList.toggle('light', !APP.data.darkMode);
           APP.updateThemeIcon?.();
           APP.save?.();
         } else {
-          // Fallback: just toggle class
           document.body.classList.toggle('light');
         }
       };
     });
     
-    // Hamburger menu for mobile
+    // Hamburger menu
     const hamburger = document.querySelector('.hamburger');
     const sidebar = document.querySelector('.sidebar');
     if (hamburger && sidebar) {
@@ -327,15 +314,14 @@ const ReferralSystem = {
     }
   },
 
-  // ✅ Simple toast that works WITHOUT APP dependency
+  // ✅ Toast that works WITH or WITHOUT APP
   showToast(msg) {
-    // Try APP.showToast first
     if (typeof APP !== 'undefined' && typeof APP.showToast === 'function') {
       APP.showToast(msg);
       return;
     }
     
-    // Fallback: create our own toast
+    // Fallback toast
     let toast = document.getElementById('referral-toast');
     if (!toast) {
       toast = document.createElement('div');
@@ -357,15 +343,11 @@ const ReferralSystem = {
     
     toast.querySelector('span').textContent = msg;
     toast.style.transform = 'translateX(0)';
-    
-    setTimeout(() => {
-      toast.style.transform = 'translateX(150%)';
-    }, 3000);
+    setTimeout(() => { toast.style.transform = 'translateX(150%)'; }, 3000);
   }
 };
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-  // Wait a tiny bit for script.js/APP to load if present
-  setTimeout(() => ReferralSystem.init(), 50);
+  setTimeout(() => ReferralSystem.init(), 50); // Wait for APP to load
 });
