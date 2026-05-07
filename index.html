@@ -179,7 +179,7 @@
       <h3>Install Learny App</h3>
       <p>Download the APK for faster access & offline mode</p>
     </div>
-    <a href="learny.apk" class="apk-btn" download><i class="fa fa-download"></i> Install APK</a>
+   <a href="learny.apk" class="btn btn-primary" id="install-apk-btn">Install APK</a>
     <button class="apk-close" aria-label="Close banner"><i class="fa fa-times"></i></button>
   </div>
 </div>
@@ -392,6 +392,23 @@
     });
   })();
 </script>
+<!-- Find this line in index.html -->
 
+
+<!-- Add this script at the bottom of index.html, before </body> -->
+<script>
+// Referral tracking for APK install
+document.getElementById('install-apk-btn')?.addEventListener('click', function() {
+  const referrer = sessionStorage.getItem('referred_by');
+  if (referrer) {
+    // Mark as counted to prevent duplicate credits
+    const currentUserId = localStorage.getItem('learny_user_id');
+    if (currentUserId && !localStorage.getItem('referral_counted_' + currentUserId)) {
+      localStorage.setItem('referral_counted_' + currentUserId, '1');
+      // The actual crediting happens when the referred user loads referral.js
+    }
+  }
+});
+</script>
 </body>
 </html>
