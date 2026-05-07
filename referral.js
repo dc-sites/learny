@@ -1,351 +1,178 @@
-/**
- * Learny Referral System
- * Handles: referral tracking, points, spin wheel
- */
-
 const ReferralSystem = {
-  BASE_URL: 'https://www.learny.study',
-  POINTS_PER_REFERRAL: 1,
-  POINTS_PER_SPIN: 2,
-  
-  // Wheel segments (5 total, 2 are "Try Again")
-  segments: [
-    { label: 'Lifetime Premium', color: '#ffd700', prize: 'lifetime' },
-    { label: 'Try Again', color: '#64748b', prize: 'tryagain' },
-    { label: 'One Year Premium', color: '#10b981', prize: '1year' },
-    { label: 'One Month Premium', color: '#3b82f6', prize: '1month' },
-    { label: 'Try Again', color: '#64748b', prize: 'tryagain' } // Always lands here
-  ],
-  
-  // State
   userId: null,
-  referralPoints: 0,
-  totalReferred: 0,
+  points: 0,
+  referred: 0,
   isSpinning: false,
   
+  // 5 Segments: [Label, Color, PrizeKey]
+  segments: [
+    { text: 'Lifetime Premium', color: '#f59e0b', key: 'lifetime' },
+    { text: 'Try Again', color: '#64748b', key: 'tryagain' },
+    { text: '1 Year Premium', color: '#10b981', key: '1year' },
+    { text: '1 Month Premium', color: '#3b82f6', key: '1month' },
+    { text: 'Try Again', color: '#64748b', key: 'tryagain' } // Always lands here
+  ],
+
   init() {
-    this.generateUserId();
-    this.checkReferralParam();
-    this.loadUserData();
+    this.userId = localStorage.getItem('learny_user_id') || 'anonymous';
+    this.loadData();
     this.setupUI();
-    this.setupEventListeners();
     this.drawWheel();
-    this.updateDisplay();
+    this.bindEvents();
+    this.updateUI();
+
+    // Sync across tabs in real-time
+    window.addEventListener('storage', e => {
+      if (e.key === 'learny_referrals') this.loadData();
+      this.updateUI();
+    });
   },
-  
-  // Generate unique user ID if not exists
-  generateUserId() {
-    let uid = localStorage.getItem('learny_user_id');
-    if (!uid) {
-      uid = 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now().toString(36);
-      localStorage.setItem('learny_user_id', uid);
-    }
-    this.userId = uid;
-  },
-  
-  // Check if user came via referral link
-  checkReferralParam() {
-    const params = new URLSearchParams(window.location.search);
-    const referrerId = params.get('ref');
-    
-    if (referrerId && referrerId !== this.userId) {
-      // User was referred - store referrer in session
-      sessionStorage.setItem('referred_by', referrerId);
-      
-      // Track that this user has been counted (prevent double-counting)
-      const alreadyCounted = localStorage.getItem('referral_counted_' + this.userId);
-      if (!alreadyCounted) {
-        this.creditReferrer(referrerId);
-        localStorage.setItem('referral_counted_' + this.userId, '1');
-      }
+
+  loadData() {
+    try {
+      const all = JSON.parse(localStorage.getItem('learny_referrals') || '{}');
+      const user = all[this.userId] || { points: 0, referred: 0 };
+      this.points = user.points;
+      this.referred = user.referred;
+    } catch {
+      this.points = 0; this.referred = 0;
     }
   },
-  
-  // Credit points to referrer
-  creditReferrer(referrerId) {
-    const refData = JSON.parse(localStorage.getItem('learny_referrals') || '{}');
-    
-    if (!refData[referrerId]) {
-      refData[referrerId] = { points: 0, referred: 0 };
-    }
-    
-    refData[referrerId].points += this.POINTS_PER_REFERRAL;
-    refData[referrerId].referred += 1;
-    
-    localStorage.setItem('learny_referrals', JSON.stringify(refData));
-    
-    // Show notification to referrer if they're on the site
-    if (referrerId === localStorage.getItem('learny_user_id')) {
-      this.showToast('🎉 You earned 1 referral point!');
-    }
-  },
-  
-  // Load user's referral data
-  loadUserData() {
-    const refData = JSON.parse(localStorage.getItem('learny_referrals') || '{}');
-    const userData = refData[this.userId] || { points: 0, referred: 0 };
-    
-    this.referralPoints = userData.points;
-    this.totalReferred = userData.referred;
-  },
-  
-  // Save user data
-  saveUserData() {
-    const refData = JSON.parse(localStorage.getItem('learny_referrals') || '{}');
-    refData[this.userId] = {
-      points: this.referralPoints,
-      referred: this.totalReferred
-    };
-    localStorage.setItem('learny_referrals', JSON.stringify(refData));
-  },
-  
-  // Setup UI elements
+
   setupUI() {
-    // Set referral link
-    const linkInput = document.getElementById('referral-link');
-    if (linkInput) {
-      linkInput.value = `${this.BASE_URL}/index.html?ref=${this.userId}`;
-    }
+    // Generate link
+    const url = `${window.location.origin}/index.html?ref=${this.userId}`;
+    document.getElementById('ref-link-input').value = url;
     
-    // Update stats display
-    this.updateDisplay();
+    // Sync username if available
+    const name = APP?.data?.profile?.name || 'User';
+    const sidebar = document.getElementById('sidebar-username');
+    if (sidebar) sidebar.textContent = `Welcome, ${name.charAt(0).toUpperCase() + name.slice(1)}!`;
   },
-  
-  // Update display with current data
-  updateDisplay() {
-    document.getElementById('referral-points').textContent = this.referralPoints;
-    document.getElementById('total-referred').textContent = this.totalReferred;
-    
-    const spins = Math.floor(this.referralPoints / this.POINTS_PER_SPIN);
-    document.getElementById('spins-available').textContent = spins;
-    
-    // Enable/disable spin button
-    const spinBtn = document.getElementById('spin-btn');
-    const spinMsg = document.getElementById('spin-message');
-    
-    if (spins > 0 && !this.isSpinning) {
-      spinBtn.disabled = false;
-      spinMsg.textContent = `You have ${spins} spin${spins > 1 ? 's' : ''} available!`;
-    } else if (this.isSpinning) {
-      spinBtn.disabled = true;
-      spinMsg.textContent = 'Spinning...';
-    } else {
-      spinBtn.disabled = true;
-      spinMsg.textContent = `Earn ${this.POINTS_PER_SPIN - (this.referralPoints % this.POINTS_PER_SPIN)} more point(s) to spin!`;
-    }
-  },
-  
-  // Setup event listeners
-  setupEventListeners() {
-    // Copy link button
-    document.getElementById('copy-link')?.addEventListener('click', () => {
-      const link = document.getElementById('referral-link').value;
-      navigator.clipboard.writeText(link).then(() => {
-        this.showToast('Link copied to clipboard!');
-      });
-    });
-    
-    // Share button
-    document.getElementById('share-link')?.addEventListener('click', () => {
-      const link = document.getElementById('referral-link').value;
-      const text = `🎓 Join Learny with my referral link!\n📚 Get study tools, AI assistant & more!\n🔗 ${link}`;
-      
-      if (navigator.share) {
-        navigator.share({ title: 'Join Learny', text }).catch(() => this.copyToClipboard(link));
-      } else {
-        this.copyToClipboard(link);
-      }
-    });
-    
-    // Spin button
-    document.getElementById('spin-btn')?.addEventListener('click', () => this.spinWheel());
-    
-    // Modal close
-    document.getElementById('close-modal')?.addEventListener('click', () => this.closeModal());
-    document.getElementById('modal-overlay')?.addEventListener('click', () => this.closeModal());
-    
-    // Theme toggle (sync with main app)
-    document.querySelectorAll('.theme-toggle').forEach(btn => {
-      btn.onclick = () => {
-        const isDark = !document.body.classList.contains('light');
-        document.body.classList.toggle('light', !isDark);
-        document.querySelectorAll('.theme-toggle i').forEach(i => {
-          i.className = isDark ? 'fa fa-sun' : 'fa fa-moon';
-        });
-      };
-    });
-  },
-  
-  // Draw the wheel on canvas
+
   drawWheel() {
-    const canvas = document.getElementById('wheel-canvas');
-    if (!canvas) return;
-    
+    const canvas = document.getElementById('spin-canvas');
     const ctx = canvas.getContext('2d');
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const radius = Math.min(centerX, centerY) - 10;
-    const segmentAngle = (2 * Math.PI) / this.segments.length;
-    
+    const cx = canvas.width / 2, cy = canvas.height / 2, r = cx - 10;
+    const angle = (2 * Math.PI) / this.segments.length;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
     this.segments.forEach((seg, i) => {
-      const startAngle = i * segmentAngle - Math.PI / 2;
-      const endAngle = startAngle + segmentAngle;
-      
-      // Draw segment
-      ctx.beginPath();
-      ctx.moveTo(centerX, centerY);
-      ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-      ctx.closePath();
-      ctx.fillStyle = seg.color;
-      ctx.fill();
-      ctx.strokeStyle = '#fff';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      
-      // Draw text
-      ctx.save();
-      ctx.translate(centerX, centerY);
-      ctx.rotate(startAngle + segmentAngle / 2);
-      ctx.textAlign = 'right';
-      ctx.fillStyle = '#fff';
+      const start = i * angle - Math.PI / 2;
+      const end = start + angle;
+      ctx.beginPath(); ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, r, start, end);
+      ctx.closePath(); ctx.fillStyle = seg.color; ctx.fill();
+      ctx.strokeStyle = '#1a1a2e'; ctx.lineWidth = 2; ctx.stroke();
+
+      // Text
+      ctx.save(); ctx.translate(cx, cy);
+      ctx.rotate(start + angle / 2);
+      ctx.textAlign = 'right'; ctx.fillStyle = '#fff';
       ctx.font = 'bold 11px Inter, sans-serif';
-      ctx.fillText(seg.label, radius - 20, 4);
+      ctx.fillText(seg.text, r - 15, 4);
       ctx.restore();
     });
-    
-    // Draw center circle
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, 25, 0, 2 * Math.PI);
-    ctx.fillStyle = '#1a1a2e';
-    ctx.fill();
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 3;
-    ctx.stroke();
-    
-    // Draw center text
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 10px Inter, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('SPIN', centerX, centerY + 4);
+
+    // Center circle
+    ctx.beginPath(); ctx.arc(cx, cy, 22, 0, 2 * Math.PI);
+    ctx.fillStyle = '#1a1a2e'; ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.stroke();
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 10px Inter, sans-serif';
+    ctx.textAlign = 'center'; ctx.fillText('SPIN', cx, cy + 4);
   },
-  
-  // Spin the wheel (always lands on "Try Again")
+
   spinWheel() {
-    if (this.isSpinning || this.referralPoints < this.POINTS_PER_SPIN) return;
-    
+    if (this.isSpinning || this.points < 2) return;
     this.isSpinning = true;
-    this.referralPoints -= this.POINTS_PER_SPIN;
-    this.saveUserData();
-    this.updateDisplay();
-    
-    const canvas = document.getElementById('wheel-canvas');
-    const wheel = canvas;
-    
-    // Find "Try Again" segments indices (1 and 4)
-    const tryAgainIndices = [1, 4];
-    const targetIndex = tryAgainIndices[Math.floor(Math.random() * tryAgainIndices.length)];
-    
-    // Calculate rotation to land on target
-    const segmentAngle = 360 / this.segments.length;
-    const baseRotation = 360 * 8; // 8 full spins
-    const offset = targetIndex * segmentAngle + segmentAngle / 2; // Center of segment
-    const totalRotation = baseRotation + (360 - offset);
-    
-    // Apply animation
-    wheel.style.transition = 'transform 4s cubic-bezier(0.25, 0.1, 0.25, 1)';
-    wheel.style.transform = `rotate(${totalRotation}deg)`;
-    
-    // Show result after animation
+    this.points -= 2;
+    this.saveData();
+    this.updateUI();
+
+    const canvas = document.getElementById('spin-canvas');
+    // Force landing on "Try Again" (index 1 or 4)
+    const targetIdx = Math.random() > 0.5 ? 1 : 4;
+    const segAngle = 360 / this.segments.length;
+    const centerOfTarget = (targetIdx * segAngle) + (segAngle / 2);
+    const totalRotation = 360 * 8 + (360 - centerOfTarget); // 8 full spins + alignment
+
+    canvas.style.transform = `rotate(${totalRotation}deg)`;
+
     setTimeout(() => {
       this.showResult('tryagain');
-      wheel.style.transition = 'none';
-      wheel.style.transform = `rotate(${totalRotation % 360}deg)`;
+      canvas.style.transition = 'none';
+      canvas.style.transform = `rotate(${totalRotation % 360}deg)`;
       this.isSpinning = false;
-      this.updateDisplay();
-      this.drawWheel(); // Redraw to reset visual
+      this.updateUI();
     }, 4000);
   },
-  
-  // Show result modal
-  showResult(prize) {
+
+  showResult(key) {
     const modal = document.getElementById('result-modal');
-    const overlay = document.getElementById('modal-overlay');
-    const title = document.getElementById('result-title');
-    const message = document.getElementById('result-message');
-    const prizeName = document.getElementById('prize-name');
-    const contactSection = document.getElementById('contact-support-section');
+    const overlay = document.querySelector('.overlay');
+    const title = document.getElementById('res-title');
+    const prize = document.getElementById('res-prize');
+    const contact = document.getElementById('contact-box');
+
+    contact.classList.add('hidden');
     
-    // Reset modal
-    contactSection.classList.add('hidden');
-    
-    if (prize === 'tryagain') {
-      title.textContent = '😔 Try Again!';
-      prizeName.textContent = 'Better luck next time';
-      message.innerHTML = 'You landed on <strong>Try Again</strong>. Keep referring friends to spin again!';
-      contactSection.classList.remove('hidden'); // Show contact button for "Try Again"
+    if (key === 'tryagain') {
+      title.textContent = '😔 Better Luck Next Time!';
+      prize.textContent = 'Try Again';
+      contact.classList.remove('hidden'); // Show WhatsApp button
     } else {
-      const prizeLabels = {
-        'lifetime': '🏆 Lifetime Premium',
-        '1year': '⭐ One Year Premium',
-        '1month': '✨ One Month Premium'
-      };
       title.textContent = '🎉 Congratulations!';
-      prizeName.textContent = prizeLabels[prize] || prize;
-      message.textContent = `You won: ${prizeLabels[prize] || prize}!`;
+      prize.textContent = key.replace('1month', '1 Month Premium').replace('1year', '1 Year Premium').replace('lifetime', 'Lifetime Premium');
     }
-    
+
     modal.classList.add('show');
     overlay.classList.add('show');
   },
-  
-  // Close modal
-  closeModal() {
-    document.getElementById('result-modal').classList.remove('show');
-    document.getElementById('modal-overlay').classList.remove('show');
+
+  updateUI() {
+    document.getElementById('ref-points').textContent = this.points;
+    document.getElementById('total-referred').textContent = this.referred;
+    const spins = Math.floor(this.points / 2);
+    document.getElementById('spins-left').textContent = spins;
+    
+    const btn = document.getElementById('spin-btn');
+    const status = document.getElementById('spin-status');
+    btn.disabled = spins < 1 || this.isSpinning;
+    status.textContent = this.isSpinning ? 'Spinning...' : spins > 0 ? `You have ${spins} spin${spins>1?'s':''} available!` : `Earn ${2 - (this.points % 2)} more point(s) to spin!`;
   },
-  
-  // Copy to clipboard helper
-  copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-      this.showToast('Link copied to clipboard!');
+
+  saveData() {
+    const all = JSON.parse(localStorage.getItem('learny_referrals') || '{}');
+    all[this.userId] = { points: this.points, referred: this.referred };
+    localStorage.setItem('learny_referrals', JSON.stringify(all));
+  },
+
+  bindEvents() {
+    document.getElementById('spin-btn').onclick = () => this.spinWheel();
+    document.getElementById('close-modal').onclick = () => {
+      document.getElementById('result-modal').classList.remove('show');
+      document.querySelector('.overlay').classList.remove('show');
+    };
+    document.getElementById('copy-btn').onclick = () => {
+      const input = document.getElementById('ref-link-input');
+      input.select(); navigator.clipboard.writeText(input.value);
+      APP.showToast?.('Link copied!');
+    };
+    document.getElementById('share-btn').onclick = () => {
+      const link = document.getElementById('ref-link-input').value;
+      const text = `🎓 Join Learny Study App! Use my referral link: ${link}`;
+      if (navigator.share) navigator.share({ title: 'Learny Referral', text });
+      else { navigator.clipboard.writeText(text); APP.showToast?.('Text copied for sharing!'); }
+    };
+    // Theme toggle sync
+    document.querySelectorAll('.theme-toggle').forEach(btn => {
+      btn.onclick = () => {
+        APP.data.darkMode = !APP.data.darkMode;
+        document.body.classList.toggle('light', !APP.data.darkMode);
+        APP.updateThemeIcon?.(); APP.save?.();
+      };
     });
-  },
-  
-  // Show toast notification
-  showToast(msg) {
-    let toast = document.getElementById('referral-toast');
-    if (!toast) {
-      toast = document.createElement('div');
-      toast.id = 'referral-toast';
-      toast.className = 'notification';
-      toast.innerHTML = '<i class="fa fa-bell"></i><span></span>';
-      document.body.appendChild(toast);
-    }
-    toast.querySelector('span').textContent = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3000);
   }
 };
 
-// Handle APK install click tracking (for index.html integration)
-// Add this listener to your existing "Install APK" button in index.html:
-// document.querySelector('a[href="learny.apk"]')?.addEventListener('click', function(e) {
-//   const referrer = sessionStorage.getItem('referred_by');
-//   if (referrer) {
-//     // Credit is already handled in referral.js checkReferralParam
-//     // This is just for analytics if needed
-//     console.log('APK installed via referral:', referrer);
-//   }
-// });
-
-// Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-  ReferralSystem.init();
-  
-  // Sync with main APP if it exists
-  if (typeof APP !== 'undefined' && APP.data?.profile?.name) {
-    document.getElementById('sidebar-username').textContent = `Welcome, ${APP.data.profile.name}!`;
-  }
-});
+document.addEventListener('DOMContentLoaded', () => ReferralSystem.init());
