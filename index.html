@@ -179,7 +179,7 @@
       <h3>Install Learny App</h3>
       <p>Download the APK for faster access & offline mode</p>
     </div>
-      <a href="learny.apk" class="apk-btn" download id="install-apk-btn">Install APK</a>
+     <a href="learny.apk" class="btn btn-primary" onclick="handleApkInstall(event)">Install APK</a>
     
     <button class="apk-close" aria-label="Close banner"><i class="fa fa-times"></i></button>
   </div>
@@ -396,49 +396,23 @@
   })();
 </script>
 
-<!-- 🔗 REFERRAL TRACKING - ADD TO index.html -->
+<!-- Original -->
+
+
+<!-- Modified -->
+<a href="learny.apk" class="btn btn-primary" onclick="handleApkInstall(event)">Install APK</a>
+
+<!-- Add this script before closing </body> -->
 <script>
-(function() {
-  // Generate user ID if missing
-  let userId = localStorage.getItem('learny_user_id');
-  if (!userId) {
-    userId = 'usr_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-    localStorage.setItem('learny_user_id', userId);
-  }
-
-  // Detect referral link & store temporarily
-  const params = new URLSearchParams(window.location.search);
-  const referrer = params.get('ref');
-  if (referrer && referrer !== userId) {
-    sessionStorage.setItem('learny_referred_by', referrer);
-  }
-
-  // Credit ONLY when APK install button is clicked
-  const apkBtn = document.getElementById('install-apk-btn');
-  if (apkBtn) {
-    apkBtn.addEventListener('click', function() {
-      const ref = sessionStorage.getItem('learny_referred_by');
-      if (!ref) return;
-
-      const countedKey = 'ref_counted_' + userId;
-      if (localStorage.getItem(countedKey)) return;
-
-      try {
-        const data = JSON.parse(localStorage.getItem('learny_referrals') || '{}');
-        if (!data[ref]) data[ref] = { points: 0, referred: 0 };
-        data[ref].points += 1;
-        data[ref].referred += 1;
-        localStorage.setItem('learny_referrals', JSON.stringify(data));
-        localStorage.setItem(countedKey, '1');
-        sessionStorage.removeItem('learny_referred_by');
-
-        if (typeof APP !== 'undefined' && APP.showToast) APP.showToast('🎉 Referral credited! +1 Point');
-      } catch(e) { console.error('Referral credit failed:', e); }
-    });
-  }
-})();
+function handleApkInstall(e) {
+    // Credit referral if applicable
+    if (window.LearnyReferral && typeof LearnyReferral.creditReferral === 'function') {
+        LearnyReferral.creditReferral();
+    }
+    // Allow download to proceed
+    return true;
+}
 </script>
-<!-- 🔗 END REFERRAL TRACKING -->
 
 </body>
 </html>
