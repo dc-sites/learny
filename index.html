@@ -396,43 +396,49 @@
   })();
 </script>
 
-<!-- 🔗 REFERRAL SYSTEM - ADDED (DOES NOT MODIFY YOUR CODE) -->
+<!-- 🔗 REFERRAL TRACKING SCRIPT (ADD TO BOTTOM OF index.html) -->
 <script>
-// 1. Referral Link Handler: Detect ?ref= and store for APK install tracking
 (function() {
+  // 1. Ensure every visitor has a unique ID
   let userId = localStorage.getItem('learny_user_id');
   if (!userId) {
-    userId = 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now().toString(36);
+    userId = 'usr_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
     localStorage.setItem('learny_user_id', userId);
   }
+
+  // 2. Detect referral link & store temporarily
   const params = new URLSearchParams(window.location.search);
-  const referrerId = params.get('ref');
-  if (referrerId && referrerId !== userId) {
-    sessionStorage.setItem('referred_by', referrerId);
+  const referrer = params.get('ref');
+  if (referrer && referrer !== userId) {
+    sessionStorage.setItem('learny_referred_by', referrer);
+  }
+
+  // 3. Credit ONLY when APK install button is clicked
+  const apkBtn = document.getElementById('install-apk-btn');
+  if (apkBtn) {
+    apkBtn.addEventListener('click', function() {
+      const ref = sessionStorage.getItem('learny_referred_by');
+      if (!ref) return; // Not from referral
+
+      const countedKey = 'ref_counted_' + userId;
+      if (localStorage.getItem(countedKey)) return; // Already credited
+
+      try {
+        const data = JSON.parse(localStorage.getItem('learny_referrals') || '{}');
+        if (!data[ref]) data[ref] = { points: 0, referred: 0 };
+        data[ref].points += 1;
+        data[ref].referred += 1;
+        localStorage.setItem('learny_referrals', JSON.stringify(data));
+        localStorage.setItem(countedKey, '1');
+        sessionStorage.removeItem('learny_referred_by'); // Clear after use
+
+        if (typeof APP !== 'undefined' && APP.showToast) APP.showToast('🎉 Referral credited! +1 Point');
+      } catch(e) { console.error('Referral credit failed:', e); }
+    });
   }
 })();
-
-// 2. APK Install Handler: Credit referrer when APK button is clicked
-document.getElementById('install-apk-btn')?.addEventListener('click', function() {
-  const referrer = sessionStorage.getItem('referred_by');
-  if (referrer) {
-    const currentUserId = localStorage.getItem('learny_user_id');
-    if (currentUserId && !localStorage.getItem('referral_counted_' + currentUserId)) {
-      const refData = JSON.parse(localStorage.getItem('learny_referrals') || '{}');
-      if (!refData[referrer]) refData[referrer] = { points: 0, referred: 0 };
-      refData[referrer].points += 1;
-      refData[referrer].referred += 1;
-      localStorage.setItem('learny_referrals', JSON.stringify(refData));
-      localStorage.setItem('referral_counted_' + currentUserId, '1');
-      if (typeof APP !== 'undefined' && APP.showToast) {
-        APP.showToast('🎉 Referral credited!');
-      }
-    }
-    sessionStorage.removeItem('referred_by');
-  }
-});
 </script>
-<!-- 🔗 END REFERRAL SYSTEM -->
+<!-- 🔗 END REFERRAL TRACKING SCRIPT -->
 
 </body>
 </html>
