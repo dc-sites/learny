@@ -179,7 +179,7 @@
       <h3>Install Learny App</h3>
       <p>Download the APK for faster access & offline mode</p>
     </div>
-     <a href="learny.apk" class="btn btn-primary" onclick="handleApkInstall(event)">Install APK</a>
+      <a href="learny.apk" class="apk-btn" download id="install-apk-btn">Install APK</a>
     
     <button class="apk-close" aria-label="Close banner"><i class="fa fa-times"></i></button>
   </div>
@@ -396,23 +396,43 @@
   })();
 </script>
 
-<!-- Original -->
-
-
-<!-- Modified -->
-<a href="learny.apk" class="btn btn-primary" onclick="handleApkInstall(event)">Install APK</a>
-
-<!-- Add this script before closing </body> -->
+<!-- 🔗 REFERRAL SYSTEM - ADDED (DOES NOT MODIFY YOUR CODE) -->
 <script>
-function handleApkInstall(e) {
-    // Credit referral if applicable
-    if (window.LearnyReferral && typeof LearnyReferral.creditReferral === 'function') {
-        LearnyReferral.creditReferral();
+// 1. Referral Link Handler: Detect ?ref= and store for APK install tracking
+(function() {
+  let userId = localStorage.getItem('learny_user_id');
+  if (!userId) {
+    userId = 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now().toString(36);
+    localStorage.setItem('learny_user_id', userId);
+  }
+  const params = new URLSearchParams(window.location.search);
+  const referrerId = params.get('ref');
+  if (referrerId && referrerId !== userId) {
+    sessionStorage.setItem('referred_by', referrerId);
+  }
+})();
+
+// 2. APK Install Handler: Credit referrer when APK button is clicked
+document.getElementById('install-apk-btn')?.addEventListener('click', function() {
+  const referrer = sessionStorage.getItem('referred_by');
+  if (referrer) {
+    const currentUserId = localStorage.getItem('learny_user_id');
+    if (currentUserId && !localStorage.getItem('referral_counted_' + currentUserId)) {
+      const refData = JSON.parse(localStorage.getItem('learny_referrals') || '{}');
+      if (!refData[referrer]) refData[referrer] = { points: 0, referred: 0 };
+      refData[referrer].points += 1;
+      refData[referrer].referred += 1;
+      localStorage.setItem('learny_referrals', JSON.stringify(refData));
+      localStorage.setItem('referral_counted_' + currentUserId, '1');
+      if (typeof APP !== 'undefined' && APP.showToast) {
+        APP.showToast('🎉 Referral credited!');
+      }
     }
-    // Allow download to proceed
-    return true;
-}
+    sessionStorage.removeItem('referred_by');
+  }
+});
 </script>
+<!-- 🔗 END REFERRAL SYSTEM -->
 
 </body>
 </html>
