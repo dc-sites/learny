@@ -395,23 +395,42 @@
     });
   })();
 </script>
-<!-- Find this line in index.html -->
-
-
-<!-- Add this script at the bottom of index.html, before </body> -->
+<!-- 🔗 Referral Link Handler for index.html -->
 <script>
-// Referral tracking for APK install
-document.getElementById('install-apk-btn')?.addEventListener('click', function() {
-  const referrer = sessionStorage.getItem('referred_by');
-  if (referrer) {
-    // Mark as counted to prevent duplicate credits
-    const currentUserId = localStorage.getItem('learny_user_id');
-    if (currentUserId && !localStorage.getItem('referral_counted_' + currentUserId)) {
-      localStorage.setItem('referral_counted_' + currentUserId, '1');
-      // The actual crediting happens when the referred user loads referral.js
+(function() {
+  // Generate or get user ID
+  let userId = localStorage.getItem('learny_user_id');
+  if (!userId) {
+    userId = 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now().toString(36);
+    localStorage.setItem('learny_user_id', userId);
+  }
+
+  // Check if user came via referral link
+  const params = new URLSearchParams(window.location.search);
+  const referrerId = params.get('ref');
+  
+  if (referrerId && referrerId !== userId) {
+    // Store referrer for APK install tracking
+    sessionStorage.setItem('referred_by', referrerId);
+    
+    // Prevent double-counting
+    const alreadyCounted = localStorage.getItem('referral_counted_' + userId);
+    if (!alreadyCounted) {
+      // Credit the referrer immediately
+      const refData = JSON.parse(localStorage.getItem('learny_referrals') || '{}');
+      if (!refData[referrerId]) refData[referrerId] = { points: 0, referred: 0 };
+      refData[referrerId].points += 1;
+      refData[referrerId].referred += 1;
+      localStorage.setItem('learny_referrals', JSON.stringify(refData));
+      localStorage.setItem('referral_counted_' + userId, '1');
+      
+      // Optional: Show toast notification
+      if (typeof APP !== 'undefined' && APP.showToast) {
+        APP.showToast('🎉 Referral credited!');
+      }
     }
   }
-});
+})();
 </script>
 </body>
 </html>
