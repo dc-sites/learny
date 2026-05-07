@@ -1,157 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Referral Program - Learny</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="referral.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referral Rewards - Learny</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="referral.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <div class="overlay"></div>
-  <div class="app-container">
-    
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="sidebar-logo">L</div>
-        <span class="sidebar-title">Learny</span>
-      </div>
-      <ul class="nav-list">
-        <li class="nav-item"><a href="index.html"><i class="fa fa-tachometer"></i> Dashboard</a></li>
-        <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
-        <li class="nav-item"><a href="bot.html"><i class="fa fa-brain"></i> LearnyAI</a></li>
-        <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
-        <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
-        <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
-        <li class="nav-item"><a href="tuition.html"><i class="fa fa-chalkboard-teacher"></i> Tuition</a></li>
-        <li class="nav-item"><a href="motivation.html"><i class="fa fa-lightbulb"></i> Motivation</a></li>
-        <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
-        <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-hourglass-half"></i> Pomodoro</a></li>
-        <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
-        <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
-        <li class="nav-item"><a href="countdown.html"><i class="fa fa-calendar-alt"></i> Countdown</a></li>
-        <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
-        <li class="nav-item active"><a href="referral.html"><i class="fa fa-gift"></i> Referral</a></li>
-        <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
-        <li class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></li>
-        <li class="nav-item premium-nav-item"><a href="premium.html" class="premium-link"><i class="fa fa-gem" style="color: var(--warning);"></i> Get Premium</a></li>
-      </ul>
-      <div class="sidebar-welcome">
-        <div class="divider"></div>
-        <p id="sidebar-username">Welcome, User!</p>
-      </div>
-    </aside>
+    <div class="app-container">
+        <!-- Sidebar (same as your existing) -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">L</div>
+                <span class="sidebar-title">Learny</span>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
+                <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+                <li class="nav-item"><a href="bot.html"><i class="fa fa-robot"></i> LearnyAI</a></li>
+                <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
+                <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+                <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+                <li class="nav-item"><a href="tuition.html"><i class="fa fa-chalkboard-teacher"></i> Tuition</a></li>
+                <li class="nav-item"><a href="motivation.html"><i class="fa fa-lightbulb"></i> Motivation</a></li>
+                <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
+                <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-stopwatch"></i> Pomodoro</a></li>
+                <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
+                <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
+                <li class="nav-item"><a href="countdown.html"><i class="fa fa-calendar-alt"></i> Countdown</a></li>
+                <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+                <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+                <li class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></li>
+                <li class="nav-item premium-nav-item"><a href="premium.html" class="premium-link"><i class="fa fa-crown"></i> Get Premium</a></li>
+                <!-- Active referral link -->
+                <li class="nav-item active"><a href="referral.html"><i class="fa fa-gift"></i> Referral</a></li>
+            </ul>
+            <div class="sidebar-welcome">
+                <p class="welcome-text" id="sidebar-username">Welcome, User!</p>
+                <div class="divider"></div>
+                <p>Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰</p>
+            </div>
+        </aside>
 
-    <!-- MAIN CONTENT -->
-    <main class="main-content">
-      <header class="page-header">
-        <button class="hamburger" aria-label="Toggle Menu"><i class="fa fa-bars"></i></button>
-        <h1 class="page-title"><i class="fa fa-gift"></i> Referral Program</h1>
-        <div class="header-actions">
-          <button class="theme-toggle" aria-label="Toggle Theme"><i class="fa fa-moon"></i></button>
-        </div>
-      </header>
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title"><i class="fa fa-gift"></i> Referral Rewards</h1>
+                <div class="header-actions">
+                    <button class="theme-toggle"><i class="fa fa-moon"></i></button>
+                </div>
+            </div>
 
-      <!-- Stats Grid -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon purple"><i class="fa fa-users"></i></div>
-          <div class="stat-info">
-            <h3 id="ref-points">0</h3>
-            <p>Referral Points</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon green"><i class="fa fa-sync-alt"></i></div>
-          <div class="stat-info">
-            <h3 id="spins-available">0</h3>
-            <p>Spins Available</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon orange"><i class="fa fa-user-plus"></i></div>
-          <div class="stat-info">
-            <h3 id="total-referred">0</h3>
-            <p>Total Referred</p>
-          </div>
-        </div>
-      </div>
+            <!-- Referral Points Card -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fa fa-coins"></i> Your Referral Points</h2>
+                </div>
+                <div class="text-center">
+                    <div class="points-display">
+                        <span id="referral-points" class="points-number">0</span>
+                        <span class="points-label">Points</span>
+                    </div>
+                    <p class="points-info">2 points = 1 Wheel Spin 🎡</p>
+                    <button id="spin-btn" class="btn btn-primary btn-lg" disabled>
+                        <i class="fa fa-sync-alt"></i> Spin Wheel (Need 2 Points)
+                    </button>
+                    <p id="spin-requirement" class="text-muted small">Collect 2 referrals to unlock your spin!</p>
+                </div>
+            </div>
 
-      <!-- Referral Link Card -->
-      <div class="card mb-3">
-        <div class="card-header">
-          <h3 class="card-title"><i class="fa fa-link"></i> Your Referral Link</h3>
-        </div>
-        <div class="referral-input-box">
-          <input type="text" id="ref-link-input" class="form-control" readonly />
-          <button class="btn btn-primary" id="copy-btn"><i class="fa fa-copy"></i> Copy</button>
-          <button class="btn btn-secondary" id="share-btn"><i class="fa fa-share-alt"></i> Share</button>
-        </div>
-        <p class="mt-2" style="font-size:13px; color:var(--text-muted);">
-          Share this link. When a friend clicks it & installs the APK, you earn <strong>1 point</strong>.
-        </p>
-      </div>
+            <!-- Referral Link Card -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fa fa-link"></i> Your Referral Link</h2>
+                </div>
+                <div class="referral-link-box">
+                    <input type="text" id="referral-link" class="form-control" readonly>
+                    <button id="copy-link-btn" class="btn btn-secondary btn-sm">
+                        <i class="fa fa-copy"></i> Copy
+                    </button>
+                </div>
+                <p class="text-muted small mt-2">Share this link. When someone clicks it and installs the APK, you earn 1 point!</p>
+            </div>
 
-      <!-- Spin Wheel Card -->
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title"><i class="fa fa-dharmachakra"></i> Spin the Wheel</h3>
-          <span class="btn btn-sm btn-warning" style="pointer-events:none;">2 Points = 1 Spin</span>
-        </div>
-        
-        <div class="wheel-wrapper">
-          <div class="wheel-pointer"></div>
-          <canvas id="spin-canvas" width="360" height="360"></canvas>
-        </div>
-        
-        <div style="text-align:center; margin-top:20px;">
-          <button class="btn btn-lg btn-primary" id="spin-btn" disabled>
-            <i class="fa fa-sync-alt"></i> Spin Now (2 pts)
-          </button>
-          <p id="spin-status" class="mt-2" style="color:var(--text-muted); font-size:14px;">
-            Earn 2 points to unlock your spin!
-          </p>
-        </div>
-      </div>
+            <!-- Wheel Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fa fa-chart-pie"></i> Lucky Wheel</h2>
+                </div>
+                <div class="wheel-container">
+                    <div class="wheel-wrapper">
+                        <div id="wheel" class="wheel">
+                            <!-- Segments generated by JS -->
+                        </div>
+                        <div class="wheel-pointer">
+                            <i class="fa fa-chevron-down"></i>
+                        </div>
+                        <div class="wheel-center">
+                            <i class="fa fa-gift"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <p class="text-muted small">Spin to win exclusive rewards!</p>
+                </div>
+            </div>
 
-      <!-- How It Works -->
-      <div class="card mt-3">
-        <div class="card-header">
-          <h3 class="card-title"><i class="fa fa-info-circle"></i> How It Works</h3>
-        </div>
-        <div class="how-to-use-content">
-          <ul>
-            <li><strong>1.</strong> Copy your unique referral link above</li>
-            <li><strong>2.</strong> Share via WhatsApp, Instagram, TikTok, etc.</li>
-            <li><strong>3.</strong> Friend clicks link → Lands on Learny → Clicks "Install APK"</li>
-            <li><strong>4.</strong> You earn <strong>1 point</strong> per new install</li>
-            <li><strong>5.</strong> At <strong>2 points</strong>, spin the wheel for rewards!</li>
-          </ul>
-        </div>
-      </div>
+            <!-- Referral History -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fa fa-history"></i> Referral History</h2>
+                </div>
+                <div id="referral-history" class="referral-history-list">
+                    <!-- Items populated by JS -->
+                </div>
+            </div>
 
-      <footer class="site-footer">
-        Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰
-      </footer>
-    </main>
-  </div>
-
-  <!-- Result Modal -->
-  <div class="modal" id="result-modal">
-    <h3 id="res-title">🎉 Result</h3>
-    <p id="res-msg">You landed on: <strong id="res-prize"></strong></p>
-    <div id="contact-box" class="hidden mt-3">
-      <p style="font-size:14px; color:var(--text-muted);">Want to claim this? Contact our support team!</p>
-      <a href="https://wa.me/764720488" target="_blank" class="btn btn-success w-full mt-2">
-        <i class="fa fa-whatsapp"></i> Contact Support on WhatsApp
-      </a>
+            <footer class="site-footer">
+                Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰
+            </footer>
+        </main>
     </div>
-    <button class="btn btn-secondary w-full mt-3" id="close-modal">Close</button>
-  </div>
 
-  <script src="script.js"></script>
-  <script src="referral.js"></script>
+    <!-- Result Popup Modal -->
+    <div id="result-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">🎉 Congratulations!</h3>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="result-icon" id="result-icon">🎁</div>
+                <p id="result-message" class="result-message">You won: <strong id="result-prize">Try Again</strong></p>
+                <p id="result-submessage" class="result-submessage">Better luck next time! Keep sharing your referral link.</p>
+                <a id="contact-support-btn" href="https://wa.me/764720488" target="_blank" class="btn btn-success btn-lg">
+                    <i class="fa fa-whatsapp"></i> Contact Support
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification-toast" class="notification">
+        <i class="fa fa-info-circle"></i>
+        <span>Notification message</span>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="referral.js"></script>
 </body>
 </html>
