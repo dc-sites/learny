@@ -222,11 +222,11 @@ function renderNormalAd(container, ad) {
     <div class="popup-overlay">
       <div class="popup-box">
         <div class="info-icon" id="infoIcon">ⓘ</div>
-        <div class="premium-tip" id="premiumTip">🎁 <a href="premium.html" target="_blank">Get Premium</a> to hide ads</div>
+        <div class="premium-tip" id="premiumTip">Notification from Learny</div>
         <img src="${ad.imageUrl}" alt="Ad" class="popup-img" onerror="this.src='https://via.placeholder.com/380x200?text=Ad+Image'">
         <p class="popup-desc" style="text-align: center;">${escapeHtml(ad.description)}</p>
         <button class="popup-btn" id="adBtn">${escapeHtml(ad.buttonText)}</button>
-        <div class="ad-footer">Ads by <a href="https://hexasolutions.online" target="_blank">Hexa Solutions</a></div>
+        <div class="ad-footer">Team of <a href="https://hexasolutions.online" target="_blank">Learny</a></div>
       </div>
     </div>
   `;
