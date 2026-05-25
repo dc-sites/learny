@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Educational Games - Learny</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ===== GAME TABS ===== */
+    .game-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0;
+    }
+    .game-tab-btn {
+      padding: 12px 24px;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .game-tab-btn:hover { color: var(--primary-light); }
+    .game-tab-btn.active {
+      color: var(--primary-light);
+      border-bottom-color: var(--primary);
+    }
+    .game-content { display: none; }
+    .game-content.active { display: block; animation: fadeIn 0.3s ease; }
+    
+    /* ===== NAME ENTRY MODAL ===== */
+    .name-modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      backdrop-filter: blur(4px);
+    }
+    .name-modal {
+      background: var(--bg-card);
+      padding: 32px 28px;
+      border-radius: var(--radius);
+      max-width: 420px;
+      width: 90%;
+      border: 2px solid var(--primary);
+      box-shadow: var(--shadow);
+      text-align: center;
+      animation: modalSlide 0.3s ease;
+    }
+    @keyframes modalSlide { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    
+    .name-modal h3 {
+      font-size: 20px;
+      margin-bottom: 12px;
+      color: var(--primary-light);
+    }
+    .name-modal p {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .name-modal input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 16px;
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      font-size: 15px;
+      text-align: center;
+    }
+    .name-modal input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(108, 43, 217, 0.25);
+    }
+    .name-modal .btn {
+      width: 100%;
+      justify-content: center;
+      padding: 14px;
+      font-size: 15px;
+    }
+    .name-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      font-style: italic;
+    }
+    
+    /* ===== MEMORY GAME STYLES ===== */
+    .memory-game-container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 20px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .memory-stats {
+      display: flex;
+      justify-content: space-around;
+      background: var(--bg-dark);
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .memory-stats span {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      min-width: 70px;
+    }
+    .memory-stats .label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .memory-stats .value {
+      color: var(--primary-light);
+      font-size: 18px;
+      font-weight: 700;
+    }
+    
+    .memory-board {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .memory-card {
+      aspect-ratio: 1;
+      perspective: 1000px;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .memory-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .memory-card.flipped .memory-card-inner,
+    .memory-card.matched .memory-card-inner {
+      transform: rotateY(180deg);
+    }
+    
+    .memory-card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-sm);
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 8px;
+      text-align: center;
+      line-height: 1.2;
+      transition: all var(--transition);
+    }
+    
+    .memory-card-front {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .memory-card-front::after {
+      content: "?";
+      font-size: 1.5rem;
+      opacity: 0.9;
+      font-weight: 800;
+    }
+    
+    .memory-card-back {
+      background: var(--bg-card);
+      color: var(--text-main);
+      transform: rotateY(180deg);
+      border: 2px solid var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      padding: 6px;
+    }
+    
+    .memory-card.matched .memory-card-back {
+      background: var(--success);
+      color: white;
+      border-color: var(--success);
+      animation: cardPop 0.4s ease;
+    }
+    
+    @keyframes cardPop {
+      0%, 100% { transform: rotateY(180deg) scale(1); }
+      50% { transform: rotateY(180deg) scale(1.08); }
+    }
+    
+    .memory-controls {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .memory-btn {
+      padding: 12px 24px;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all var(--transition);
+    }
+    .memory-btn.primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #fff;
+    }
+    .memory-btn.primary:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(108, 43, 217, 0.4);
+    }
+    .memory-btn.secondary {
+      background: var(--bg-card-hover);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+    }
+    .memory-btn.secondary:hover {
+      background: var(--bg-dark);
+      border-color: var(--primary);
+      color: var(--primary-light);
+    }
+    .memory-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    
+    /* ===== LEADERBOARD TABLE ===== */
+    .leaderboard-section {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .leaderboard-section h3 {
+      font-size: 18px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary-light);
+    }
+    
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .leaderboard-table th {
+      text-align: left;
+      padding: 12px 8px;
+      color: var(--text-muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .leaderboard-table td {
+      padding: 12px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .leaderboard-table tr:hover {
+      background: var(--bg-card-hover);
+    }
+    .leaderboard-table .rank {
+      font-weight: 800;
+      width: 40px;
+      text-align: center;
+    }
+    .leaderboard-table .rank-1 { color: #ffd700; }
+    .leaderboard-table .rank-2 { color: #c0c0c0; }
+    .leaderboard-table .rank-3 { color: #cd7f32; }
+    .leaderboard-table .name {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .leaderboard-table .name.current-user {
+      color: var(--primary-light);
+      font-weight: 700;
+    }
+    .leaderboard-table .score {
+      font-weight: 700;
+      color: var(--success);
+    }
+    
+    .leaderboard-loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+    }
+    .leaderboard-loading i {
+      font-size: 24px;
+      animation: spin 1s linear infinite;
+      color: var(--primary);
+    }
+    
+    /* ===== USER STATS PANEL ===== */
+    .user-stats-panel {
+      background: var(--bg-dark);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-top: 20px;
+      border: 1px solid var(--border);
+    }
+    .user-stats-panel h4 {
+      font-size: 15px;
+      margin-bottom: 16px;
+      color: var(--primary-light);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .user-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .user-stat-item {
+      background: var(--bg-card);
+      padding: 14px 10px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+    .user-stat-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--primary-light);
+    }
+    .user-stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .recent-plays-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .recent-plays {
+      max-height: 180px;
+      overflow-y: auto;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+    .recent-play-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .recent-play-item:last-child { border-bottom: none; }
+    .recent-play-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .recent-play-score {
+      font-weight: 700;
+      color: var(--success);
+    }
+    .recent-play-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .recent-play-date {
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+    
+    /* ===== WIN MODAL ===== */
+    .win-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      z-index: 9999;
+      backdrop-filter: blur(4px);
+    }
+    .win-overlay.show { opacity: 1; pointer-events: all; }
+    
+    .win-modal {
+      background: var(--bg-card);
+      padding: 32px 28px;
+      border-radius: var(--radius);
+      text-align: center;
+      max-width: 420px;
+      width: 90%;
+      border: 2px solid var(--primary);
+      box-shadow: var(--shadow);
+      transform: scale(0.9);
+      transition: transform 0.3s;
+      animation: modalSlide 0.3s ease forwards;
+    }
+    
+    .win-modal h2 {
+      color: var(--success);
+      margin-bottom: 12px;
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .win-modal p {
+      margin: 16px 0;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+    
+    .win-modal .stats-summary {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin: 20px 0;
+      padding: 16px;
+      background: var(--bg-dark);
+      border-radius: var(--radius-sm);
+    }
+    .win-modal .stat-item {
+      text-align: center;
+    }
+    .win-modal .stat-value {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--primary-light);
+    }
+    .win-modal .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 600px) {
+      .memory-board { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+      .memory-card-face { font-size: 0.85rem; padding: 4px; }
+      .memory-stats { padding: 10px; }
+      .memory-stats .value { font-size: 16px; }
+      .win-modal { padding: 24px 20px; }
+      .win-modal .stats-summary { flex-direction: column; gap: 12px; }
+      .leaderboard-table { font-size: 12px; }
+      .leaderboard-table th, .leaderboard-table td { padding: 8px 4px; }
+      .game-tabs { overflow-x: auto; padding-bottom: 8px; }
+      .game-tab-btn { flex-shrink: 0; }
+      .user-stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Hamburger for Mobile (matches index.html) -->
+    <button class="hamburger" id="hamburger"><i class="fa fa-bars"></i></button>
+    
+    <!-- Sidebar Navigation (matches index.html) -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">L</div>
+        <div class="sidebar-title">Learny</div>
+      </div>
+      <nav>
+        <ul class="nav-list">
+          <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
+          <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+          <li class="nav-item"><a href="bot.html"><i class="fa fa-robot"></i> LearnyAI</a></li>
+          <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
+          <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+          <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+          <li class="nav-item"><a href="tuition.html"><i class="fa fa-chalkboard-teacher"></i> Tuition</a></li>
+          <li class="nav-item"><a href="motivation.html"><i class="fa fa-lightbulb"></i> Motivation</a></li>
+          <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
+          <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-stopwatch"></i> Pomodoro</a></li>
+          <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
+          <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
+          <li class="nav-item"><a href="countdown.html"><i class="fa fa-hourglass-half"></i> Countdown</a></li>
+          <li class="nav-item"><a href="referral.html"><i class="fa fa-users"></i> Referral</a></li>
+          <li class="nav-item active"><a href="games.html"><i class="fa fa-gamepad"></i> Games</a></li>
+          <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+          <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+          <li class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></li>
+          <li class="nav-item premium-nav-item"><a href="premium.html" class="premium-link"><i class="fa fa-crown"></i> Get Premium</a></li>
+        </ul>
+      </nav>
+      <div class="sidebar-welcome">
+        <p class="welcome-text" id="sidebar-username">Welcome, User!</p>
+        <div class="divider"></div>
+        <p>Keep learning, keep growing 🌱</p>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="page-header">
+        <h1 class="page-title"><i class="fa fa-gamepad"></i> Educational Games</h1>
+        <div class="header-actions">
+          <button class="theme-toggle"><i class="fa fa-moon"></i></button>
+          <button class="notif-btn"><i class="fa fa-bell"></i></button>
+        </div>
+      </header>
+
+      <div class="card">
+        <!-- Game Tabs -->
+        <div class="game-tabs">
+          <button class="game-tab-btn active" data-tab="game">
+            <i class="fa fa-gamepad"></i> Play Game
+          </button>
+          <button class="game-tab-btn" data-tab="leaderboard">
+            <i class="fa fa-trophy"></i> Leaderboard
+          </button>
+        </div>
+
+        <!-- Game Tab Content -->
+        <div id="tab-game" class="game-content active">
+          <div class="memory-game-container">
+            <div class="memory-stats">
+              <span><span class="label">Moves</span><span class="value" id="moves">0</span></span>
+              <span><span class="label">Time</span><span class="value" id="time">00:00</span></span>
+              <span><span class="label">Matches</span><span class="value"><span id="matches">0</span>/<span id="total-pairs">8</span></span></span>
+            </div>
+            
+            <div class="memory-board" id="game-board"></div>
+            
+            <div class="memory-controls">
+              <button class="memory-btn secondary" id="hint-btn" title="Reveal one pair (ONE USE ONLY)" disabled>
+                <i class="fa fa-lightbulb"></i> Hint <span id="hint-count">(0)</span>
+              </button>
+              <button class="memory-btn primary" id="restart-btn">
+                <i class="fa fa-redo"></i> New Game
+              </button>
+              <span style="font-size:12px;color:var(--text-muted);align-self:center;">🔒 Hard Mode</span>
+            </div>
+          </div>
+          
+          <!-- User Personal Stats Panel -->
+          <div class="user-stats-panel" id="user-stats-panel" style="display:none;">
+            <h4><i class="fa fa-user"></i> <span id="player-display-name">Your</span> Performance</h4>
+            <div class="user-stats-grid">
+              <div class="user-stat-item">
+                <div class="user-stat-value" id="user-best-score">-</div>
+                <div class="user-stat-label">Best Score</div>
+              </div>
+              <div class="user-stat-item">
+                <div class="user-stat-value" id="user-best-moves">-</div>
+                <div class="user-stat-label">Fewest Moves</div>
+              </div>
+              <div class="user-stat-item">
+                <div class="user-stat-value" id="user-fastest-time">-</div>
+                <div class="user-stat-label">Fastest Time</div>
+              </div>
+            </div>
+            <div class="recent-plays-header">
+              <h4 style="margin:0;"><i class="fa fa-history"></i> Recent Plays</h4>
+              <span style="font-size:11px;color:var(--text-muted);">Last 5 games</span>
+            </div>
+            <div class="recent-plays" id="recent-plays">
+              <div style="color:var(--text-muted);font-size:13px;text-align:center;padding:10px;">Play a game to see your history</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leaderboard Tab Content -->
+        <div id="tab-leaderboard" class="game-content">
+          <div class="leaderboard-section">
+            <h3><i class="fa fa-trophy"></i> Global Leaderboard - Top 10</h3>
+            <div class="table-responsive">
+              <table class="leaderboard-table">
+                <thead>
+                  <tr>
+                    <th class="rank">#</th>
+                    <th>Player</th>
+                    <th>Score</th>
+                    <th>Moves</th>
+                    <th>Time</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                  <tr><td colspan="6" class="leaderboard-loading"><i class="fa fa-spinner"></i> Loading leaderboard...</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="text-align:center;color:var(--text-muted);font-size:12px;margin-top:12px;">
+              <i class="fa fa-sync"></i> Updates in real-time via Firebase
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Name Entry Modal (Shows Before Game if Default User) -->
+      <div class="name-modal-overlay" id="name-modal" style="display:none;">
+        <div class="name-modal">
+          <h3>🎮 Welcome to Memory Match!</h3>
+          <p id="name-modal-text">Enter your name to save your score to the global leaderboard. Hard mode only - 8 pairs!</p>
+          <input type="text" id="player-name-input" placeholder="Your name (3-15 characters)" maxlength="15" pattern=".{3,15}" required>
+          <button class="btn btn-primary" id="start-game-btn">
+            <i class="fa fa-play"></i> Start Game
+          </button>
+          <p class="name-hint">💡 Tip: Use a unique name to track your personal stats!</p>
+        </div>
+      </div>
+
+      <!-- Win Modal -->
+      <div class="win-overlay" id="win-overlay">
+        <div class="win-modal">
+          <h2><i class="fa fa-trophy"></i> Excellent Work!</h2>
+          <p>You matched all pairs! 🎉</p>
+          <div class="stats-summary">
+            <div class="stat-item">
+              <div class="stat-value" id="final-moves">0</div>
+              <div class="stat-label">Moves</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="final-time">00:00</div>
+              <div class="stat-label">Time</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="final-score">100</div>
+              <div class="stat-label">Score</div>
+            </div>
+          </div>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">
+            Score saved to Firebase leaderboard!
+          </p>
+          <button class="memory-btn primary" id="play-again-btn">
+            <i class="fa fa-redo"></i> Play Again
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="site-footer">
+        Powered by <a href="https://gorgeous-pegasus-b200d5.netlify.app/" target="_blank">Team Ceylon</a> 
+        | Made in Sri Lanka 🇱🇰
+      </footer>
+    </main>
+  </div>
+
+  <div class="overlay" id="sidebar-overlay"></div>
+  <div class="notification" id="notification-toast">
+    <i class="fa fa-check-circle"></i>
+    <span>Notification message</span>
+  </div>
+
+  <!-- Firebase SDK (Module Type) -->
+  <script type="module">
+    // ===== FIREBASE IMPORTS =====
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js";
+    import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+    // ===== FIREBASE CONFIG =====
+    const firebaseConfig = {
+      apiKey: "AIzaSyDyDQjhq4qkSdTiNZAORvi9KHaYMjKgwVU",
+      authDomain: "learny-game.firebaseapp.com",
+      projectId: "learny-game",
+      storageBucket: "learny-game.firebasestorage.app",
+      messagingSenderId: "21192905625",
+      appId: "1:21192905625:web:1074315ffebf71deb03908",
+      measurementId: "G-HS3LSWDXQT"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // ===== APP INTEGRATION (Link to your script.js) =====
+    function waitForAPP(callback, maxAttempts = 50) {
+      let attempts = 0;
+      function check() {
+        if (typeof APP !== 'undefined' && APP.data) {
+          callback(APP);
+        } else if (attempts < maxAttempts) {
+          attempts++;
+          setTimeout(check, 100);
+        } else {
+          console.warn('APP object not found, using defaults');
+          callback({ data: { profile: { name: 'User' } } });
+        }
+      }
+      check();
+    }
+
+    // ===== GAME CONFIG =====
+    const CONFIG = {
+      HARD_MODE_PAIRS: 8,
+      MAX_NAME_LENGTH: 15,
+      LEADERBOARD_LIMIT: 10,
+      BASE_SCORE: 100,
+      MOVE_PENALTY: 2,
+      TIME_PENALTY: 0.1,
+      DEFAULT_USERNAME: 'User'
+    };
+
+    // ===== CARD DATA =====
+    const cardPairs = [
+      { front: '🌍', back: 'Earth' },
+      { front: '🧪', back: 'Science' },
+      { front: '📐', back: 'Geometry' },
+      { front: '🔢', back: 'Math' },
+      { front: '📖', back: 'Literature' },
+      { front: '🎨', back: 'Art' },
+      { front: '🎵', back: 'Music' },
+      { front: '💻', back: 'Coding' }
+    ];
+
+    // ===== GAME STATE =====
+    let gameState = {
+      cards: [],
+      flippedCards: [],
+      matchedPairs: 0,
+      moves: 0,
+      seconds: 0,
+      timerInterval: null,
+      isProcessing: false,
+      timerStarted: false,
+      hintUsed: false,
+      playerName: null,
+      gameStarted: false,
+      isDefaultUser: false
+    };
+
+    // ===== DOM ELEMENTS =====
+    const gameBoard = document.getElementById('game-board');
+    const movesEl = document.getElementById('moves');
+    const timeEl = document.getElementById('time');
+    const matchesEl = document.getElementById('matches');
+    const totalPairsEl = document.getElementById('total-pairs');
+    const restartBtn = document.getElementById('restart-btn');
+    const winOverlay = document.getElementById('win-overlay');
+    const finalMoves = document.getElementById('final-moves');
+    const finalTime = document.getElementById('final-time');
+    const finalScore = document.getElementById('final-score');
+    const playAgainBtn = document.getElementById('play-again-btn');
+    const hintBtn = document.getElementById('hint-btn');
+    const hintCount = document.getElementById('hint-count');
+    const nameModal = document.getElementById('name-modal');
+    const nameModalText = document.getElementById('name-modal-text');
+    const playerNameInput = document.getElementById('player-name-input');
+    const startGameBtn = document.getElementById('start-game-btn');
+    const leaderboardBody = document.getElementById('leaderboard-body');
+    const tabBtns = document.querySelectorAll('.game-tab-btn');
+    const tabContents = document.querySelectorAll('.game-content');
+    const userStatsPanel = document.getElementById('user-stats-panel');
+    const playerDisplayName = document.getElementById('player-display-name');
+    const userBestScore = document.getElementById('user-best-score');
+    const userBestMoves = document.getElementById('user-best-moves');
+    const userFastestTime = document.getElementById('user-fastest-time');
+    const recentPlays = document.getElementById('recent-plays');
+
+    // ===== FIREBASE FUNCTIONS =====
+    async function saveScoreToFirebase(name, score, moves, time) {
+      try {
+        if (!auth.currentUser) await signInAnonymously(auth);
+        
+        await addDoc(collection(db, "leaderboard"), {
+          name: name.trim().slice(0, CONFIG.MAX_NAME_LENGTH),
+          score: score,
+          moves: moves,
+          time: time,
+          date: serverTimestamp(),
+          userId: auth.currentUser?.uid || 'anonymous',
+          timestamp: Date.now()
+        });
+        return true;
+      } catch (error) {
+        console.error("Error saving score:", error);
+        showToast('⚠️ Could not save to leaderboard (offline mode)');
+        saveScoreToLocal(name, score, moves, time);
+        return false;
+      }
+    }
+
+    function saveScoreToLocal(name, score, moves, time) {
+      const key = 'learny_game_leaderboard_local';
+      const data = JSON.parse(localStorage.getItem(key) || '[]');
+      data.push({ name, score, moves, time, date: new Date().toISOString(), timestamp: Date.now() });
+      localStorage.setItem(key, JSON.stringify(data.slice(-100)));
+    }
+
+    function listenToLeaderboard(callback) {
+      const q = query(
+        collection(db, "leaderboard"),
+        orderBy("score", "desc"),
+        orderBy("moves", "asc"),
+        orderBy("timestamp", "asc"),
+        limit(CONFIG.LEADERBOARD_LIMIT)
+      );
+      
+      return onSnapshot(q, (snapshot) => {
+        const entries = [];
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          entries.push({
+            id: doc.id,
+            name: data.name,
+            score: data.score,
+            moves: data.moves,
+            time: data.time,
+            date: data.date?.toDate?.() || new Date(data.timestamp || Date.now()),
+            userId: data.userId
+          });
+        });
+        callback(entries);
+      }, (error) => {
+        console.error("Leaderboard error:", error);
+        const local = JSON.parse(localStorage.getItem('learny_game_leaderboard_local') || '[]');
+        callback(local.sort((a,b) => b.score - a.score || a.moves - b.moves || a.timestamp - b.timestamp).slice(0, 10));
+      });
+    }
+
+    async function getUserStats(playerName) {
+      try {
+        const q = query(
+          collection(db, "leaderboard"),
+          orderBy("timestamp", "desc"),
+          limit(50)
+        );
+        const snapshot = await getDocs(q);
+        const allEntries = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          allEntries.push({
+            name: data.name,
+            score: data.score,
+            moves: data.moves,
+            time: data.time,
+            date: data.date?.toDate?.() || new Date(data.timestamp || Date.now())
+          });
+        });
+        
+        // Filter for this player
+        const playerEntries = allEntries.filter(e => e.name.toLowerCase() === playerName.toLowerCase());
+        
+        if (playerEntries.length === 0) return null;
+        
+        // Calculate stats
+        const bestScore = Math.max(...playerEntries.map(e => e.score));
+        const bestMoves = Math.min(...playerEntries.map(e => e.moves));
+        const fastestTime = playerEntries.reduce((fastest, current) => {
+          const [cm, cs] = current.time.split(':').map(Number);
+          const [fm, fs] = fastest ? fastest.split(':').map(Number) : [99, 99];
+          return (cm * 60 + cs) < (fm * 60 + fs) ? current.time : fastest;
+        }, null);
+        
+        // Recent plays (last 5)
+        const recent = playerEntries.slice(0, 5).map(e => ({
+          score: e.score,
+          moves: e.moves,
+          time: e.time,
+          date: e.date
+        }));
+        
+        return { bestScore, bestMoves, fastestTime, recent };
+      } catch (error) {
+        console.error("Error fetching user stats:", error);
+        return null;
+      }
+    }
+
+    // ===== GAME LOGIC =====
+    function initGame() {
+      // Check if default user - force name entry
+      waitForAPP(appObj => {
+        const profileName = appObj.data?.profile?.name || CONFIG.DEFAULT_USERNAME;
+        gameState.isDefaultUser = profileName.toLowerCase() === CONFIG.DEFAULT_USERNAME.toLowerCase();
+        
+        if (gameState.isDefaultUser && !gameState.playerName) {
+          nameModalText.textContent = `Enter your name to save your score to the global leaderboard. Hard mode only - 8 pairs!`;
+          nameModal.style.display = 'flex';
+          playerNameInput.focus();
+          return;
+        }
+        
+        if (!gameState.playerName) {
+          gameState.playerName = profileName;
+        }
+        startGameLogic();
+      });
+    }
+
+    function startGameLogic() {
+      // Reset state
+      clearInterval(gameState.timerInterval);
+      gameState = {
+        ...gameState,
+        cards: [],
+        flippedCards: [],
+        matchedPairs: 0,
+        moves: 0,
+        seconds: 0,
+        timerInterval: null,
+        isProcessing: false,
+        timerStarted: false,
+        hintUsed: false,
+        gameStarted: true
+      };
+
+      // Update UI
+      movesEl.textContent = '0';
+      timeEl.textContent = '00:00';
+      matchesEl.textContent = '0';
+      totalPairsEl.textContent = CONFIG.HARD_MODE_PAIRS;
+      winOverlay.classList.remove('show');
+      gameBoard.innerHTML = '';
+      
+      hintBtn.disabled = false;
+      hintCount.textContent = '(1)';
+      hintBtn.innerHTML = '<i class="fa fa-lightbulb"></i> Hint <span id="hint-count">(1)</span>';
+
+      // Build cards
+      gameState.cards = [];
+      cardPairs.slice(0, CONFIG.HARD_MODE_PAIRS).forEach((pair, index) => {
+        gameState.cards.push({ id: `p${index}-1`, content: pair.front, pairId: index });
+        gameState.cards.push({ id: `p${index}-2`, content: pair.back, pairId: index });
+      });
+
+      shuffleArray(gameState.cards);
+
+      // Render cards
+      gameState.cards.forEach(card => {
+        const cardEl = document.createElement('div');
+        cardEl.classList.add('memory-card');
+        cardEl.dataset.pairId = card.pairId;
+        cardEl.dataset.cardId = card.id;
+
+        cardEl.innerHTML = `
+          <div class="memory-card-inner">
+            <div class="memory-card-face memory-card-front"></div>
+            <div class="memory-card-face memory-card-back">${card.content}</div>
+          </div>
+        `;
+
+        cardEl.addEventListener('click', () => handleCardClick(cardEl));
+        gameBoard.appendChild(cardEl);
+      });
+      
+      // Load user stats if not default user
+      if (!gameState.isDefaultUser && gameState.playerName) {
+        loadUserStats(gameState.playerName);
+      }
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function startTimer() {
+      if (gameState.timerStarted) return;
+      gameState.timerStarted = true;
+      gameState.timerInterval = setInterval(() => {
+        gameState.seconds++;
+        const mins = String(Math.floor(gameState.seconds / 60)).padStart(2, '0');
+        const secs = String(gameState.seconds % 60).padStart(2, '0');
+        timeEl.textContent = `${mins}:${secs}`;
+      }, 1000);
+    }
+
+    function handleCardClick(cardEl) {
+      if (!gameState.gameStarted) return;
+      if (gameState.isProcessing || cardEl.classList.contains('flipped') || cardEl.classList.contains('matched')) return;
+
+      startTimer();
+      cardEl.classList.add('flipped');
+      gameState.flippedCards.push(cardEl);
+
+      if (gameState.flippedCards.length === 2) {
+        gameState.moves++;
+        movesEl.textContent = gameState.moves;
+        gameState.isProcessing = true;
+        checkForMatch();
+      }
+    }
+
+    function checkForMatch() {
+      const [card1, card2] = gameState.flippedCards;
+      const match = card1.dataset.pairId === card2.dataset.pairId;
+
+      if (match) {
+        card1.classList.add('matched');
+        card2.classList.add('matched');
+        gameState.matchedPairs++;
+        matchesEl.textContent = gameState.matchedPairs;
+        gameState.flippedCards = [];
+        gameState.isProcessing = false;
+
+        if (gameState.matchedPairs === CONFIG.HARD_MODE_PAIRS) {
+          clearInterval(gameState.timerInterval);
+          setTimeout(showWinModal, 600);
+        }
+      } else {
+        setTimeout(() => {
+          card1.classList.remove('flipped');
+          card2.classList.remove('flipped');
+          gameState.flippedCards = [];
+          gameState.isProcessing = false;
+        }, 1000);
+      }
+    }
+
+    // ===== HINT (ONE USE) =====
+    hintBtn.addEventListener('click', () => {
+      if (gameState.hintUsed || !gameState.gameStarted) return;
+      
+      const unmatched = Array.from(document.querySelectorAll('.memory-card:not(.flipped):not(.matched)'));
+      if (unmatched.length < 2) return;
+
+      const pairs = {};
+      unmatched.forEach(card => {
+        const pairId = card.dataset.pairId;
+        if (!pairs[pairId]) pairs[pairId] = [];
+        pairs[pairId].push(card);
+      });
+
+      for (const pairId in pairs) {
+        if (pairs[pairId].length === 2) {
+          pairs[pairId].forEach(card => {
+            card.classList.add('flipped');
+            setTimeout(() => {
+              if (!card.classList.contains('matched')) {
+                card.classList.remove('flipped');
+              }
+            }, 2000);
+          });
+          break;
+        }
+      }
+
+      gameState.hintUsed = true;
+      hintBtn.disabled = true;
+      hintCount.textContent = '(0)';
+      hintBtn.innerHTML = '<i class="fa fa-lightbulb"></i> Hint <span id="hint-count">(0)</span>';
+      showToast('💡 Hint used!');
+    });
+
+    // ===== SCORE & WIN =====
+    function calculateScore(moves, seconds) {
+      return Math.max(10, Math.round(
+        CONFIG.BASE_SCORE - (moves * CONFIG.MOVE_PENALTY) - (seconds * CONFIG.TIME_PENALTY)
+      ));
+    }
+
+    function showWinModal() {
+      const score = calculateScore(gameState.moves, gameState.seconds);
+      finalMoves.textContent = gameState.moves;
+      finalTime.textContent = timeEl.textContent;
+      finalScore.textContent = score;
+      
+      winOverlay.classList.add('show');
+      
+      // Save to Firebase
+      if (gameState.playerName) {
+        saveScoreToFirebase(gameState.playerName, score, gameState.moves, timeEl.textContent);
+      }
+      
+      // Refresh leaderboard if on that tab
+      if (document.getElementById('tab-leaderboard').classList.contains('active')) {
+        loadLeaderboard();
+      }
+      
+      // Refresh user stats
+      if (!gameState.isDefaultUser && gameState.playerName) {
+        loadUserStats(gameState.playerName);
+      }
+    }
+
+    // ===== LEADERBOARD RENDER =====
+    function renderLeaderboard(entries) {
+      if (entries.length === 0) {
+        leaderboardBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No scores yet. Be the first!</td></tr>';
+        return;
+      }
+
+      leaderboardBody.innerHTML = entries.map((entry, index) => {
+        const rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : '';
+        const nameClass = entry.name === gameState.playerName ? 'name current-user' : 'name';
+        const dateStr = entry.date instanceof Date 
+          ? entry.date.toLocaleDateString() 
+          : new Date(entry.date).toLocaleDateString();
+        return `
+          <tr>
+            <td class="rank ${rankClass}">#${index + 1}</td>
+            <td class="${nameClass}">${escapeHtml(entry.name)}</td>
+            <td class="score">${entry.score}</td>
+            <td>${entry.moves}</td>
+            <td>${entry.time}</td>
+            <td style="font-size:12px;color:var(--text-muted);">${dateStr}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function loadLeaderboard() {
+      leaderboardBody.innerHTML = '<tr><td colspan="6" class="leaderboard-loading"><i class="fa fa-spinner"></i> Loading...</td></tr>';
+      listenToLeaderboard(renderLeaderboard);
+    }
+
+    // ===== USER STATS RENDER =====
+    function renderUserStats(stats, playerName) {
+      if (!stats) {
+        userStatsPanel.style.display = 'none';
+        return;
+      }
+      
+      userStatsPanel.style.display = 'block';
+      playerDisplayName.textContent = playerName;
+      
+      userBestScore.textContent = stats.bestScore > 0 ? stats.bestScore : '-';
+      userBestMoves.textContent = stats.bestMoves < 999 ? stats.bestMoves : '-';
+      userFastestTime.textContent = stats.fastestTime || '-';
+      
+      if (!stats.recent || stats.recent.length === 0) {
+        recentPlays.innerHTML = '<div style="color:var(--text-muted);font-size:13px;text-align:center;padding:10px;">Play more games to see history</div>';
+        return;
+      }
+      
+      recentPlays.innerHTML = stats.recent.map(play => {
+        const dateStr = play.date instanceof Date 
+          ? play.date.toLocaleDateString() + ' ' + play.date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+          : new Date(play.date).toLocaleDateString();
+        return `
+          <div class="recent-play-item">
+            <div class="recent-play-info">
+              <span class="recent-play-score">${play.score} pts</span>
+              <span class="recent-play-meta">${play.moves} moves • ${play.time}</span>
+            </div>
+            <span class="recent-play-date">${dateStr}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function loadUserStats(playerName) {
+      const stats = await getUserStats(playerName);
+      renderUserStats(stats, playerName);
+    }
+
+    // ===== TAB SWITCHING =====
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tab = btn.dataset.tab;
+        
+        tabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        tabContents.forEach(c => c.classList.remove('active'));
+        document.getElementById(`tab-${tab}`).classList.add('active');
+        
+        if (tab === 'leaderboard') {
+          loadLeaderboard();
+        }
+      });
+    });
+
+    // ===== NAME MODAL =====
+    startGameBtn.addEventListener('click', () => {
+      const name = playerNameInput.value.trim();
+      if (name.length < 3 || name.length > CONFIG.MAX_NAME_LENGTH) {
+        showToast('Name must be 3-15 characters');
+        playerNameInput.focus();
+        return;
+      }
+      
+      gameState.playerName = name;
+      nameModal.style.display = 'none';
+      startGameLogic();
+      showToast(`🎮 Welcome, ${name}! Good luck!`);
+      
+      // Update APP profile if available
+      waitForAPP(appObj => {
+        if (appObj.data?.profile) {
+          appObj.data.profile.name = name;
+          appObj.save?.();
+          appObj.updateGreetingUI?.();
+        }
+      });
+    });
+
+    playerNameInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') startGameBtn.click();
+    });
+
+    // ===== EVENT LISTENERS =====
+    playAgainBtn.addEventListener('click', () => {
+      winOverlay.classList.remove('show');
+      startGameLogic();
+    });
+    
+    restartBtn.addEventListener('click', () => {
+      if (confirm('Start a new game? Current progress will be lost.')) {
+        startGameLogic();
+      }
+    });
+
+    // ===== UTILITIES =====
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('notification-toast');
+      if (el) {
+        el.querySelector('span').textContent = msg;
+        el.classList.add('show');
+        setTimeout(() => el.classList.remove('show'), 3000);
+      }
+    }
+
+    // ===== THEME TOGGLE (Matches your script.js) =====
+    document.querySelectorAll('.theme-toggle').forEach(btn => {
+      btn.onclick = () => {
+        const body = document.body;
+        const isLight = body.classList.contains('light');
+        body.classList.toggle('light', !isLight);
+        btn.innerHTML = isLight ? '<i class="fa fa-moon"></i>' : '<i class="fa fa-sun"></i>';
+        
+        waitForAPP(appObj => {
+          appObj.data.darkMode = !isLight;
+          appObj.save?.();
+        });
+      };
+    });
+
+    // ===== MOBILE SIDEBAR (Matches index.html) =====
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    
+    if (hamburger && sidebar) {
+      hamburger.onclick = () => {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
+      };
+      overlay.onclick = () => {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+      };
+    }
+
+    // Close sidebar when clicking nav links on mobile
+    document.querySelectorAll('.nav-item a').forEach(link => {
+      link.onclick = () => {
+        if (window.innerWidth <= 768) {
+          sidebar.classList.remove('open');
+          overlay.classList.remove('show');
+        }
+      };
+    });
+
+    // ===== INIT =====
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load leaderboard initially
+      loadLeaderboard();
+      
+      // Initialize game (will show name modal if default user)
+      initGame();
+      
+      // Sync greeting with APP
+      waitForAPP(appObj => {
+        if (appObj.updateGreetingUI) appObj.updateGreetingUI();
+      });
+    });
+
+    // Expose functions globally for script.js integration
+    window.GameApp = {
+      init: initGame,
+      getPlayerName: () => gameState.playerName,
+      setPlayerName: (name) => { gameState.playerName = name; }
+    };
+  </script>
+
+  <!-- Your main script.js (loads APP object) -->
+  <script src="script.js"></script>
+</body>
+</html>
