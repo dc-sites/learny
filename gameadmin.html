@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Admin - Learny</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .admin-container {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 24px;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+    .admin-header {
+      text-align: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .admin-header h1 {
+      font-size: 24px;
+      color: var(--primary-light);
+      margin-bottom: 8px;
+    }
+    .admin-header p { color: var(--text-muted); font-size: 14px; }
+    
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(108, 43, 217, 0.05) 100%);
+      border-radius: var(--radius);
+      padding: 20px;
+      border: 1px solid var(--border);
+      text-align: center;
+      transition: all var(--transition);
+    }
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+      border-color: var(--primary);
+    }
+    .stat-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .stat-icon.purple { color: var(--primary); }
+    .stat-icon.green { color: var(--success); }
+    .stat-icon.orange { color: var(--warning); }
+    .stat-icon.blue { color: var(--info); }
+    
+    .stat-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--primary-light);
+      margin: 8px 0;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Leaderboard Table */
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin-top: 16px;
+    }
+    .leaderboard-table th {
+      text-align: left;
+      padding: 12px 8px;
+      color: var(--text-muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    .leaderboard-table td {
+      padding: 12px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .leaderboard-table tr:hover {
+      background: var(--bg-card-hover);
+    }
+    .leaderboard-table .rank {
+      font-weight: 800;
+      width: 40px;
+      text-align: center;
+    }
+    .leaderboard-table .rank-1 { color: #ffd700; }
+    .leaderboard-table .rank-2 { color: #c0c0c0; }
+    .leaderboard-table .rank-3 { color: #cd7f32; }
+    .leaderboard-table .name {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .leaderboard-table .score {
+      font-weight: 700;
+      color: var(--success);
+    }
+    .leaderboard-table .actions {
+      text-align: right;
+    }
+    
+    .delete-btn {
+      background: var(--danger);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 12px;
+      transition: opacity var(--transition);
+    }
+    .delete-btn:hover { opacity: 0.9; }
+    
+    .admin-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .admin-actions .btn {
+      flex: 1;
+      min-width: 140px;
+      justify-content: center;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+    }
+    .loading i {
+      font-size: 24px;
+      animation: spin 1s linear infinite;
+      color: var(--primary);
+    }
+    
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* Search & Filter */
+    .admin-filters {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .admin-filters input, .admin-filters select {
+      padding: 10px 14px;
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      font-size: 14px;
+    }
+    .admin-filters input:focus, .admin-filters select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    
+    @media (max-width: 600px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .leaderboard-table { font-size: 12px; }
+      .leaderboard-table th, .leaderboard-table td { padding: 8px 4px; }
+      .admin-actions { flex-direction: column; }
+      .admin-filters { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Hamburger -->
+    <button class="hamburger" id="hamburger"><i class="fa fa-bars"></i></button>
+    
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">L</div>
+        <div class="sidebar-title">Learny</div>
+      </div>
+      <nav>
+        <ul class="nav-list">
+          <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
+          <li class="nav-item"><a href="games.html"><i class="fa fa-gamepad"></i> Games</a></li>
+          <li class="nav-item active"><a href="gameadmin.html"><i class="fa fa-shield-alt"></i> Game Admin</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="page-header">
+        <h1 class="page-title"><i class="fa fa-shield-alt"></i> Game Admin Panel</h1>
+      </header>
+
+      <div class="admin-container">
+        <div class="admin-header">
+          <h1>🎮 Leaderboard Management</h1>
+          <p>Real-time stats from Firebase • All entries saved & displayed</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon purple"><i class="fa fa-users"></i></div>
+            <div class="stat-value" id="total-players">-</div>
+            <div class="stat-label">Total Players</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green"><i class="fa fa-check-circle"></i></div>
+            <div class="stat-value" id="finished-users">-</div>
+            <div class="stat-label">Finished Games</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orange"><i class="fa fa-stopwatch"></i></div>
+            <div class="stat-value" id="avg-time">-</div>
+            <div class="stat-label">Avg Time</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue"><i class="fa fa-mouse-pointer"></i></div>
+            <div class="stat-value" id="avg-moves">-</div>
+            <div class="stat-label">Avg Moves</div>
+          </div>
+        </div>
+
+        <!-- Search & Filter -->
+        <div class="admin-filters">
+          <input type="text" id="search-player" placeholder="🔍 Search player name...">
+          <select id="filter-sort">
+            <option value="score-desc">Sort: Score ↓</option>
+            <option value="score-asc">Sort: Score ↑</option>
+            <option value="time-asc">Sort: Time ↑</option>
+            <option value="moves-asc">Sort: Moves ↑</option>
+            <option value="date-desc">Sort: Date ↓</option>
+          </select>
+        </div>
+
+        <!-- Leaderboard Table -->
+        <h3 style="margin-bottom:12px;font-size:16px;">📊 All Entries</h3>
+        <div class="table-responsive">
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th class="rank">#</th>
+                <th>Player</th>
+                <th>Score</th>
+                <th>Moves</th>
+                <th>Time</th>
+                <th>Date</th>
+                <th class="actions">Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-leaderboard-body">
+              <tr><td colspan="7" class="loading"><i class="fa fa-spinner"></i> Loading all entries...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Admin Actions -->
+        <div class="admin-actions">
+          <button class="btn btn-secondary" id="refresh-btn">
+            <i class="fa fa-sync"></i> Refresh
+          </button>
+          <button class="btn btn-danger" id="clear-all-btn">
+            <i class="fa fa-trash"></i> Clear All
+          </button>
+          <button class="btn btn-primary" id="export-btn">
+            <i class="fa fa-download"></i> Export CSV
+          </button>
+          <button class="btn btn-secondary" onclick="window.location.href='games.html'">
+            <i class="fa fa-arrow-left"></i> Back to Game
+          </button>
+        </div>
+      </div>
+
+      <footer class="site-footer">
+        Powered by <a href="https://gorgeous-pegasus-b200d5.netlify.app/" target="_blank">Team Ceylon</a> 
+        | Made in Sri Lanka 🇱🇰
+      </footer>
+    </main>
+  </div>
+
+  <div class="overlay" id="sidebar-overlay"></div>
+  <div class="notification" id="notification-toast">
+    <i class="fa fa-check-circle"></i>
+    <span>Notification message</span>
+  </div>
+
+  <script type="module">
+    // ===== FIREBASE IMPORTS =====
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy, limit, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+    // ===== FIREBASE CONFIG =====
+    const firebaseConfig = {
+      apiKey: "AIzaSyDyDQjhq4qkSdTiNZAORvi9KHaYMjKgwVU",
+      authDomain: "learny-game.firebaseapp.com",
+      projectId: "learny-game",
+      storageBucket: "learny-game.firebasestorage.app",
+      messagingSenderId: "21192905625",
+      appId: "1:21192905625:web:1074315ffebf71deb03908",
+      measurementId: "G-HS3LSWDXQT"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // ===== DOM ELEMENTS =====
+    const leaderboardBody = document.getElementById('admin-leaderboard-body');
+    const totalPlayersEl = document.getElementById('total-players');
+    const finishedUsersEl = document.getElementById('finished-users');
+    const avgTimeEl = document.getElementById('avg-time');
+    const avgMovesEl = document.getElementById('avg-moves');
+    const refreshBtn = document.getElementById('refresh-btn');
+    const clearAllBtn = document.getElementById('clear-all-btn');
+    const exportBtn = document.getElementById('export-btn');
+    const searchInput = document.getElementById('search-player');
+    const sortSelect = document.getElementById('filter-sort');
+
+    // ===== ADMIN AUTH =====
+    const ADMIN_PASSWORD = 'admin123';
+    
+    function checkAdminAuth() {
+      const saved = localStorage.getItem('learny_admin_auth');
+      if (saved !== ADMIN_PASSWORD) {
+        const pass = prompt('🔐 Admin Password:');
+        if (pass === ADMIN_PASSWORD) {
+          localStorage.setItem('learny_admin_auth', pass);
+          loadAdminData();
+        } else {
+          alert('❌ Incorrect password');
+          window.location.href = 'index.html';
+        }
+      } else {
+        loadAdminData();
+      }
+    }
+
+    // ===== LOAD ALL DATA =====
+    let allEntries = [];
+
+    async function loadAdminData() {
+      try {
+        if (!auth.currentUser) await signInAnonymously(auth);
+        
+        // Fetch ALL entries (no limit for admin)
+        const q = query(collection(db, "leaderboard"), orderBy("timestamp", "desc"));
+        
+        onSnapshot(q, (snapshot) => {
+          allEntries = [];
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            allEntries.push({
+              id: doc.id,
+              name: data.name,
+              score: data.score,
+              moves: data.moves,
+              time: data.time,
+              date: data.date?.toDate?.() || new Date(data.timestamp || Date.now()),
+              userId: data.userId,
+              timestamp: data.timestamp
+            });
+          });
+          
+          applyFiltersAndRender();
+        });
+      } catch (error) {
+        console.error("Admin load error:", error);
+        leaderboardBody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--danger);">Error loading data</td></tr>';
+      }
+    }
+
+    function applyFiltersAndRender() {
+      let filtered = [...allEntries];
+      
+      // Search filter
+      const searchTerm = searchInput.value.toLowerCase().trim();
+      if (searchTerm) {
+        filtered = filtered.filter(e => e.name.toLowerCase().includes(searchTerm));
+      }
+      
+      // Sort
+      const sortBy = sortSelect.value;
+      switch(sortBy) {
+        case 'score-desc':
+          filtered.sort((a,b) => b.score - a.score || a.moves - b.moves);
+          break;
+        case 'score-asc':
+          filtered.sort((a,b) => a.score - b.score || b.moves - a.moves);
+          break;
+        case 'time-asc':
+          filtered.sort((a,b) => {
+            const [am, as] = a.time.split(':').map(Number);
+            const [bm, bs] = b.time.split(':').map(Number);
+            return (am*60+as) - (bm*60+bs);
+          });
+          break;
+        case 'moves-asc':
+          filtered.sort((a,b) => a.moves - b.moves);
+          break;
+        case 'date-desc':
+          filtered.sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
+          break;
+      }
+      
+      renderAdminStats(filtered);
+      renderAdminLeaderboard(filtered);
+    }
+
+    function renderAdminStats(entries) {
+      // Total unique players
+      const uniquePlayers = new Set(entries.map(e => e.name.toLowerCase())).size;
+      totalPlayersEl.textContent = uniquePlayers;
+      
+      // Finished users (all entries are finished games)
+      finishedUsersEl.textContent = entries.length;
+      
+      // Average time
+      if (entries.length > 0) {
+        const totalSeconds = entries.reduce((sum, e) => {
+          const [m, s] = e.time.split(':').map(Number);
+          return sum + (m * 60 + s);
+        }, 0);
+        const avgSec = Math.round(totalSeconds / entries.length);
+        const mins = Math.floor(avgSec / 60);
+        const secs = avgSec % 60;
+        avgTimeEl.textContent = `${mins}:${secs.toString().padStart(2,'0')}`;
+      } else {
+        avgTimeEl.textContent = '-';
+      }
+      
+      // Average moves
+      if (entries.length > 0) {
+        const avg = Math.round(entries.reduce((a, b) => a + b.moves, 0) / entries.length);
+        avgMovesEl.textContent = avg;
+      } else {
+        avgMovesEl.textContent = '-';
+      }
+    }
+
+    function renderAdminLeaderboard(entries) {
+      if (entries.length === 0) {
+        leaderboardBody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);">No entries found</td></tr>';
+        return;
+      }
+
+      leaderboardBody.innerHTML = entries.map((entry, index) => {
+        const rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : '';
+        const dateStr = entry.date instanceof Date 
+          ? entry.date.toLocaleString() 
+          : new Date(entry.date).toLocaleString();
+        return `
+          <tr>
+            <td class="rank ${rankClass}">#${index + 1}</td>
+            <td class="name">${escapeHtml(entry.name)}</td>
+            <td class="score">${entry.score}</td>
+            <td>${entry.moves}</td>
+            <td>${entry.time}</td>
+            <td style="font-size:12px;color:var(--text-muted);">${dateStr}</td>
+            <td class="actions">
+              <button class="delete-btn" data-id="${entry.id}">
+                <i class="fa fa-trash"></i> Remove
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Add delete listeners
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const id = e.currentTarget.dataset.id;
+          if (confirm('Remove this entry from leaderboard?')) {
+            try {
+              await deleteDoc(doc(db, "leaderboard", id));
+              showToast('✅ Entry removed');
+            } catch (err) {
+              console.error(err);
+              showToast('❌ Failed to remove');
+            }
+          }
+        });
+      });
+    }
+
+    // ===== CLEAR ALL =====
+    clearAllBtn.addEventListener('click', async () => {
+      if (!confirm('⚠️ Delete ALL leaderboard entries? This cannot be undone!')) return;
+      
+      try {
+        const snapshot = await getDocs(collection(db, "leaderboard"));
+        const batch = [];
+        snapshot.forEach(doc => batch.push(deleteDoc(doc.ref)));
+        await Promise.all(batch);
+        showToast('🗑️ All entries cleared');
+      } catch (err) {
+        console.error(err);
+        showToast('❌ Failed to clear');
+      }
+    });
+
+    // ===== EXPORT CSV =====
+    exportBtn.addEventListener('click', () => {
+      if (allEntries.length === 0) {
+        showToast('No data to export');
+        return;
+      }
+      
+      const headers = ['Rank', 'Name', 'Score', 'Moves', 'Time', 'Date'];
+      const rows = allEntries.map((entry, index) => [
+        index + 1,
+        entry.name,
+        entry.score,
+        entry.moves,
+        entry.time,
+        entry.date instanceof Date ? entry.date.toLocaleString() : new Date(entry.date).toLocaleString()
+      ]);
+      
+      const csv = [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `learny-leaderboard-${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('📥 CSV exported');
+    });
+
+    // ===== FILTER EVENTS =====
+    searchInput.addEventListener('input', applyFiltersAndRender);
+    sortSelect.addEventListener('change', applyFiltersAndRender);
+    refreshBtn.addEventListener('click', loadAdminData);
+
+    // ===== UTILITIES =====
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('notification-toast');
+      if (el) {
+        el.querySelector('span').textContent = msg;
+        el.classList.add('show');
+        setTimeout(() => el.classList.remove('show'), 3000);
+      }
+    }
+
+    // ===== THEME & SIDEBAR (Matches your site) =====
+    document.querySelectorAll('.theme-toggle').forEach(btn => {
+      btn.onclick = () => {
+        const body = document.body;
+        const isLight = body.classList.contains('light');
+        body.classList.toggle('light', !isLight);
+        btn.innerHTML = isLight ? '<i class="fa fa-moon"></i>' : '<i class="fa fa-sun"></i>';
+      };
+    });
+
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    
+    if (hamburger && sidebar) {
+      hamburger.onclick = () => {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
+      };
+      overlay.onclick = () => {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+      };
+    }
+
+    // ===== INIT =====
+    document.addEventListener('DOMContentLoaded', checkAdminAuth);
+  </script>
+
+  <script src="script.js"></script>
+</body>
+</html>
