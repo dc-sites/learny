@@ -248,7 +248,62 @@
                 <div class="stat-card"><div class="stat-icon orange"><i class="fa fa-clock"></i></div><div class="stat-info"><h3 id="today-study-time">0h</h3><p>Today Study Time</p></div></div>
                 <div class="stat-card"><div class="stat-icon blue"><i class="fa fa-hourglass-end"></i></div><div class="stat-info"><h3 id="total-study-hours">0h</h3><p>Total Hours</p></div></div>
             </div>
-
+<!-- 🎮 GAME TAB - Added Above Study Hours -->
+      <div id="game-dashboard-tab" class="card mb-3" style="display:none;">
+        <div class="card-header" style="padding-bottom:10px;">
+          <div class="card-title" style="margin:0;"><i class="fa fa-gamepad"></i> 🎮 Educational Games</div>
+          <button id="close-game-tab" class="btn btn-sm btn-secondary" style="padding:4px 10px;font-size:11px;" title="Close permanently"><i class="fa fa-times"></i></button>
+        </div>
+        <div class="grid-2" style="margin:0;gap:16px;">
+          <!-- Your Performance -->
+          <div class="card" style="margin:0;padding:16px;">
+            <h4 style="margin:0 0 12px;font-size:14px;color:var(--primary-light);"><i class="fa fa-user"></i> Your Performance</h4>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+              <div style="background:var(--bg-dark);padding:10px;border-radius:8px;text-align:center;border:1px solid var(--border);">
+                <div class="val" id="dash-best-score" style="font-size:18px;font-weight:800;color:var(--primary-light);">-</div>
+                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Best Score</div>
+              </div>
+              <div style="background:var(--bg-dark);padding:10px;border-radius:8px;text-align:center;border:1px solid var(--border);">
+                <div class="val" id="dash-best-moves" style="font-size:18px;font-weight:800;color:var(--primary-light);">-</div>
+                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Fewest Moves</div>
+              </div>
+              <div style="background:var(--bg-dark);padding:10px;border-radius:8px;text-align:center;border:1px solid var(--border);">
+                <div class="val" id="dash-fastest-time" style="font-size:18px;font-weight:800;color:var(--primary-light);">-</div>
+                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Fastest Time</div>
+              </div>
+              <div style="background:var(--bg-dark);padding:10px;border-radius:8px;text-align:center;border:1px solid var(--border);">
+                <div id="dash-rank-display" style="font-size:18px;font-weight:800;">-</div>
+                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Current Rank</div>
+              </div>
+            </div>
+            <div id="dash-rank-note" style="font-size:10px;color:var(--text-muted);margin-top:8px;text-align:center;display:none;">
+              <i class="fa fa-info-circle"></i> Rank based on your best score
+            </div>
+            <a href="games.html" class="btn btn-primary btn-sm" style="width:100%;margin-top:12px;justify-content:center;"><i class="fa fa-play"></i> Play Now</a>
+          </div>
+          
+          <!-- Leaderboard (Top 3) -->
+          <div class="card" style="margin:0;padding:16px;">
+            <h4 style="margin:0 0 12px;font-size:14px;color:var(--primary-light);"><i class="fa fa-trophy"></i> Top Players</h4>
+            <div style="overflow-x:auto;">
+              <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                <thead>
+                  <tr style="border-bottom:1px solid var(--border);">
+                    <th style="padding:8px 6px;text-align:left;color:var(--text-muted);font-weight:600;font-size:11px;">Rank</th>
+                    <th style="padding:8px 6px;text-align:left;color:var(--text-muted);font-weight:600;font-size:11px;">Player</th>
+                    <th style="padding:8px 6px;text-align:right;color:var(--text-muted);font-weight:600;font-size:11px;">Score</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-leaderboard-body">
+                  <tr><td colspan="3" style="padding:12px 6px;text-align:center;color:var(--text-muted);"><i class="fa fa-spinner fa-spin"></i> Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <a href="games.html" class="btn btn-secondary btn-sm" style="width:100%;margin-top:10px;justify-content:center;font-size:12px;"><i class="fa fa-list"></i> View Full Leaderboard</a>
+          </div>
+        </div>
+      </div>
+      <!-- END GAME TAB -->
             <div class="grid-2">
                 <div class="card">
                     <div class="card-header"><h3 class="card-title"><i class="fa fa-chart-bar"></i> Study Hours (10 Days)</h3></div>
@@ -438,5 +493,185 @@ document.getElementById('install-apk-btn')?.addEventListener('click', function()
 <div id="popup-ad-container"></div>
 <div id="popup-skip"></div>
 <script type="module" src="popup-ad.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+    import { getFirestore, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+    const firebaseConfig = { 
+      apiKey: "AIzaSyDyDQjhq4qkSdTiNZAORvi9KHaYMjKgwVU", 
+      authDomain: "learny-game.firebaseapp.com", 
+      projectId: "learny-game", 
+      storageBucket: "learny-game.firebasestorage.app", 
+      messagingSenderId: "21192905625", 
+      appId: "1:21192905625:web:1074315ffebf71deb03908", 
+      measurementId: "G-HS3LSWDXQT" 
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Check if game tab was dismissed
+    function isGameTabDismissed() {
+      return localStorage.getItem('learny_game_tab_dismissed') === 'true';
+    }
+
+    function dismissGameTab() {
+      localStorage.setItem('learny_game_tab_dismissed', 'true');
+      document.getElementById('game-dashboard-tab').style.display = 'none';
+    }
+
+    function showGameTab() {
+      document.getElementById('game-dashboard-tab').style.display = 'block';
+    }
+
+    // Medal colors
+    const MEDAL_COLORS = {
+      1: { color: '#ffd700', icon: 'fa-medal', label: '🥇 Gold' },
+      2: { color: '#c0c0c0', icon: 'fa-medal', label: '🥈 Silver' },
+      3: { color: '#cd7f32', icon: 'fa-medal', label: '🥉 Bronze' }
+    };
+
+    // Render rank with medal or number
+    function renderRank(rank) {
+      const display = document.getElementById('dash-rank-display');
+      if (!rank || rank === '-') {
+        display.textContent = '-';
+        display.style.color = 'var(--text-muted)';
+        return;
+      }
+      if (MEDAL_COLORS[rank]) {
+        const m = MEDAL_COLORS[rank];
+        display.innerHTML = `<i class="fa ${m.icon}" style="color:${m.color};font-size:20px;"></i>`;
+        display.title = `Rank #${rank} - ${m.label}`;
+      } else {
+        display.textContent = `#${rank}`;
+        display.style.color = 'var(--primary-light)';
+        display.title = `Rank #${rank}`;
+      }
+    }
+
+    // Render top 3 leaderboard
+    function renderTop3(data, playerName) {
+      const tbody = document.getElementById('dash-leaderboard-body');
+      if (!tbody) return;
+      
+      const top3 = data.slice(0, 3);
+      if (top3.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" style="padding:12px 6px;text-align:center;color:var(--text-muted);">No scores yet</td></tr>';
+        return;
+      }
+      
+      tbody.innerHTML = top3.map((e, i) => {
+        const rank = i + 1;
+        const medal = MEDAL_COLORS[rank];
+        const isUser = e.name === playerName;
+        return `
+          <tr style="${isUser ? 'background:rgba(108,43,217,0.1);' : ''}">
+            <td style="padding:8px 6px;font-weight:700;">
+              <i class="fa ${medal.icon}" style="color:${medal.color};font-size:16px;"></i>
+            </td>
+            <td style="padding:8px 6px;">${e.name}${isUser ? ' <small style="color:var(--primary);">(You)</small>' : ''}</td>
+            <td style="padding:8px 6px;text-align:right;font-weight:700;color:var(--success);">${e.score}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Load user stats and leaderboard
+    async function loadGameDashboard() {
+      const tab = document.getElementById('game-dashboard-tab');
+      if (!tab) return;
+      
+      // Check dismissal
+      if (isGameTabDismissed()) {
+        tab.style.display = 'none';
+        return;
+      }
+      tab.style.display = 'block';
+
+      // Get player name from APP
+      const playerName = (typeof APP !== 'undefined' && APP.data?.profile?.name) ? APP.data.profile.name : null;
+      
+      if (!playerName || playerName === 'User') {
+        // Show placeholder
+        document.getElementById('dash-best-score').textContent = '-';
+        document.getElementById('dash-best-moves').textContent = '-';
+        document.getElementById('dash-fastest-time').textContent = '-';
+        renderRank('-');
+        document.getElementById('dash-rank-note').style.display = 'none';
+        renderTop3([], null);
+        return;
+      }
+
+      try {
+        // Fetch all leaderboard data for rank calculation
+        const snap = await getDocs(query(collection(db, "leaderboard"), orderBy("score", "desc"), limit(100)));
+        const allData = [];
+        snap.forEach(doc => allData.push({ id: doc.id, ...doc.data() }));
+        
+        // Sort: score desc, moves asc, timestamp asc
+        allData.sort((a, b) => 
+          b.score - a.score || a.moves - b.moves || (a.timestamp || 0) - (b.timestamp || 0)
+        );
+
+        // Get user's best stats
+        const userEntries = allData.filter(e => e.name === playerName);
+        if (userEntries.length > 0) {
+          const bestScore = Math.max(...userEntries.map(e => e.score));
+          const bestMoves = Math.min(...userEntries.map(e => e.moves));
+          const fastest = userEntries.reduce((fast, curr) => {
+            const [cm, cs] = curr.time.split(':').map(Number);
+            const [fm, fs] = fast ? fast.split(':').map(Number) : [99, 99];
+            return (cm * 60 + cs) < (fm * 60 + fs) ? curr.time : fast;
+          }, null);
+          
+          document.getElementById('dash-best-score').textContent = bestScore;
+          document.getElementById('dash-best-moves').textContent = bestMoves;
+          document.getElementById('dash-fastest-time').textContent = fastest || '-';
+          
+          // Calculate rank
+          let rank = 1;
+          for (let entry of allData) {
+            if (entry.name === playerName) continue;
+            if (entry.score > bestScore) rank++;
+            else if (entry.score === bestScore && entry.moves < bestMoves) rank++;
+            else break;
+          }
+          renderRank(rank);
+          document.getElementById('dash-rank-note').style.display = 'block';
+        } else {
+          document.getElementById('dash-best-score').textContent = '-';
+          document.getElementById('dash-best-moves').textContent = '-';
+          document.getElementById('dash-fastest-time').textContent = '-';
+          renderRank('-');
+          document.getElementById('dash-rank-note').style.display = 'none';
+        }
+        
+        // Render top 3
+        renderTop3(allData, playerName);
+        
+      } catch (e) {
+        console.error('Game dashboard load error:', e);
+        document.getElementById('dash-leaderboard-body').innerHTML = 
+          '<tr><td colspan="3" style="padding:12px 6px;text-align:center;color:var(--danger);">Error loading</td></tr>';
+      }
+    }
+
+    // Initialize when DOM ready
+    document.addEventListener('DOMContentLoaded', () => {
+      // Close button handler
+      const closeBtn = document.getElementById('close-game-tab');
+      if (closeBtn) {
+        closeBtn.onclick = (e) => {
+          e.preventDefault();
+          if (confirm('Hide this game tab from your dashboard? You can restore it anytime from the Games page.')) {
+            dismissGameTab();
+          }
+        };
+      }
+      
+      // Load game dashboard data
+      setTimeout(loadGameDashboard, 500);
+    });
+  </script>
 </body>
 </html>
