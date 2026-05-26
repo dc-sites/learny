@@ -235,7 +235,7 @@
     let state = { cards: [], flipped: [], matched: 0, moves: 0, secs: 0, timer: null, processing: false, hint: false, name: null, gameOn: false };
     let currentWinData = { moves: 0, time: '00:00', score: 0 };
     const existingNames = new Set();
-    let allLeaderboardData = []; // Store all scores for rank calculation
+    let allLeaderboardData = [];
 
     const els = {
       board: document.getElementById('game-board'), moves: document.getElementById('moves'), time: document.getElementById('time'), matches: document.getElementById('matches'),
@@ -252,6 +252,30 @@
       yourPosition: document.getElementById('your-position'), yourRankDisplay: document.getElementById('your-rank-display'), yourScoreDisplay: document.getElementById('your-score-display')
     };
 
+    // ============= FIX: localStorage for name persistence =============
+    const GAME_STORAGE_KEY = 'learny_game_player';
+    
+    function getSavedPlayerName() {
+      try {
+        const saved = localStorage.getItem(GAME_STORAGE_KEY);
+        return saved ? JSON.parse(saved).name : null;
+      } catch(e) { return null; }
+    }
+    
+    function savePlayerName(name) {
+      try {
+        localStorage.setItem(GAME_STORAGE_KEY, JSON.stringify({ 
+          name: name.toLowerCase().trim(), 
+          savedAt: Date.now() 
+        }));
+      } catch(e) { console.error('Save name error', e); }
+    }
+    
+    function clearSavedPlayerName() {
+      localStorage.removeItem(GAME_STORAGE_KEY);
+    }
+    // ============= END FIX =============
+
     function waitForAPP(callback, max = 50) {
       let att = 0;
       function check() {
@@ -263,22 +287,36 @@
     }
 
     function showModals() {
-      if (sessionStorage.getItem('learny_game_visited') === 'true') {
-        waitForAPP(app => { 
-          if (app.data.profile.name !== 'User') {
-            state.name = app.data.profile.name;
-            loadUserStats(state.name);
+      // ============= FIX: Check localStorage first =============
+      const savedName = getSavedPlayerName();
+      
+      // If name saved in localStorage, use it directly (no modal)
+      if (savedName && savedName.length >= 3 && savedName.length <= 15) {
+        state.name = savedName;
+        // Also sync with APP profile if needed
+        waitForAPP(app => {
+          if (app.data.profile.name === 'User') {
+            app.data.profile.name = savedName;
+            app.save?.();
+            app.updateGreetingUI?.();
           }
-          start(); 
         });
+        loadUserStats(savedName);
+        start();
         return;
       }
+      // ============= END FIX =============
+      
+      // Only show name modal if no valid saved name
       els.nameModal.classList.add('show');
       els.nameInput.focus();
       
+      // Pre-fill from APP profile if available
       waitForAPP(app => {
         const profileName = app.data.profile.name;
-        if (profileName && profileName !== 'User') els.nameInput.value = profileName;
+        if (profileName && profileName !== 'User') {
+          els.nameInput.value = profileName;
+        }
       });
     }
 
@@ -306,7 +344,6 @@
           if(val.name) existingNames.add(val.name.toLowerCase());
           allLeaderboardData.push({ id: d.id, ...val });
         });
-        // Sort: score desc, moves asc, timestamp asc
         allLeaderboardData.sort((a,b) => 
           b.score - a.score || a.moves - b.moves || (a.timestamp||0) - (b.timestamp||0)
         );
@@ -314,23 +351,17 @@
       });
     }
 
-    // Calculate player rank based on their best score
     function calculatePlayerRank(playerName, bestScore) {
       if (!bestScore || bestScore === '-') return null;
-      
-      // Find position where player's best score would rank
       let rank = 1;
       for (let entry of allLeaderboardData) {
-        if (entry.name === playerName) continue; // Skip self
+        if (entry.name === playerName) continue;
         if (entry.score > bestScore) {
           rank++;
         } else if (entry.score === bestScore) {
-          // Tie-breaker: fewer moves = higher rank
-          if (entry.moves < state.bestMoves) {
-            rank++;
-          }
+          if (entry.moves < state.bestMoves) rank++;
         } else {
-          break; // No need to check lower scores
+          break;
         }
       }
       return rank;
@@ -341,7 +372,7 @@
         const snap = await getDocs(query(collection(db, "leaderboard"), orderBy("timestamp", "desc"), limit(100)));
         const all = []; 
         snap.forEach(d => all.push(d.data()));
-        const mine = all.filter(e => e.name === name);
+        const mine = all.filter(e => e.name.toLowerCase() === name.toLowerCase());
         
         if (!mine.length) {
           els.statsPanel.style.display = 'none';
@@ -351,7 +382,6 @@
         els.statsPanel.style.display = 'block'; 
         els.playerName.textContent = name;
         
-        // Calculate best stats
         const bestScore = Math.max(...mine.map(e => e.score));
         const bestMoves = Math.min(...mine.map(e => e.moves));
         const fastestTime = mine.reduce((fastest, current) => {
@@ -364,17 +394,13 @@
         els.bMoves.textContent = bestMoves;
         els.bTime.textContent = fastestTime || '-';
         
-        // Store for rank calculation
         state.bestScore = bestScore;
         state.bestMoves = bestMoves;
         
-        // Calculate and display rank
         const rank = calculatePlayerRank(name, bestScore);
         if (rank !== null) {
           els.bRank.textContent = `#${rank}`;
           els.rankNote.style.display = 'block';
-          
-          // Also show in leaderboard tab
           els.yourRankDisplay.textContent = `#${rank}`;
           els.yourScoreDisplay.textContent = bestScore;
           els.yourPosition.style.display = 'block';
@@ -383,7 +409,6 @@
           els.rankNote.style.display = 'none';
         }
         
-        // Recent plays
         els.recentPlays.innerHTML = mine.slice(0, 5).map(p => `
           <div class="recent-play-item">
             <span><span style="color:var(--success);font-weight:700;">${p.score}</span> pts • ${p.moves}m • ${p.time}</span>
@@ -489,25 +514,34 @@
         els.nameError.style.display = 'block'; 
         return; 
       }
+      // Check against existing names (case-insensitive)
       if (existingNames.has(n.toLowerCase())) { 
         els.nameError.textContent = '⚠️ Name already exists. Please enter a unique name.'; 
         els.nameError.style.display = 'block'; 
         return; 
       }
       
-      state.name = n;
+      state.name = n.toLowerCase();
+      
+      // ============= FIX: Save to localStorage =============
+      savePlayerName(state.name);
+      // ============= END FIX =============
+      
       els.nameModal.classList.remove('show');
       els.rulesModal.classList.add('show');
     };
 
     els.startRules.onclick = () => {
       els.rulesModal.classList.remove('show');
-      sessionStorage.setItem('learny_game_visited', 'true');
+      // ============= FIX: Use localStorage flag instead of sessionStorage =============
+      localStorage.setItem('learny_game_visited', 'true');
+      // ============= END FIX =============
+      
       waitForAPP(app => {
         if (app.data.profile.name === 'User') {
           app.data.profile.name = state.name; 
-          app.save(); 
-          app.updateGreetingUI();
+          app.save?.(); 
+          app.updateGreetingUI?.();
         }
       });
       start();
@@ -532,11 +566,10 @@
         return;
       }
       
-      // Find player's best score for highlighting
       const playerBestScore = state.bestScore || 0;
       
       els.lbBody.innerHTML = data.length ? data.map((e, i) => {
-        const isCurrentUser = e.name === state.name && e.score === playerBestScore;
+        const isCurrentUser = e.name.toLowerCase() === state.name.toLowerCase() && e.score === playerBestScore;
         return `
           <tr class="${isCurrentUser ? 'current-user' : ''}">
             <td class="rank rank-${i+1}">#${i+1}</td>
@@ -549,6 +582,14 @@
         `;
       }).join('') : '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted);">No scores yet</td></tr>';
     }
+
+    // ============= FIX: Add clear name function for debugging =============
+    window.clearGameName = function() {
+      clearSavedPlayerName();
+      localStorage.removeItem('learny_game_visited');
+      console.log('Game name cleared. Reload to enter new name.');
+    };
+    // ============= END FIX =============
 
     document.addEventListener('DOMContentLoaded', () => {
       listenLeaderboard(renderLB);
