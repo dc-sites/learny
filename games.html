@@ -7,11 +7,14 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    /* Game Tabs */
     .game-tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 12px; flex-wrap: wrap; }
     .game-tab-btn { padding: 10px 18px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-muted); font-weight: 600; font-size: 14px; cursor: pointer; transition: all var(--transition); display: flex; align-items: center; gap: 8px; }
     .game-tab-btn:hover { background: var(--bg-card-hover); color: var(--text-main); }
     .game-tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 4px 12px rgba(108, 43, 217, 0.3); }
     .tab-content { animation: fadeIn 0.3s ease; }
+
+    /* Memory Board */
     .memory-container { max-width: 600px; margin: 0 auto; padding: 16px; background: var(--bg-card); border-radius: var(--radius); border: 1px solid var(--border); }
     .memory-stats { display: flex; justify-content: space-around; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
     .memory-stat-item { text-align: center; min-width: 70px; }
@@ -28,13 +31,16 @@
     .memory-card.matched .memory-card-back { background: var(--success); border-color: var(--success); color: #fff; animation: cardPop 0.4s; }
     @keyframes cardPop { 0%, 100% { transform: rotateY(180deg) scale(1); } 50% { transform: rotateY(180deg) scale(1.15); } }
     .memory-controls { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+    /* User Stats & Leaderboard */
     .user-stats-panel { background: var(--bg-dark); border-radius: var(--radius); padding: 16px; margin-top: 20px; border: 1px solid var(--border); }
-    .user-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+    .user-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
     .user-stat-box { background: var(--bg-card); padding: 10px; border-radius: var(--radius-sm); text-align: center; border: 1px solid var(--border); }
     .user-stat-box .val { font-size: 16px; font-weight: 800; color: var(--primary-light); }
     .user-stat-box .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
     .recent-plays { max-height: 120px; overflow-y: auto; font-size: 12px; color: var(--text-muted); }
     .recent-play-item { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); }
+    
     .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 14px; }
     .leaderboard-table th { padding: 12px 8px; text-align: left; color: var(--text-muted); border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; white-space: nowrap; }
     .leaderboard-table td { padding: 10px 8px; border-bottom: 1px solid var(--border); color: var(--text-main); white-space: nowrap; }
@@ -43,20 +49,28 @@
     .leaderboard-table .rank-2 { color: #c0c0c0; font-weight: 700; }
     .leaderboard-table .rank-3 { color: #cd7f32; font-weight: 700; }
     .leaderboard-table .score { color: var(--success); font-weight: 700; }
+
+    /* Modals */
     .overlay-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 10000; backdrop-filter: blur(5px); opacity: 0; pointer-events: none; transition: all 0.3s; }
     .overlay-modal.show { opacity: 1; pointer-events: all; }
     .modal-content { background: var(--bg-card); padding: 28px; border-radius: var(--radius); max-width: 450px; width: 90%; border: 1px solid var(--primary); box-shadow: 0 10px 40px rgba(0,0,0,0.6); transform: scale(0.95); transition: all 0.3s; text-align: center; }
     .overlay-modal.show .modal-content { transform: scale(1); }
     .modal-input { width: 100%; padding: 14px; margin: 12px 0; background: var(--bg-dark); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-main); font-size: 15px; text-align: center; }
     .modal-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,43,217,0.2); }
+    .rules-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 16px 0; text-align: left; }
+    .rule-item { background: var(--bg-dark); padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; gap: 8px; font-size: 13px; border: 1px solid var(--border); }
+    .rule-icon { font-size: 18px; }
+    
     @media (max-width: 768px) {
       .game-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; flex-wrap: nowrap; }
       .game-tab-btn { flex-shrink: 0; }
       .memory-board { grid-template-columns: repeat(4, 1fr); gap: 8px; }
       .memory-card-face { font-size: 0.8rem; padding: 2px; }
-      .user-stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .user-stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .user-stat-box .val { font-size: 14px; }
       .leaderboard-table { font-size: 12px; }
       .leaderboard-table th, .leaderboard-table td { padding: 8px 6px; }
+      .rules-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 480px) {
       .memory-container { padding: 12px; }
@@ -64,7 +78,7 @@
       .memory-card-front::after { font-size: 1.2rem; }
       .memory-controls { flex-direction: column; align-items: center; }
       .memory-controls .btn { width: 100%; justify-content: center; }
-      .user-stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .user-stats-grid { grid-template-columns: 1fr; }
       .modal-content { padding: 20px 16px; width: 95%; }
     }
   </style>
@@ -114,17 +128,15 @@
             </div>
             <div class="memory-board" id="game-board"></div>
             <div class="memory-controls">
-              <button class="btn btn-secondary" id="hint-btn" disabled><i class="fa fa-lightbulb"></i> Hint <span id="hint-count">(1)</span></button>
+              <button class="btn btn-secondary" id="hint-btn" disabled><i class="fa fa-lightbulb"></i> Hint <span id="hint-count">(0)</span></button>
               <button class="btn btn-primary" id="restart-btn"><i class="fa fa-redo"></i> New Game</button>
               <span style="font-size:11px;color:var(--text-muted);align-self:center;">🔒 Hard Mode</span>
             </div>
           </div>
 
-          <!-- ✅ PERFORMANCE PANEL (ALWAYS SHOWS IF NAME EXISTS) -->
           <div class="user-stats-panel" id="user-stats-panel" style="display:none;">
             <h4 style="margin:0 0 12px;font-size:14px;color:var(--primary-light);"><i class="fa fa-user"></i> <span id="player-display-name">Your</span> Performance</h4>
             <div class="user-stats-grid">
-              <div class="user-stat-box"><div class="val" id="user-rank">-</div><div class="lbl">Current Rank</div></div>
               <div class="user-stat-box"><div class="val" id="user-best-score">-</div><div class="lbl">Best Score</div></div>
               <div class="user-stat-box"><div class="val" id="user-best-moves">-</div><div class="lbl">Fewest Moves</div></div>
               <div class="user-stat-box"><div class="val" id="user-fastest-time">-</div><div class="lbl">Fastest Time</div></div>
@@ -132,10 +144,6 @@
             <h4 style="margin:0 0 8px;font-size:12px;color:var(--text-muted);"><i class="fa fa-history"></i> Recent Plays</h4>
             <div class="recent-plays" id="recent-plays-list"></div>
           </div>
-          
-          <button class="btn btn-secondary w-full" id="add-to-dashboard-btn" style="margin-top:20px;justify-content:center;">
-            <i class="fa fa-plus-circle"></i> Add Game Tab to Dashboard
-          </button>
         </div>
 
         <div id="tab-leaderboard" class="tab-content hidden">
@@ -149,15 +157,32 @@
         </div>
       </div>
 
-      <!-- Name Modal (ONLY SHOWS ONCE EVER) -->
+      <!-- Name Entry Modal -->
       <div class="overlay-modal" id="name-modal">
         <div class="modal-content">
           <i class="fa fa-user-edit" style="font-size:32px;color:var(--primary);margin-bottom:12px;"></i>
           <h3 style="margin-bottom:8px;">Enter Your Name</h3>
-          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Enter your name once. It will be saved permanently.</p>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">To save your score to the leaderboard, please enter a unique name.</p>
           <input type="text" id="player-name-input" class="modal-input" placeholder="Name (3-15 chars)" maxlength="15">
           <p id="name-error" style="color:var(--danger);font-size:12px;margin-bottom:8px;display:none;"></p>
-          <button class="btn btn-primary w-full" id="start-game-btn"><i class="fa fa-play"></i> Save & Start</button>
+          <button class="btn btn-primary w-full" id="start-game-btn"><i class="fa fa-play"></i> Continue</button>
+        </div>
+      </div>
+
+      <!-- Rules Modal -->
+      <div class="overlay-modal" id="rules-modal">
+        <div class="modal-content">
+          <h3 style="margin-bottom:12px;color:var(--primary-light);">📜 Game Rules</h3>
+          <div class="rules-grid">
+            <div class="rule-item"><span class="rule-icon">🧠</span> <span>Match 8 pairs of words & emojis</span></div>
+            <div class="rule-item"><span class="rule-icon">🔒</span> <span>Hard Mode: 16 cards total</span></div>
+            <div class="rule-item"><span class="rule-icon">💡</span> <span>1 Hint allowed per game</span></div>
+            <div class="rule-item"><span class="rule-icon">🏆</span> <span>Top scores saved to leaderboard</span></div>
+          </div>
+          <div style="background:var(--bg-dark);padding:10px;border-radius:8px;margin-bottom:16px;font-size:12px;color:var(--text-muted);">
+            Pairs: 🌍 Earth, 🧪 Science, 📐 Geometry, 🔢 Math, 📖 Literature, 🎨 Art, 🎵 Music, 💻 Coding
+          </div>
+          <button class="btn btn-primary w-full" id="start-after-rules"><i class="fa fa-gamepad"></i> I Understand, Start Game!</button>
         </div>
       </div>
 
@@ -172,7 +197,7 @@
             <div><div style="font-size:18px;font-weight:800;" id="final-time">00:00</div><div style="font-size:11px;color:var(--text-muted);">Time</div></div>
             <div><div style="font-size:18px;font-weight:800;color:var(--primary-light);" id="final-score">0</div><div style="font-size:11px;color:var(--text-muted);">Score</div></div>
           </div>
-          <button class="btn btn-secondary w-full" id="share-score-btn" style="margin-bottom:10px;"><i class="fa fa-share-alt"></i> Share Score</button>
+          <button class="share-btn" id="share-score-btn" style="width:100%;padding:10px;background:var(--bg-dark);border:1px solid var(--border);color:var(--text-muted);border-radius:8px;cursor:pointer;margin-bottom:10px;"><i class="fa fa-share-alt"></i> Share Your Score</button>
           <button class="btn btn-primary w-full" id="play-again-btn"><i class="fa fa-redo"></i> Play Again</button>
         </div>
       </div>
@@ -185,7 +210,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js";
-    import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
     const firebaseConfig = { apiKey: "AIzaSyDyDQjhq4qkSdTiNZAORvi9KHaYMjKgwVU", authDomain: "learny-game.firebaseapp.com", projectId: "learny-game", storageBucket: "learny-game.firebasestorage.app", messagingSenderId: "21192905625", appId: "1:21192905625:web:1074315ffebf71deb03908", measurementId: "G-HS3LSWDXQT" };
@@ -205,47 +230,84 @@
       board: document.getElementById('game-board'), moves: document.getElementById('moves'), time: document.getElementById('time'), matches: document.getElementById('matches'),
       hint: document.getElementById('hint-btn'), hintCount: document.getElementById('hint-count'), restart: document.getElementById('restart-btn'),
       nameModal: document.getElementById('name-modal'), nameInput: document.getElementById('player-name-input'), nameError: document.getElementById('name-error'), startBtn: document.getElementById('start-game-btn'),
+      rulesModal: document.getElementById('rules-modal'), startRules: document.getElementById('start-after-rules'),
       winModal: document.getElementById('win-modal'), winMoves: document.getElementById('final-moves'), winTime: document.getElementById('final-time'), winScore: document.getElementById('final-score'),
       playAgain: document.getElementById('play-again-btn'), shareBtn: document.getElementById('share-score-btn'),
       lbBody: document.getElementById('leaderboard-body'), tabs: document.querySelectorAll('.game-tab-btn'), contents: document.querySelectorAll('.tab-content'),
       statsPanel: document.getElementById('user-stats-panel'), playerName: document.getElementById('player-display-name'),
-      uRank: document.getElementById('user-rank'), bScore: document.getElementById('user-best-score'), bMoves: document.getElementById('user-best-moves'), bTime: document.getElementById('user-fastest-time'), recentPlays: document.getElementById('recent-plays-list'),
-      addDashBtn: document.getElementById('add-to-dashboard-btn')
+      bScore: document.getElementById('user-best-score'), bMoves: document.getElementById('user-best-moves'), bTime: document.getElementById('user-fastest-time'), recentPlays: document.getElementById('recent-plays-list')
     };
 
-    // Helper to wait for APP from script.js
-    function waitForAPP(callback, max = 50) { 
-      let att = 0; 
-      function check() { 
-        if (typeof APP !== 'undefined' && APP.data?.profile) callback(APP); 
-        else if (att < max) { att++; setTimeout(check, 100); } 
-        else callback({ data: { profile: { name: 'User' } } }); 
-      } 
-      check(); 
+    function waitForAPP(callback, max = 50) {
+      let att = 0;
+      function check() {
+        if (typeof APP !== 'undefined' && APP.data?.profile) callback(APP);
+        else if (att < max) { att++; setTimeout(check, 100); }
+        else callback({ data: { profile: { name: 'User' } } });
+      }
+      check();
     }
 
-    function initGame() {
-      // 1. Check if name is already saved in localStorage (PERMANENT)
-      const savedName = localStorage.getItem('learny_game_name');
-      if (savedName && savedName.length > 2) {
-        state.name = savedName;
-        // Hide modal, show game immediately
-        els.nameModal.classList.remove('show');
-        els.nameModal.style.display = 'none'; // Force hide
-        start();
+    function showModals() {
+      if (sessionStorage.getItem('learny_game_visited') === 'true') {
+        waitForAPP(app => { if (app.data.profile.name !== 'User') state.name = app.data.profile.name; start(); });
         return;
       }
-      
-      // 2. If no name, show modal
-      els.nameModal.style.display = 'flex'; // Ensure display flex for centering
+      els.nameModal.classList.add('show');
       els.nameInput.focus();
+      
+      waitForAPP(app => {
+        const profileName = app.data.profile.name;
+        if (profileName && profileName !== 'User') els.nameInput.value = profileName;
+      });
+    }
+
+    async function saveScore(score, moves, time) {
+      try {
+        if (!auth.currentUser) await signInAnonymously(auth);
+        await addDoc(collection(db, "leaderboard"), { name: state.name, score, moves, time, timestamp: Date.now(), date: serverTimestamp(), uid: auth.currentUser.uid });
+      } catch (e) { console.error("Save error", e); }
+    }
+
+    function listenLeaderboard(cb) {
+      onSnapshot(query(collection(db, "leaderboard"), orderBy("score", "desc"), limit(50)), snap => {
+        existingNames.clear();
+        const data = []; snap.forEach(d => {
+          const val = d.data(); if(val.name) existingNames.add(val.name.toLowerCase());
+          data.push({ id: d.id, ...val });
+        });
+        data.sort((a,b) => b.score - a.score || a.moves - b.moves || (a.timestamp||0) - (b.timestamp||0));
+        cb(data.slice(0, 10));
+      });
+    }
+
+    async function loadUserStats(name) {
+      try {
+        const snap = await getDocs(query(collection(db, "leaderboard"), orderBy("timestamp", "desc"), limit(50)));
+        const all = []; snap.forEach(d => all.push(d.data()));
+        const mine = all.filter(e => e.name === name);
+        if (!mine.length) return els.statsPanel.style.display = 'none';
+        els.statsPanel.style.display = 'block'; els.playerName.textContent = name;
+        els.bScore.textContent = Math.max(...mine.map(e => e.score));
+        els.bMoves.textContent = Math.min(...mine.map(e => e.moves));
+        els.bTime.textContent = mine.reduce((f, c) => {
+          const [cm, cs] = c.time.split(':').map(Number); const [fm, fs] = f ? f.split(':').map(Number) : [99,99];
+          return (cm*60+cs) < (fm*60+fs) ? c.time : f;
+        }, null);
+        els.recentPlays.innerHTML = mine.slice(0, 5).map(p => `
+          <div class="recent-play-item">
+            <span><span style="color:var(--success);font-weight:700;">${p.score}</span> pts • ${p.moves}m • ${p.time}</span>
+            <span>${new Date(p.timestamp).toLocaleDateString()}</span>
+          </div>
+        `).join('');
+      } catch(e) { console.error("Stats error", e); }
     }
 
     function start() {
       clearInterval(state.timer);
       state = { ...state, cards: [], flipped: [], matched: 0, moves: 0, secs: 0, timer: null, processing: false, hint: false, gameOn: true };
       els.moves.textContent = '0'; els.time.textContent = '00:00'; els.matches.textContent = '0'; els.winModal.classList.remove('show');
-      els.hint.disabled = false; els.hintCount.textContent = '(1)';
+      els.hint.disabled = false; els.hintCount.textContent = '(0)';
       
       state.cards = [];
       cardPairs.forEach((p, i) => { state.cards.push({ id: `p${i}-1`, content: p.front, pairId: i }); state.cards.push({ id: `p${i}-2`, content: p.back, pairId: i }); });
@@ -261,9 +323,7 @@
       `).join('');
 
       els.board.querySelectorAll('.memory-card').forEach(el => el.onclick = () => handle(el));
-      
-      // ✅ LOAD PERFORMANCE PANEL
-      if (state.name) loadUserStats(state.name);
+      if (state.name !== 'User') loadUserStats(state.name);
     }
 
     function handle(el) {
@@ -297,138 +357,55 @@
       els.winMoves.textContent = state.moves; els.winTime.textContent = els.time.textContent; els.winScore.textContent = score;
       currentWinData = { moves: state.moves, time: els.time.textContent, score };
       els.winModal.classList.add('show');
-      if (state.name) saveScoreToFirebase(score, state.moves, els.time.textContent);
+      if (state.name) saveScore(score, state.moves, els.time.textContent);
     }
 
-    async function saveScoreToFirebase(score, moves, time) {
-      try {
-        if (!auth.currentUser) await signInAnonymously(auth);
-        await addDoc(collection(db, "leaderboard"), { name: state.name, score, moves, time, timestamp: Date.now(), date: serverTimestamp(), uid: auth.currentUser.uid });
-      } catch (e) { console.error("Save error", e); }
-    }
-
-    // ✅ REAL-TIME RANK & STATS
-    function loadUserStats(playerName) {
-      onSnapshot(query(collection(db, "leaderboard"), orderBy("timestamp", "desc"), limit(200)), snap => {
-        const rawData = [];
-        existingNames.clear();
-        snap.forEach(d => {
-          const val = d.data();
-          if(val.name) existingNames.add(val.name.toLowerCase());
-          rawData.push({ id: d.id, ...val });
-        });
-
-        // Calculate Best Scores per Player
-        const bestMap = new Map();
-        rawData.forEach(e => {
-          const k = (e.name || '').toLowerCase();
-          if (!bestMap.has(k) || e.score > bestMap.get(k).score) bestMap.set(k, e);
-        });
-        const leaderboard = Array.from(bestMap.values()).sort((a,b) => b.score - a.score);
-
-        // Calculate User Rank
-        const userIdx = leaderboard.findIndex(e => e.name.toLowerCase() === playerName.toLowerCase());
-        const rank = userIdx + 1;
-
-        // Update Rank Display
-        els.uRank.textContent = rank > 0 ? `#${rank}` : '-';
-        els.statsPanel.style.display = 'block';
-        els.playerName.textContent = playerName;
-
-        // Calculate Stats from Raw Data (All plays)
-        const myPlays = rawData.filter(e => e.name === playerName).sort((a,b) => b.timestamp - a.timestamp);
-        if (myPlays.length) {
-          const best = myPlays.reduce((prev, curr) => curr.score > prev.score ? curr : prev, myPlays[0]);
-          els.bScore.textContent = best.score;
-          els.bMoves.textContent = Math.min(...myPlays.map(e=>e.moves));
-          els.bTime.textContent = myPlays.reduce((fast, curr) => {
-            const [cm,cs]=curr.time.split(':').map(Number); const [fm,fs]=fast?fast.split(':').map(Number):[99,99];
-            return (cm*60+cs)<(fm*60+fs)?curr.time:fast;
-          }, null);
-          els.recentPlays.innerHTML = myPlays.slice(0,5).map(p => `
-            <div class="recent-play-item">
-              <span><span style="color:var(--success);font-weight:700;">${p.score}</span> pts • ${p.moves}m • ${p.time}</span>
-              <span>${new Date(p.timestamp).toLocaleDateString()}</span>
-            </div>
-          `).join('');
-        }
-
-        // Update Global Leaderboard Table if visible
-        if (document.getElementById('tab-leaderboard').classList.contains('active')) {
-          renderLeaderboard(leaderboard);
-        }
-      });
-    }
-
-    function renderLeaderboard(data) {
-      els.lbBody.innerHTML = data.slice(0, 10).map((e, i) => `
-        <tr><td class="rank rank-${i+1}">#${i+1}</td><td>${e.name}</td><td class="score">${e.score}</td><td>${e.moves}</td><td>${e.time}</td><td style="font-size:11px;color:var(--text-muted);">${new Date(e.timestamp).toLocaleDateString()}</td></tr>
-      `).join('');
-    }
+    els.shareBtn.onclick = () => {
+      const url = window.location.origin + window.location.pathname;
+      const text = `🎮 I scored ${currentWinData.score} pts in Learny Memory Match! Moves: ${currentWinData.moves} | Time: ${currentWinData.time}\nCan you beat me? Play here: ${url}`;
+      if (navigator.share) { navigator.share({ title: 'Learny Game Score', text }).catch(() => {}); } 
+      else { navigator.clipboard.writeText(text).then(() => { els.shareBtn.innerHTML = '<i class="fa fa-check"></i> Copied!'; setTimeout(() => els.shareBtn.innerHTML = '<i class="fa fa-share-alt"></i> Share Your Score', 2000); }); }
+    };
 
     els.startBtn.onclick = () => {
       const n = els.nameInput.value.trim();
       els.nameError.style.display = 'none';
       if (n.length < 3 || n.length > 15) { els.nameError.textContent = 'Name must be 3-15 characters'; els.nameError.style.display = 'block'; return; }
+      if (existingNames.has(n.toLowerCase())) { els.nameError.textContent = '⚠️ Name already exists. Please enter a unique name.'; els.nameError.style.display = 'block'; return; }
       
-      // ✅ SAVE NAME PERMANENTLY
-      localStorage.setItem('learny_game_name', n);
       state.name = n;
       els.nameModal.classList.remove('show');
-      els.nameModal.style.display = 'none';
-      
-      // ✅ SYNC WITH APP PROFILE
-      waitForAPP(app => { 
-        if (app.data.profile.name === 'User' || !app.data.profile.name) { 
-          app.data.profile.name = n; app.save(); 
-          if(app.updateGreetingUI) app.updateGreetingUI(); 
-        } 
+      els.rulesModal.classList.add('show');
+    };
+
+    els.startRules.onclick = () => {
+      els.rulesModal.classList.remove('show');
+      sessionStorage.setItem('learny_game_visited', 'true');
+      waitForAPP(app => {
+        if (app.data.profile.name === 'User') {
+          app.data.profile.name = state.name; app.save(); app.updateGreetingUI();
+        }
       });
-      
       start();
     };
 
-    els.restart.onclick = start; 
-    els.playAgain.onclick = start;
-    
+    els.restart.onclick = start; els.playAgain.onclick = start;
     els.tabs.forEach(btn => btn.onclick = () => {
       els.tabs.forEach(b => b.classList.remove('active')); btn.classList.add('active');
       els.contents.forEach(c => c.classList.add('hidden'));
       document.getElementById(`tab-${btn.dataset.tab}`).classList.remove('hidden');
+      if(btn.dataset.tab==='leaderboard') listenLeaderboard(renderLB);
     });
+    function renderLB(data) {
+      els.lbBody.innerHTML = data.length ? data.map((e, i) => `
+        <tr><td class="rank rank-${i+1}">#${i+1}</td><td>${e.name}</td><td class="score">${e.score}</td><td>${e.moves}</td><td>${e.time}</td><td style="font-size:11px;color:var(--text-muted);">${new Date(e.timestamp).toLocaleDateString()}</td></tr>
+      `).join('') : '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted);">No scores yet</td></tr>';
+    }
 
-    els.addDashBtn.onclick = () => {
-      localStorage.removeItem('learny_hide_game_tab');
-      showToast('✅ Added to dashboard!');
-    };
-
-    els.shareBtn.onclick = () => {
-      const text = `🎮 I scored ${currentWinData.score} pts in Learny Memory Match!\nPlay here: ${window.location.origin}${window.location.pathname}`;
-      if (navigator.share) navigator.share({ title: 'Learny Game Score', text }).catch(() => {}); 
-      else { navigator.clipboard.writeText(text).then(() => { els.shareBtn.innerHTML = '<i class="fa fa-check"></i> Copied!'; setTimeout(() => els.shareBtn.innerHTML = '<i class="fa fa-share-alt"></i> Share Score', 2000); }); }
-    };
-
-    function showToast(msg) { const t=document.getElementById('notification-toast'); if(t){t.querySelector('span').textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000);} }
-
-    // Listen for leaderboard tab switch
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === "class") {
-          if (document.getElementById('tab-leaderboard').classList.contains('active') && state.name) {
-             loadUserStats(state.name); // Refreshes data when tab is clicked
-          }
-        }
-      });
-    });
-    observer.observe(document.getElementById('tab-leaderboard'), { attributes: true });
-
-    // Initialize
     document.addEventListener('DOMContentLoaded', () => {
-      initGame();
-      // Pre-load leaderboard if needed later
+      listenLeaderboard(renderLB);
+      showModals();
     });
-
-    // Mobile & Theme Logic (Matches your site)
     document.querySelectorAll('.theme-toggle').forEach(b => b.onclick = () => { document.body.classList.toggle('light'); b.innerHTML = document.body.classList.contains('light')?'<i class="fa fa-sun"></i>':'<i class="fa fa-moon"></i>'; if(APP){APP.data.darkMode=!document.body.classList.contains('light');APP.save();} });
     document.getElementById('hamburger').onclick = () => { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebar-overlay').classList.toggle('show'); };
     document.getElementById('sidebar-overlay').onclick = () => { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('show'); };
