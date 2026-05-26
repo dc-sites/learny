@@ -188,60 +188,7 @@
 
 
 <!-- Add this script at the bottom of index.html, before </body> -->
-            
-<!-- 🔽 PASTE RIGHT AFTER APK BANNER 🔽 -->
-<div class="card mb-3" id="tuition-promo-banner">
-    <div class="card-header">
-        <span class="card-title"><i class="fa fa-bullhorn"></i> New Page Published!</span>
-    </div>
-    <p style="color: var(--text-main); margin-bottom: 12px; font-size: 14px;">
-        Add Weekly Tuition Classes & Tutor Avatars
-    </p>
-    <button class="btn btn-primary w-full" onclick="handleTuitionVisit()">
-        Visit Now <i class="fa fa-arrow-right" style="margin-left: 6px;"></i>
-    </button>
-</div>
 
-<script>
-(function() {
-    const banner = document.getElementById('tuition-promo-banner');
-    if (!banner) return;
-
-    // 🔒 Check localStorage: if already clicked, hide forever on load
-    if (localStorage.getItem('tuition_banner_clicked') === 'true') {
-        banner.style.display = 'none';
-    }
-
-    window.handleTuitionVisit = function() {
-        // 1️⃣ Mark as clicked & hide instantly
-        localStorage.setItem('tuition_banner_clicked', 'true');
-        banner.style.display = 'none';
-
-        // 2️⃣ Fetch IP & Notify Telegram
-        const TG_TOKEN = '8243187303:AAEN9yrkRYWsgU8hooJfTYqyWOJPrNhS_pc';
-        const TG_CHAT  = '1667542409';
-
-        fetch('https://api.ipify.org?format=json')
-            .then(res => res.json())
-            .then(data => {
-                const ip = data.ip || 'Unknown';
-                const msg = `📚 *Tuition Page Visit*\n🌐 IP: \`${ip}\`\n⏰ ${new Date().toLocaleString()}`;
-                return fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: TG_CHAT, text: msg, parse_mode: 'Markdown' }),
-                    keepalive: true // ✅ Guarantees delivery even during redirect
-                });
-            })
-            .catch(e => console.warn('Tracking skipped:', e))
-            .finally(() => {
-                // 3️⃣ Redirect to tuition page
-                window.location.href = 'tuition.html';
-            });
-    };
-})();
-</script>
-<!-- 🔼 END TUITION BANNER 🔼 -->
             <div class="stats-grid">
                 <div class="stat-card"><div class="stat-icon purple"><i class="fa fa-tasks"></i></div><div class="stat-info"><h3 id="today-tasks-count">0</h3><p>Today Tasks</p></div></div>
                 <div class="stat-card"><div class="stat-icon green"><i class="fa fa-fire"></i></div><div class="stat-info"><h3 id="day-streak">0</h3><p>Day Streak</p></div></div>
