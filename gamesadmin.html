@@ -17,24 +17,17 @@
     .admin-stat-icon.blue { background: rgba(59,130,246,0.15); color: var(--info); }
     .admin-stat-info h3 { font-size: 22px; font-weight: 800; color: var(--text-main); margin: 0; line-height: 1; }
     .admin-stat-info p { font-size: 12px; color: var(--text-muted); margin: 0; }
-    
     .admin-actions { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
     .admin-actions .btn { flex: 1; min-width: 120px; justify-content: center; }
     .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: var(--radius-sm); }
     .delete-btn { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 11px; transition: all var(--transition); }
     .delete-btn:hover { background: var(--danger); color: #fff; }
-
     @media (max-width: 768px) {
       .admin-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
       .admin-stat-icon { width: 36px; height: 36px; font-size: 16px; }
       .admin-stat-info h3 { font-size: 18px; }
-      .admin-stat-info p { font-size: 10px; }
       .admin-actions { flex-direction: column; }
       .admin-actions .btn { width: 100%; }
-      .data-table th, .data-table td { padding: 10px 8px; font-size: 13px; white-space: nowrap; }
-    }
-    @media (max-width: 480px) {
-      .admin-stats-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -84,20 +77,19 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-    import { getFirestore, collection, query, orderBy, onSnapshot, deleteDoc, doc, getDocs } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+    import { getFirestore, collection, query, orderBy, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
     const firebaseConfig = { apiKey: "AIzaSyDyDQjhq4qkSdTiNZAORvi9KHaYMjKgwVU", authDomain: "learny-game.firebaseapp.com", projectId: "learny-game", storageBucket: "learny-game.firebasestorage.app", messagingSenderId: "21192905625", appId: "1:21192905625:web:1074315ffebf71deb03908", measurementId: "G-HS3LSWDXQT" };
     const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app);
-
     let allData = [];
 
-    async function load() {
-      await signInAnonymously(auth);
+    async function startListener() {
+      if (!auth.currentUser) await signInAnonymously(auth);
       onSnapshot(query(collection(db, "leaderboard"), orderBy("timestamp", "desc")), snap => {
         allData = []; snap.forEach(d => allData.push({ id: d.id, ...d.data() }));
         render();
-      });
+      }, err => console.error("Firestore listener error:", err));
     }
 
     function render() {
@@ -111,8 +103,7 @@
         document.getElementById('avg-time').textContent = `${Math.floor(avgS/60)}:${(avgS%60).toFixed(0).padStart(2,'0')}`;
         document.getElementById('avg-moves').textContent = Math.round(allData.reduce((s, e) => s + (e.moves||0), 0) / allData.length);
       } else {
-        document.getElementById('avg-time').textContent = '-';
-        document.getElementById('avg-moves').textContent = '-';
+        document.getElementById('avg-time').textContent = '-'; document.getElementById('avg-moves').textContent = '-';
       }
 
       document.getElementById('admin-tbody').innerHTML = allData.length ? allData.map((e, i) => `
@@ -120,45 +111,58 @@
       `).join('') : '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text-muted);">No data found</td></tr>';
     }
 
-    // Event Delegation for Delete
-    document.getElementById('admin-table').addEventListener('click', async (e) => {
-      const btn = e.target.closest('.delete-btn');
-      if (!btn) return;
-      const id = btn.dataset.id;
-      if (!confirm('Delete this entry?')) return;
-      try {
-        btn.disabled = true; btn.textContent = '...';
-        await deleteDoc(doc(db, "leaderboard", id));
-        showToast('✅ Entry deleted');
-      } catch (err) { console.error(err); showToast('❌ Delete failed'); btn.disabled = false; btn.textContent = 'Remove'; }
-    });
+    document.addEventListener('DOMContentLoaded', () => {
+      const table = document.getElementById('admin-table');
+      const clearBtn = document.getElementById('clear-all');
+      const exportBtn = document.getElementById('export-csv');
+      const refreshBtn = document.getElementById('refresh-btn');
 
-    // Clear All
-    document.getElementById('clear-all').addEventListener('click', async () => {
-      if (!confirm('⚠️ Delete ALL entries? This cannot be undone!')) return;
-      const btn = document.getElementById('clear-all');
-      btn.disabled = true; btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Clearing...';
-      try {
-        if (allData.length === 0) throw new Error("Empty");
-        await Promise.all(allData.map(entry => deleteDoc(doc(db, "leaderboard", entry.id))));
-        showToast('🗑️ All entries cleared');
-      } catch (err) { console.error(err); showToast('❌ Clear failed'); }
-      finally { btn.disabled = false; btn.innerHTML = '<i class="fa fa-trash"></i> Clear All'; }
-    });
+      table.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.delete-btn');
+        if (!btn) return;
+        const id = btn.dataset.id;
+        if (!confirm('Delete this player entry?')) return;
+        const origHTML = btn.innerHTML;
+        btn.disabled = true; btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+        try {
+          await deleteDoc(doc(db, "leaderboard", id));
+          showToast('✅ Entry deleted successfully');
+        } catch (err) {
+          console.error("❌ Delete failed:", err);
+          showToast('❌ Failed: Check Firestore Rules or Console');
+          btn.disabled = false; btn.innerHTML = origHTML;
+        }
+      });
 
-    document.getElementById('export-csv').onclick = () => {
-      if (!allData.length) return showToast('No data');
-      const csv = ['Name,Score,Moves,Time,Date', ...allData.map(e => `${e.name||''},${e.score||0},${e.moves||0},${e.time||''},${new Date(e.timestamp).toLocaleDateString()}`)];
-      const blob = new Blob([csv.join('\n')], {type:'text/csv'}); const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='leaderboard.csv'; a.click();
-      showToast('📥 CSV downloaded');
-    };
-    document.getElementById('refresh-btn').onclick = load;
+      clearBtn.addEventListener('click', async () => {
+        if (!confirm('⚠️ Delete ALL leaderboard entries? This cannot be undone!')) return;
+        clearBtn.disabled = true; clearBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Clearing...';
+        try {
+          if (allData.length === 0) throw new Error("Empty");
+          await Promise.all(allData.map(entry => deleteDoc(doc(db, "leaderboard", entry.id))));
+          showToast('🗑️ All entries cleared');
+        } catch (err) {
+          console.error("❌ Clear failed:", err);
+          showToast('❌ Clear failed: Check Rules/Console');
+        } finally {
+          clearBtn.disabled = false; clearBtn.innerHTML = '<i class="fa fa-trash"></i> Clear All';
+        }
+      });
+
+      exportBtn.onclick = () => {
+        if (!allData.length) return showToast('No data');
+        const csv = ['Name,Score,Moves,Time,Date', ...allData.map(e => `${e.name||''},${e.score||0},${e.moves||0},${e.time||''},${new Date(e.timestamp).toLocaleDateString()}`)];
+        const blob = new Blob([csv.join('\n')], {type:'text/csv'}); 
+        const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='leaderboard.csv'; a.click();
+        showToast('📥 CSV downloaded');
+      };
+      refreshBtn.onclick = startListener;
+      startListener();
+    });
 
     document.getElementById('hamburger').onclick = () => { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebar-overlay').classList.toggle('show'); };
     document.getElementById('sidebar-overlay').onclick = () => { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('show'); };
-    
     function showToast(m) { const t=document.getElementById('notification-toast'); if(t){t.querySelector('span').textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000);} }
-    document.addEventListener('DOMContentLoaded', load);
   </script>
   <script src="script.js"></script>
 </body>
