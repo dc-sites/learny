@@ -211,7 +211,33 @@
           <button class="btn btn-primary w-full" id="play-again-btn"><i class="fa fa-redo"></i> Play Again</button>
         </div>
       </div>
+<!-- Add this button inside the Win Modal or anywhere visible after playing -->
+<div style="margin-top:16px;text-align:center;">
+  <button id="add-to-dashboard-btn" class="btn btn-secondary" style="font-size:12px;padding:8px 16px;">
+    <i class="fa fa-plus-circle"></i> Add Games to My Dashboard
+  </button>
+  <p style="font-size:11px;color:var(--text-muted);margin-top:6px;">
+    Show game stats on your main dashboard
+  </p>
+</div>
 
+<script>
+// Add this script at the end of games.html body
+document.getElementById('add-to-dashboard-btn')?.addEventListener('click', function() {
+  localStorage.removeItem('learny_game_tab_dismissed');
+  this.innerHTML = '<i class="fa fa-check"></i> Added!';
+  this.disabled = true;
+  setTimeout(() => {
+    this.innerHTML = '<i class="fa fa-plus-circle"></i> Add Games to My Dashboard';
+    this.disabled = false;
+  }, 2000);
+  
+  // Optional: Show confirmation toast if APP exists
+  if (typeof APP !== 'undefined' && APP.showToast) {
+    APP.showToast('Games tab added to dashboard! 🎮');
+  }
+});
+</script>
       <footer class="site-footer">Powered by <a href="https://hexasolutions.online" style="color:var(--primary);">DC</a> | Made in Sri Lanka 🇱🇰</footer>
     </main>
   </div>
