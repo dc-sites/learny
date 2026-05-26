@@ -29,7 +29,7 @@
     @keyframes cardPop { 0%, 100% { transform: rotateY(180deg) scale(1); } 50% { transform: rotateY(180deg) scale(1.15); } }
     .memory-controls { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
     .user-stats-panel { background: var(--bg-dark); border-radius: var(--radius); padding: 16px; margin-top: 20px; border: 1px solid var(--border); }
-    .user-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+    .user-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
     .user-stat-box { background: var(--bg-card); padding: 10px; border-radius: var(--radius-sm); text-align: center; border: 1px solid var(--border); }
     .user-stat-box .val { font-size: 16px; font-weight: 800; color: var(--primary-light); }
     .user-stat-box .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
@@ -120,9 +120,11 @@
             </div>
           </div>
 
+          <!-- ✅ PERFORMANCE PANEL (ALWAYS SHOWS IF NAME EXISTS) -->
           <div class="user-stats-panel" id="user-stats-panel" style="display:none;">
             <h4 style="margin:0 0 12px;font-size:14px;color:var(--primary-light);"><i class="fa fa-user"></i> <span id="player-display-name">Your</span> Performance</h4>
             <div class="user-stats-grid">
+              <div class="user-stat-box"><div class="val" id="user-rank">-</div><div class="lbl">Current Rank</div></div>
               <div class="user-stat-box"><div class="val" id="user-best-score">-</div><div class="lbl">Best Score</div></div>
               <div class="user-stat-box"><div class="val" id="user-best-moves">-</div><div class="lbl">Fewest Moves</div></div>
               <div class="user-stat-box"><div class="val" id="user-fastest-time">-</div><div class="lbl">Fastest Time</div></div>
@@ -130,8 +132,7 @@
             <h4 style="margin:0 0 8px;font-size:12px;color:var(--text-muted);"><i class="fa fa-history"></i> Recent Plays</h4>
             <div class="recent-plays" id="recent-plays-list"></div>
           </div>
-
-          <!-- ✅ ADD TO DASHBOARD BUTTON -->
+          
           <button class="btn btn-secondary w-full" id="add-to-dashboard-btn" style="margin-top:20px;justify-content:center;">
             <i class="fa fa-plus-circle"></i> Add Game Tab to Dashboard
           </button>
@@ -148,18 +149,19 @@
         </div>
       </div>
 
-      <!-- Modals (Name, Win) -->
+      <!-- Name Modal (ONLY SHOWS ONCE EVER) -->
       <div class="overlay-modal" id="name-modal">
         <div class="modal-content">
           <i class="fa fa-user-edit" style="font-size:32px;color:var(--primary);margin-bottom:12px;"></i>
           <h3 style="margin-bottom:8px;">Enter Your Name</h3>
-          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">To save your score to the leaderboard, please enter a unique name.</p>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Enter your name once. It will be saved permanently.</p>
           <input type="text" id="player-name-input" class="modal-input" placeholder="Name (3-15 chars)" maxlength="15">
           <p id="name-error" style="color:var(--danger);font-size:12px;margin-bottom:8px;display:none;"></p>
-          <button class="btn btn-primary w-full" id="start-game-btn"><i class="fa fa-play"></i> Continue</button>
+          <button class="btn btn-primary w-full" id="start-game-btn"><i class="fa fa-play"></i> Save & Start</button>
         </div>
       </div>
 
+      <!-- Win Modal -->
       <div class="overlay-modal" id="win-modal">
         <div class="modal-content">
           <i class="fa fa-trophy" style="font-size:32px;color:var(--warning);margin-bottom:12px;"></i>
@@ -207,38 +209,36 @@
       playAgain: document.getElementById('play-again-btn'), shareBtn: document.getElementById('share-score-btn'),
       lbBody: document.getElementById('leaderboard-body'), tabs: document.querySelectorAll('.game-tab-btn'), contents: document.querySelectorAll('.tab-content'),
       statsPanel: document.getElementById('user-stats-panel'), playerName: document.getElementById('player-display-name'),
-      bScore: document.getElementById('user-best-score'), bMoves: document.getElementById('user-best-moves'), bTime: document.getElementById('user-fastest-time'), recentPlays: document.getElementById('recent-plays-list'),
+      uRank: document.getElementById('user-rank'), bScore: document.getElementById('user-best-score'), bMoves: document.getElementById('user-best-moves'), bTime: document.getElementById('user-fastest-time'), recentPlays: document.getElementById('recent-plays-list'),
       addDashBtn: document.getElementById('add-to-dashboard-btn')
     };
 
-    function waitForAPP(callback, max = 50) { let att = 0; function check() { if (typeof APP !== 'undefined' && APP.data?.profile) callback(APP); else if (att < max) { att++; setTimeout(check, 100); } else callback({ data: { profile: { name: 'User' } } }); } check(); }
+    // Helper to wait for APP from script.js
+    function waitForAPP(callback, max = 50) { 
+      let att = 0; 
+      function check() { 
+        if (typeof APP !== 'undefined' && APP.data?.profile) callback(APP); 
+        else if (att < max) { att++; setTimeout(check, 100); } 
+        else callback({ data: { profile: { name: 'User' } } }); 
+      } 
+      check(); 
+    }
 
-    function showModals() {
-      if (sessionStorage.getItem('learny_game_visited') === 'true') {
-        waitForAPP(app => { if (app.data.profile.name !== 'User') state.name = app.data.profile.name; start(); });
+    function initGame() {
+      // 1. Check if name is already saved in localStorage (PERMANENT)
+      const savedName = localStorage.getItem('learny_game_name');
+      if (savedName && savedName.length > 2) {
+        state.name = savedName;
+        // Hide modal, show game immediately
+        els.nameModal.classList.remove('show');
+        els.nameModal.style.display = 'none'; // Force hide
+        start();
         return;
       }
-      els.nameModal.classList.add('show'); els.nameInput.focus();
-      waitForAPP(app => { const profileName = app.data.profile.name; if (profileName && profileName !== 'User') els.nameInput.value = profileName; });
-    }
-
-    async function saveScoreToFirebase(score, moves, time) {
-      try {
-        if (!auth.currentUser) await signInAnonymously(auth);
-        await addDoc(collection(db, "leaderboard"), { name: state.name, score, moves, time, timestamp: Date.now(), date: serverTimestamp(), uid: auth.currentUser.uid });
-      } catch (e) { console.error("Save error", e); }
-    }
-
-    function listenLeaderboard(cb) {
-      onSnapshot(query(collection(db, "leaderboard"), orderBy("timestamp", "desc"), limit(50)), snap => {
-        existingNames.clear(); const rawData = [];
-        snap.forEach(d => { const val = d.data(); if(val.name) existingNames.add(val.name.toLowerCase()); rawData.push({ id: d.id, ...val }); });
-        
-        const bestMap = new Map();
-        rawData.forEach(e => { const k = (e.name || '').toLowerCase(); if (!bestMap.has(k) || e.score > bestMap.get(k).score) bestMap.set(k, e); });
-        const lb = Array.from(bestMap.values()).sort((a,b) => b.score - a.score);
-        cb(lb.slice(0, 10));
-      });
+      
+      // 2. If no name, show modal
+      els.nameModal.style.display = 'flex'; // Ensure display flex for centering
+      els.nameInput.focus();
     }
 
     function start() {
@@ -261,6 +261,9 @@
       `).join('');
 
       els.board.querySelectorAll('.memory-card').forEach(el => el.onclick = () => handle(el));
+      
+      // ✅ LOAD PERFORMANCE PANEL
+      if (state.name) loadUserStats(state.name);
     }
 
     function handle(el) {
@@ -297,45 +300,135 @@
       if (state.name) saveScoreToFirebase(score, state.moves, els.time.textContent);
     }
 
-    els.shareBtn.onclick = () => {
-      const text = `🎮 I scored ${currentWinData.score} pts in Learny Memory Match!\nPlay here: ${window.location.origin}${window.location.pathname}`;
-      if (navigator.share) navigator.share({ title: 'Learny Game Score', text }).catch(() => {}); 
-      else { navigator.clipboard.writeText(text).then(() => { els.shareBtn.innerHTML = '<i class="fa fa-check"></i> Copied!'; setTimeout(() => els.shareBtn.innerHTML = '<i class="fa fa-share-alt"></i> Share Score', 2000); }); }
-    };
+    async function saveScoreToFirebase(score, moves, time) {
+      try {
+        if (!auth.currentUser) await signInAnonymously(auth);
+        await addDoc(collection(db, "leaderboard"), { name: state.name, score, moves, time, timestamp: Date.now(), date: serverTimestamp(), uid: auth.currentUser.uid });
+      } catch (e) { console.error("Save error", e); }
+    }
+
+    // ✅ REAL-TIME RANK & STATS
+    function loadUserStats(playerName) {
+      onSnapshot(query(collection(db, "leaderboard"), orderBy("timestamp", "desc"), limit(200)), snap => {
+        const rawData = [];
+        existingNames.clear();
+        snap.forEach(d => {
+          const val = d.data();
+          if(val.name) existingNames.add(val.name.toLowerCase());
+          rawData.push({ id: d.id, ...val });
+        });
+
+        // Calculate Best Scores per Player
+        const bestMap = new Map();
+        rawData.forEach(e => {
+          const k = (e.name || '').toLowerCase();
+          if (!bestMap.has(k) || e.score > bestMap.get(k).score) bestMap.set(k, e);
+        });
+        const leaderboard = Array.from(bestMap.values()).sort((a,b) => b.score - a.score);
+
+        // Calculate User Rank
+        const userIdx = leaderboard.findIndex(e => e.name.toLowerCase() === playerName.toLowerCase());
+        const rank = userIdx + 1;
+
+        // Update Rank Display
+        els.uRank.textContent = rank > 0 ? `#${rank}` : '-';
+        els.statsPanel.style.display = 'block';
+        els.playerName.textContent = playerName;
+
+        // Calculate Stats from Raw Data (All plays)
+        const myPlays = rawData.filter(e => e.name === playerName).sort((a,b) => b.timestamp - a.timestamp);
+        if (myPlays.length) {
+          const best = myPlays.reduce((prev, curr) => curr.score > prev.score ? curr : prev, myPlays[0]);
+          els.bScore.textContent = best.score;
+          els.bMoves.textContent = Math.min(...myPlays.map(e=>e.moves));
+          els.bTime.textContent = myPlays.reduce((fast, curr) => {
+            const [cm,cs]=curr.time.split(':').map(Number); const [fm,fs]=fast?fast.split(':').map(Number):[99,99];
+            return (cm*60+cs)<(fm*60+fs)?curr.time:fast;
+          }, null);
+          els.recentPlays.innerHTML = myPlays.slice(0,5).map(p => `
+            <div class="recent-play-item">
+              <span><span style="color:var(--success);font-weight:700;">${p.score}</span> pts • ${p.moves}m • ${p.time}</span>
+              <span>${new Date(p.timestamp).toLocaleDateString()}</span>
+            </div>
+          `).join('');
+        }
+
+        // Update Global Leaderboard Table if visible
+        if (document.getElementById('tab-leaderboard').classList.contains('active')) {
+          renderLeaderboard(leaderboard);
+        }
+      });
+    }
+
+    function renderLeaderboard(data) {
+      els.lbBody.innerHTML = data.slice(0, 10).map((e, i) => `
+        <tr><td class="rank rank-${i+1}">#${i+1}</td><td>${e.name}</td><td class="score">${e.score}</td><td>${e.moves}</td><td>${e.time}</td><td style="font-size:11px;color:var(--text-muted);">${new Date(e.timestamp).toLocaleDateString()}</td></tr>
+      `).join('');
+    }
 
     els.startBtn.onclick = () => {
       const n = els.nameInput.value.trim();
       els.nameError.style.display = 'none';
       if (n.length < 3 || n.length > 15) { els.nameError.textContent = 'Name must be 3-15 characters'; els.nameError.style.display = 'block'; return; }
-      if (existingNames.has(n.toLowerCase())) { els.nameError.textContent = '⚠️ Name already exists. Please enter a unique name.'; els.nameError.style.display = 'block'; return; }
-      state.name = n; els.nameModal.classList.remove('show'); start();
-      waitForAPP(app => { if (app.data.profile.name === 'User') { app.data.profile.name = state.name; app.save(); app.updateGreetingUI?.(); } });
+      
+      // ✅ SAVE NAME PERMANENTLY
+      localStorage.setItem('learny_game_name', n);
+      state.name = n;
+      els.nameModal.classList.remove('show');
+      els.nameModal.style.display = 'none';
+      
+      // ✅ SYNC WITH APP PROFILE
+      waitForAPP(app => { 
+        if (app.data.profile.name === 'User' || !app.data.profile.name) { 
+          app.data.profile.name = n; app.save(); 
+          if(app.updateGreetingUI) app.updateGreetingUI(); 
+        } 
+      });
+      
+      start();
     };
 
-    els.restart.onclick = start; els.playAgain.onclick = start;
+    els.restart.onclick = start; 
+    els.playAgain.onclick = start;
+    
     els.tabs.forEach(btn => btn.onclick = () => {
       els.tabs.forEach(b => b.classList.remove('active')); btn.classList.add('active');
       els.contents.forEach(c => c.classList.add('hidden'));
       document.getElementById(`tab-${btn.dataset.tab}`).classList.remove('hidden');
     });
 
-    // ✅ ADD TO DASHBOARD LOGIC
     els.addDashBtn.onclick = () => {
       localStorage.removeItem('learny_hide_game_tab');
-      if (typeof APP !== 'undefined' && APP.showToast) APP.showToast('✅ Added to dashboard!');
-      else showToast('✅ Added to dashboard!');
+      showToast('✅ Added to dashboard!');
+    };
+
+    els.shareBtn.onclick = () => {
+      const text = `🎮 I scored ${currentWinData.score} pts in Learny Memory Match!\nPlay here: ${window.location.origin}${window.location.pathname}`;
+      if (navigator.share) navigator.share({ title: 'Learny Game Score', text }).catch(() => {}); 
+      else { navigator.clipboard.writeText(text).then(() => { els.shareBtn.innerHTML = '<i class="fa fa-check"></i> Copied!'; setTimeout(() => els.shareBtn.innerHTML = '<i class="fa fa-share-alt"></i> Share Score', 2000); }); }
     };
 
     function showToast(msg) { const t=document.getElementById('notification-toast'); if(t){t.querySelector('span').textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000);} }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      listenLeaderboard(data => {
-        els.lbBody.innerHTML = data.length ? data.map((e, i) => `
-          <tr><td class="rank rank-${i+1}">#${i+1}</td><td>${e.name}</td><td class="score">${e.score}</td><td>${e.moves}</td><td>${e.time}</td><td style="font-size:11px;color:var(--text-muted);">${new Date(e.timestamp).toLocaleDateString()}</td></tr>
-        `).join('') : '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted);">No scores yet</td></tr>';
+    // Listen for leaderboard tab switch
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          if (document.getElementById('tab-leaderboard').classList.contains('active') && state.name) {
+             loadUserStats(state.name); // Refreshes data when tab is clicked
+          }
+        }
       });
-      showModals();
     });
+    observer.observe(document.getElementById('tab-leaderboard'), { attributes: true });
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      initGame();
+      // Pre-load leaderboard if needed later
+    });
+
+    // Mobile & Theme Logic (Matches your site)
     document.querySelectorAll('.theme-toggle').forEach(b => b.onclick = () => { document.body.classList.toggle('light'); b.innerHTML = document.body.classList.contains('light')?'<i class="fa fa-sun"></i>':'<i class="fa fa-moon"></i>'; if(APP){APP.data.darkMode=!document.body.classList.contains('light');APP.save();} });
     document.getElementById('hamburger').onclick = () => { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebar-overlay').classList.toggle('show'); };
     document.getElementById('sidebar-overlay').onclick = () => { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('show'); };
