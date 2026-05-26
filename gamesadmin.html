@@ -7,33 +7,17 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* Admin Login Modal */
-    .admin-login-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.9);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 10000; backdrop-filter: blur(8px);
-    }
-    .admin-login-box {
-      background: var(--bg-card); padding: 32px 28px;
-      border-radius: var(--radius); max-width: 400px; width: 90%;
-      border: 2px solid var(--primary); box-shadow: var(--shadow);
-      text-align: center; animation: slideUp 0.3s ease;
-    }
+    .admin-login-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 10000; backdrop-filter: blur(8px); }
+    .admin-login-box { background: var(--bg-card); padding: 32px 28px; border-radius: var(--radius); max-width: 400px; width: 90%; border: 2px solid var(--primary); box-shadow: var(--shadow); text-align: center; animation: slideUp 0.3s ease; }
     @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
     .admin-login-box h3 { margin-bottom:16px; color:var(--primary-light); font-size:20px; }
     .admin-login-box p { color:var(--text-muted); font-size:13px; margin-bottom:20px; }
-    .admin-password-input {
-      width:100%; padding:14px; margin-bottom:12px;
-      background:var(--bg-dark); border:1px solid var(--border);
-      border-radius:var(--radius-sm); color:var(--text-main);
-      font-size:15px; text-align:center;
-    }
+    .admin-password-input { width:100%; padding:14px; margin-bottom:12px; background:var(--bg-dark); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text-main); font-size:15px; text-align:center; }
     .admin-password-input:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(108,43,217,0.25); }
     .admin-login-error { color:var(--danger); font-size:12px; margin-bottom:12px; display:none; }
     .admin-login-btn { width:100%; padding:12px; border-radius:var(--radius-sm); border:none; background:var(--primary); color:#fff; font-weight:600; cursor:pointer; transition:all var(--transition); }
     .admin-login-btn:hover { opacity:0.9; transform:translateY(-1px); }
     
-    /* Admin Dashboard Styles */
     .admin-stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:24px; }
     .admin-stat-card { background:var(--bg-card); padding:16px; border-radius:var(--radius); border:1px solid var(--border); display:flex; align-items:center; gap:14px; transition:all var(--transition); }
     .admin-stat-card:hover { border-color:var(--primary); transform:translateY(-2px); }
@@ -51,17 +35,19 @@
     .delete-btn { background:transparent; border:1px solid var(--danger); color:var(--danger); padding:4px 10px; border-radius:6px; cursor:pointer; font-size:11px; transition:all var(--transition); }
     .delete-btn:hover { background:var(--danger); color:#fff; }
     
-    .admin-header-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border); }
+    .admin-header-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:10px; }
     .admin-logout-btn { background:transparent; border:1px solid var(--border); color:var(--text-muted); padding:8px 14px; border-radius:var(--radius-sm); cursor:pointer; font-size:12px; transition:all var(--transition); display:flex; align-items:center; gap:6px; }
     .admin-logout-btn:hover { background:var(--danger); color:#fff; border-color:var(--danger); }
-    
+    .filter-bar { display:flex; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+    .filter-bar input, .filter-bar select { flex:1; min-width:200px; }
     @media (max-width:768px) {
       .admin-stats-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
       .admin-stat-icon { width:36px; height:36px; font-size:16px; }
       .admin-stat-info h3 { font-size:18px; }
       .admin-actions { flex-direction:column; }
       .admin-actions .btn { width:100%; }
-      .admin-header-bar { flex-direction:column; align-items:flex-start; gap:10px; }
+      .filter-bar { flex-direction:column; }
+      .filter-bar input, .filter-bar select { width:100%; }
     }
     @media (max-width:480px) {
       .admin-stats-grid { grid-template-columns:1fr; }
@@ -100,13 +86,11 @@
       </header>
 
       <div class="card">
-        <!-- Admin Header with Logout -->
         <div class="admin-header-bar">
           <h3 style="margin:0;color:var(--primary-light);">📊 Live Dashboard</h3>
           <button class="admin-logout-btn" id="admin-logout-btn"><i class="fa fa-sign-out-alt"></i> Logout</button>
         </div>
         
-        <!-- Stats Grid -->
         <div class="admin-stats-grid">
           <div class="admin-stat-card"><div class="admin-stat-icon purple"><i class="fa fa-users"></i></div><div class="admin-stat-info"><h3 id="total-players">-</h3><p>Total Players</p></div></div>
           <div class="admin-stat-card"><div class="admin-stat-icon green"><i class="fa fa-trophy"></i></div><div class="admin-stat-info"><h3 id="finished-games">-</h3><p>Finished Games</p></div></div>
@@ -114,7 +98,18 @@
           <div class="admin-stat-card"><div class="admin-stat-icon blue"><i class="fa fa-mouse-pointer"></i></div><div class="admin-stat-info"><h3 id="avg-moves">-</h3><p>Avg Moves</p></div></div>
         </div>
 
-        <!-- Leaderboard Table -->
+        <!-- 🔍 Search & Filter Bar -->
+        <div class="filter-bar">
+          <input type="text" id="search-input" placeholder="🔍 Search player name..." class="form-control">
+          <select id="sort-select" class="form-control">
+            <option value="score-desc">Score (High → Low)</option>
+            <option value="score-asc">Score (Low → High)</option>
+            <option value="moves-asc">Moves (Fewest)</option>
+            <option value="time-asc">Time (Fastest)</option>
+            <option value="date-desc">Date (Newest)</option>
+          </select>
+        </div>
+
         <div class="table-responsive">
           <table class="data-table" id="admin-table">
             <thead><tr><th>Rank</th><th>Player</th><th>Score</th><th>Moves</th><th>Time</th><th>Date</th><th>Action</th></tr></thead>
@@ -122,7 +117,6 @@
           </table>
         </div>
         
-        <!-- Admin Actions -->
         <div class="admin-actions">
           <button class="btn btn-primary" id="refresh-btn"><i class="fa fa-sync"></i> Refresh</button>
           <button class="btn btn-danger" id="clear-all"><i class="fa fa-trash"></i> Clear All</button>
@@ -136,21 +130,18 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-    import { getFirestore, collection, query, orderBy, onSnapshot, deleteDoc, doc, getDocs } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+    import { getFirestore, collection, query, orderBy, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
-    // ===== FIREBASE CONFIG =====
     const firebaseConfig = { apiKey: "AIzaSyDyDQjhq4qkSdTiNZAORvi9KHaYMjKgwVU", authDomain: "learny-game.firebaseapp.com", projectId: "learny-game", storageBucket: "learny-game.firebasestorage.app", messagingSenderId: "21192905625", appId: "1:21192905625:web:1074315ffebf71deb03908", measurementId: "G-HS3LSWDXQT" };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    // ===== ADMIN CONFIG =====
     const ADMIN_PASSWORD = 'Dila2007*';
     const AUTH_KEY = 'learny_admin_auth';
     let allData = [];
 
-    // ===== AUTH FUNCTIONS =====
     function checkAuth() {
       const saved = localStorage.getItem(AUTH_KEY);
       if (saved === ADMIN_PASSWORD) {
@@ -164,10 +155,8 @@
     function login() {
       const input = document.getElementById('admin-password-input');
       const error = document.getElementById('admin-login-error');
-      const pwd = input.value;
-      
-      if (pwd === ADMIN_PASSWORD) {
-        localStorage.setItem(AUTH_KEY, pwd); // ✅ Store password in localStorage
+      if (input.value === ADMIN_PASSWORD) {
+        localStorage.setItem(AUTH_KEY, input.value);
         error.style.display = 'none';
         document.getElementById('admin-login-overlay').style.display = 'none';
         input.value = '';
@@ -186,33 +175,61 @@
       location.reload();
     }
 
-    // ===== FIREBASE LISTENER =====
     async function startListener() {
       try {
         if (!auth.currentUser) await signInAnonymously(auth);
-        
         onSnapshot(query(collection(db, "leaderboard"), orderBy("timestamp", "desc")), snap => {
           allData = [];
           snap.forEach(d => allData.push({ id: d.id, ...d.data() }));
-          render();
+          applyFiltersAndRender();
         }, err => {
           console.error("Firestore error:", err);
           document.getElementById('admin-tbody').innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--danger);padding:20px;">Error loading data</td></tr>';
         });
-      } catch (e) {
-        console.error("Auth error:", e);
-      }
+      } catch (e) { console.error("Auth error:", e); }
     }
 
-    // ===== RENDER FUNCTIONS =====
-    function render() {
-      // Stats
+    // 🔍 Helper: Parse MM:SS to seconds for sorting
+    function timeToSeconds(timeStr) {
+      if (!timeStr) return 0;
+      const [m, s] = timeStr.split(':').map(Number);
+      return (isNaN(m) ? 0 : m) * 60 + (isNaN(s) ? 0 : s);
+    }
+
+    // 🔍 Apply Search & Sort
+    function applyFiltersAndRender() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+      const sortType = document.getElementById('sort-select').value;
+
+      let filtered = allData.filter(e => (e.name || '').toLowerCase().includes(searchTerm));
+
+      filtered.sort((a, b) => {
+        const sA = a.score || 0, sB = b.score || 0;
+        const mA = a.moves || 0, mB = b.moves || 0;
+        const tA = timeToSeconds(a.time), tB = timeToSeconds(b.time);
+        const dA = a.timestamp || 0, dB = b.timestamp || 0;
+
+        switch(sortType) {
+          case 'score-desc': return sB - sA || mA - mB;
+          case 'score-asc': return sA - sB || mB - mA;
+          case 'moves-asc': return mA - mB || sB - sA;
+          case 'time-asc': return tA - tB || sB - sA;
+          case 'date-desc': return dB - dA;
+          default: return dB - dA;
+        }
+      });
+
+      render(filtered);
+    }
+
+    function render(data) {
+      // Stats reflect FULL dataset (allData)
       const unique = new Set(allData.map(e => e.name?.toLowerCase())).size;
       document.getElementById('total-players').textContent = unique || '-';
       document.getElementById('finished-games').textContent = allData.length || '-';
       
       if (allData.length) {
-        const totS = allData.reduce((s, e) => s + (parseInt(e.time?.split(':')[0]||0) * 60 + parseInt(e.time?.split(':')[1]||0)), 0);
+        const totS = allData.reduce((s, e) => s + timeToSeconds(e.time), 0);
         const avgS = totS / allData.length;
         document.getElementById('avg-time').textContent = `${Math.floor(avgS/60)}:${(avgS%60).toFixed(0).padStart(2,'0')}`;
         document.getElementById('avg-moves').textContent = Math.round(allData.reduce((s, e) => s + (e.moves||0), 0) / allData.length);
@@ -221,100 +238,89 @@
         document.getElementById('avg-moves').textContent = '-';
       }
 
-      // Table
-      document.getElementById('admin-tbody').innerHTML = allData.length ? allData.map((e, i) => `
+      // Table reflects FILTERED/SORTED data
+      document.getElementById('admin-tbody').innerHTML = data.length ? data.map((e, i) => `
         <tr><td>${i+1}</td><td>${e.name||'Anon'}</td><td style="font-weight:700;color:var(--success)">${e.score||0}</td><td>${e.moves||0}</td><td>${e.time||'00:00'}</td><td style="font-size:11px;color:var(--text-muted);">${new Date(e.timestamp).toLocaleDateString()}</td><td><button class="delete-btn" data-id="${e.id}">Remove</button></td></tr>
-      `).join('') : '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text-muted);">No data found</td></tr>';
+      `).join('') : '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text-muted);">No matching entries</td></tr>';
     }
 
-    // ===== DELETE FUNCTIONS =====
     function setupEventListeners() {
-      // Single delete (event delegation)
-      document.getElementById('admin-table')?.addEventListener('click', async (e) => {
+      document.getElementById('search-input').addEventListener('input', applyFiltersAndRender);
+      document.getElementById('sort-select').addEventListener('change', applyFiltersAndRender);
+
+      document.getElementById('admin-table').addEventListener('click', async (e) => {
         const btn = e.target.closest('.delete-btn');
         if (!btn) return;
         const id = btn.dataset.id;
         if (!confirm('Delete this player entry?')) return;
-        
-        const origHTML = btn.innerHTML;
+        const orig = btn.innerHTML;
         btn.disabled = true; btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
-        
         try {
           await deleteDoc(doc(db, "leaderboard", id));
           showToast('✅ Entry deleted');
         } catch (err) {
           console.error("Delete failed:", err);
-          showToast('❌ Delete failed: ' + err.message);
-          btn.disabled = false; btn.innerHTML = origHTML;
+          showToast('❌ Failed: Check Firestore Rules');
+          btn.disabled = false; btn.innerHTML = orig;
         }
       });
 
-      // Clear all
-      document.getElementById('clear-all')?.addEventListener('click', async () => {
+      document.getElementById('clear-all').addEventListener('click', async () => {
         if (!confirm('⚠️ Delete ALL leaderboard entries? This cannot be undone!')) return;
         const btn = document.getElementById('clear-all');
         btn.disabled = true; btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Clearing...';
-        
         try {
           if (allData.length === 0) throw new Error("Empty");
           await Promise.all(allData.map(entry => deleteDoc(doc(db, "leaderboard", entry.id))));
           showToast('🗑️ All entries cleared');
         } catch (err) {
           console.error("Clear failed:", err);
-          showToast('❌ Clear failed: ' + err.message);
+          showToast('❌ Clear failed: Check Rules');
         } finally {
           btn.disabled = false; btn.innerHTML = '<i class="fa fa-trash"></i> Clear All';
         }
       });
 
-      // Export CSV
-      document.getElementById('export-csv')?.addEventListener('click', () => {
-        if (!allData.length) return showToast('No data');
-        const csv = ['Name,Score,Moves,Time,Date', ...allData.map(e => `${e.name||''},${e.score||0},${e.moves||0},${e.time||''},${new Date(e.timestamp).toLocaleDateString()}`)];
+      document.getElementById('export-csv').addEventListener('click', () => {
+        const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+        const dataToExport = allData.filter(e => (e.name || '').toLowerCase().includes(searchTerm));
+        if (!dataToExport.length) return showToast('No data to export');
+        const csv = ['Name,Score,Moves,Time,Date', ...dataToExport.map(e => `${e.name||''},${e.score||0},${e.moves||0},${e.time||''},${new Date(e.timestamp).toLocaleDateString()}`)];
         const blob = new Blob([csv.join('\n')], {type:'text/csv'});
         const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='leaderboard.csv'; a.click();
         showToast('📥 CSV downloaded');
       });
 
-      // Refresh
-      document.getElementById('refresh-btn')?.addEventListener('click', () => {
+      document.getElementById('refresh-btn').addEventListener('click', () => {
         startListener();
         showToast('🔄 Refreshed');
       });
 
-      // Logout
-      document.getElementById('admin-logout-btn')?.addEventListener('click', logout);
+      document.getElementById('admin-logout-btn').addEventListener('click', logout);
     }
 
-    // ===== UI UTILITIES =====
     function showToast(msg) {
       const t = document.getElementById('notification-toast');
       if (t) { t.querySelector('span').textContent = msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000); }
     }
 
-    // ===== SIDEBAR & THEME (Matches your site) =====
     function setupSidebar() {
-      document.getElementById('hamburger')?.addEventListener('click', () => {
+      document.getElementById('hamburger').addEventListener('click', () => {
         document.getElementById('sidebar').classList.toggle('open');
         document.getElementById('sidebar-overlay').classList.toggle('show');
       });
-      document.getElementById('sidebar-overlay')?.addEventListener('click', () => {
+      document.getElementById('sidebar-overlay').addEventListener('click', () => {
         document.getElementById('sidebar').classList.remove('open');
         document.getElementById('sidebar-overlay').classList.remove('show');
       });
     }
 
-    // ===== INIT =====
     document.addEventListener('DOMContentLoaded', () => {
       checkAuth();
       setupEventListeners();
       setupSidebar();
-      
-      // Login button
-      document.getElementById('admin-login-btn')?.addEventListener('click', login);
-      document.getElementById('admin-password-input')?.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') login();
-      });
+      document.getElementById('admin-login-btn').addEventListener('click', login);
+      document.getElementById('admin-password-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') login(); });
     });
   </script>
   <script src="script.js"></script>
