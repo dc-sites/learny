@@ -34,9 +34,10 @@
 
     /* User Stats & Leaderboard */
     .user-stats-panel { background: var(--bg-dark); border-radius: var(--radius); padding: 16px; margin-top: 20px; border: 1px solid var(--border); }
-    .user-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+    .user-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
     .user-stat-box { background: var(--bg-card); padding: 10px; border-radius: var(--radius-sm); text-align: center; border: 1px solid var(--border); }
     .user-stat-box .val { font-size: 16px; font-weight: 800; color: var(--primary-light); }
+    .user-stat-box .val.rank-val { color: var(--warning); }
     .user-stat-box .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
     .recent-plays { max-height: 120px; overflow-y: auto; font-size: 12px; color: var(--text-muted); }
     .recent-play-item { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); }
@@ -49,6 +50,7 @@
     .leaderboard-table .rank-2 { color: #c0c0c0; font-weight: 700; }
     .leaderboard-table .rank-3 { color: #cd7f32; font-weight: 700; }
     .leaderboard-table .score { color: var(--success); font-weight: 700; }
+    .leaderboard-table .current-user { background: rgba(108, 43, 217, 0.15); border-left: 3px solid var(--primary); }
 
     /* Modals */
     .overlay-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 10000; backdrop-filter: blur(5px); opacity: 0; pointer-events: none; transition: all 0.3s; }
@@ -66,7 +68,7 @@
       .game-tab-btn { flex-shrink: 0; }
       .memory-board { grid-template-columns: repeat(4, 1fr); gap: 8px; }
       .memory-card-face { font-size: 0.8rem; padding: 2px; }
-      .user-stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .user-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
       .user-stat-box .val { font-size: 14px; }
       .leaderboard-table { font-size: 12px; }
       .leaderboard-table th, .leaderboard-table td { padding: 8px 6px; }
@@ -78,7 +80,7 @@
       .memory-card-front::after { font-size: 1.2rem; }
       .memory-controls { flex-direction: column; align-items: center; }
       .memory-controls .btn { width: 100%; justify-content: center; }
-      .user-stats-grid { grid-template-columns: 1fr; }
+      .user-stats-grid { grid-template-columns: repeat(2, 1fr); }
       .modal-content { padding: 20px 16px; width: 95%; }
     }
   </style>
@@ -140,6 +142,10 @@
               <div class="user-stat-box"><div class="val" id="user-best-score">-</div><div class="lbl">Best Score</div></div>
               <div class="user-stat-box"><div class="val" id="user-best-moves">-</div><div class="lbl">Fewest Moves</div></div>
               <div class="user-stat-box"><div class="val" id="user-fastest-time">-</div><div class="lbl">Fastest Time</div></div>
+              <div class="user-stat-box"><div class="val rank-val" id="user-current-rank">-</div><div class="lbl">Current Rank</div></div>
+            </div>
+            <div id="rank-note" style="font-size:11px;color:var(--text-muted);margin-bottom:8px;display:none;">
+              <i class="fa fa-info-circle"></i> Rank calculated from your best score vs all players
             </div>
             <h4 style="margin:0 0 8px;font-size:12px;color:var(--text-muted);"><i class="fa fa-history"></i> Recent Plays</h4>
             <div class="recent-plays" id="recent-plays-list"></div>
@@ -154,6 +160,10 @@
             </table>
           </div>
           <p style="text-align:center;font-size:11px;color:var(--text-muted);margin-top:10px;"><i class="fa fa-sync"></i> Live updates from Firebase</p>
+          <div id="your-position" style="margin-top:15px;padding:10px;background:rgba(108,43,217,0.1);border-radius:8px;display:none;">
+            <small style="color:var(--text-muted);">Your Position:</small>
+            <div style="font-weight:700;color:var(--primary-light);"><span id="your-rank-display">-</span> with <span id="your-score-display">-</span> points</div>
+          </div>
         </div>
       </div>
 
@@ -202,7 +212,7 @@
         </div>
       </div>
 
-      <footer class="site-footer">Powered by <a href="#">Team Ceylon</a> | Made in Sri Lanka 🇱🇰</footer>
+      <footer class="site-footer">Powered by <a href="https://gorgeous-pegasus-b200d5.netlify.app/" style="color:var(--primary);">Team Ceylon</a> | Made in Sri Lanka 🇱🇰</footer>
     </main>
   </div>
   <div class="overlay" id="sidebar-overlay"></div>
@@ -225,6 +235,7 @@
     let state = { cards: [], flipped: [], matched: 0, moves: 0, secs: 0, timer: null, processing: false, hint: false, name: null, gameOn: false };
     let currentWinData = { moves: 0, time: '00:00', score: 0 };
     const existingNames = new Set();
+    let allLeaderboardData = []; // Store all scores for rank calculation
 
     const els = {
       board: document.getElementById('game-board'), moves: document.getElementById('moves'), time: document.getElementById('time'), matches: document.getElementById('matches'),
@@ -235,7 +246,10 @@
       playAgain: document.getElementById('play-again-btn'), shareBtn: document.getElementById('share-score-btn'),
       lbBody: document.getElementById('leaderboard-body'), tabs: document.querySelectorAll('.game-tab-btn'), contents: document.querySelectorAll('.tab-content'),
       statsPanel: document.getElementById('user-stats-panel'), playerName: document.getElementById('player-display-name'),
-      bScore: document.getElementById('user-best-score'), bMoves: document.getElementById('user-best-moves'), bTime: document.getElementById('user-fastest-time'), recentPlays: document.getElementById('recent-plays-list')
+      bScore: document.getElementById('user-best-score'), bMoves: document.getElementById('user-best-moves'), bTime: document.getElementById('user-fastest-time'), 
+      bRank: document.getElementById('user-current-rank'), rankNote: document.getElementById('rank-note'),
+      recentPlays: document.getElementById('recent-plays-list'),
+      yourPosition: document.getElementById('your-position'), yourRankDisplay: document.getElementById('your-rank-display'), yourScoreDisplay: document.getElementById('your-score-display')
     };
 
     function waitForAPP(callback, max = 50) {
@@ -250,7 +264,13 @@
 
     function showModals() {
       if (sessionStorage.getItem('learny_game_visited') === 'true') {
-        waitForAPP(app => { if (app.data.profile.name !== 'User') state.name = app.data.profile.name; start(); });
+        waitForAPP(app => { 
+          if (app.data.profile.name !== 'User') {
+            state.name = app.data.profile.name;
+            loadUserStats(state.name);
+          }
+          start(); 
+        });
         return;
       }
       els.nameModal.classList.add('show');
@@ -265,42 +285,115 @@
     async function saveScore(score, moves, time) {
       try {
         if (!auth.currentUser) await signInAnonymously(auth);
-        await addDoc(collection(db, "leaderboard"), { name: state.name, score, moves, time, timestamp: Date.now(), date: serverTimestamp(), uid: auth.currentUser.uid });
+        await addDoc(collection(db, "leaderboard"), { 
+          name: state.name, 
+          score, 
+          moves, 
+          time, 
+          timestamp: Date.now(), 
+          date: serverTimestamp(), 
+          uid: auth.currentUser.uid 
+        });
       } catch (e) { console.error("Save error", e); }
     }
 
     function listenLeaderboard(cb) {
-      onSnapshot(query(collection(db, "leaderboard"), orderBy("score", "desc"), limit(50)), snap => {
+      onSnapshot(query(collection(db, "leaderboard"), orderBy("score", "desc"), limit(100)), snap => {
         existingNames.clear();
-        const data = []; snap.forEach(d => {
-          const val = d.data(); if(val.name) existingNames.add(val.name.toLowerCase());
-          data.push({ id: d.id, ...val });
+        allLeaderboardData = [];
+        snap.forEach(d => {
+          const val = d.data(); 
+          if(val.name) existingNames.add(val.name.toLowerCase());
+          allLeaderboardData.push({ id: d.id, ...val });
         });
-        data.sort((a,b) => b.score - a.score || a.moves - b.moves || (a.timestamp||0) - (b.timestamp||0));
-        cb(data.slice(0, 10));
+        // Sort: score desc, moves asc, timestamp asc
+        allLeaderboardData.sort((a,b) => 
+          b.score - a.score || a.moves - b.moves || (a.timestamp||0) - (b.timestamp||0)
+        );
+        cb(allLeaderboardData.slice(0, 10));
       });
+    }
+
+    // Calculate player rank based on their best score
+    function calculatePlayerRank(playerName, bestScore) {
+      if (!bestScore || bestScore === '-') return null;
+      
+      // Find position where player's best score would rank
+      let rank = 1;
+      for (let entry of allLeaderboardData) {
+        if (entry.name === playerName) continue; // Skip self
+        if (entry.score > bestScore) {
+          rank++;
+        } else if (entry.score === bestScore) {
+          // Tie-breaker: fewer moves = higher rank
+          if (entry.moves < state.bestMoves) {
+            rank++;
+          }
+        } else {
+          break; // No need to check lower scores
+        }
+      }
+      return rank;
     }
 
     async function loadUserStats(name) {
       try {
-        const snap = await getDocs(query(collection(db, "leaderboard"), orderBy("timestamp", "desc"), limit(50)));
-        const all = []; snap.forEach(d => all.push(d.data()));
+        const snap = await getDocs(query(collection(db, "leaderboard"), orderBy("timestamp", "desc"), limit(100)));
+        const all = []; 
+        snap.forEach(d => all.push(d.data()));
         const mine = all.filter(e => e.name === name);
-        if (!mine.length) return els.statsPanel.style.display = 'none';
-        els.statsPanel.style.display = 'block'; els.playerName.textContent = name;
-        els.bScore.textContent = Math.max(...mine.map(e => e.score));
-        els.bMoves.textContent = Math.min(...mine.map(e => e.moves));
-        els.bTime.textContent = mine.reduce((f, c) => {
-          const [cm, cs] = c.time.split(':').map(Number); const [fm, fs] = f ? f.split(':').map(Number) : [99,99];
-          return (cm*60+cs) < (fm*60+fs) ? c.time : f;
+        
+        if (!mine.length) {
+          els.statsPanel.style.display = 'none';
+          return;
+        }
+        
+        els.statsPanel.style.display = 'block'; 
+        els.playerName.textContent = name;
+        
+        // Calculate best stats
+        const bestScore = Math.max(...mine.map(e => e.score));
+        const bestMoves = Math.min(...mine.map(e => e.moves));
+        const fastestTime = mine.reduce((fastest, current) => {
+          const [cm, cs] = current.time.split(':').map(Number); 
+          const [fm, fs] = fastest ? fastest.split(':').map(Number) : [99, 99];
+          return (cm*60+cs) < (fm*60+fs) ? current.time : fastest;
         }, null);
+        
+        els.bScore.textContent = bestScore;
+        els.bMoves.textContent = bestMoves;
+        els.bTime.textContent = fastestTime || '-';
+        
+        // Store for rank calculation
+        state.bestScore = bestScore;
+        state.bestMoves = bestMoves;
+        
+        // Calculate and display rank
+        const rank = calculatePlayerRank(name, bestScore);
+        if (rank !== null) {
+          els.bRank.textContent = `#${rank}`;
+          els.rankNote.style.display = 'block';
+          
+          // Also show in leaderboard tab
+          els.yourRankDisplay.textContent = `#${rank}`;
+          els.yourScoreDisplay.textContent = bestScore;
+          els.yourPosition.style.display = 'block';
+        } else {
+          els.bRank.textContent = '-';
+          els.rankNote.style.display = 'none';
+        }
+        
+        // Recent plays
         els.recentPlays.innerHTML = mine.slice(0, 5).map(p => `
           <div class="recent-play-item">
             <span><span style="color:var(--success);font-weight:700;">${p.score}</span> pts • ${p.moves}m • ${p.time}</span>
             <span>${new Date(p.timestamp).toLocaleDateString()}</span>
           </div>
         `).join('');
-      } catch(e) { console.error("Stats error", e); }
+      } catch(e) { 
+        console.error("Stats error", e); 
+        els.statsPanel.style.display = 'none';
+      }
     }
 
     function start() {
@@ -310,7 +403,10 @@
       els.hint.disabled = false; els.hintCount.textContent = '(0)';
       
       state.cards = [];
-      cardPairs.forEach((p, i) => { state.cards.push({ id: `p${i}-1`, content: p.front, pairId: i }); state.cards.push({ id: `p${i}-2`, content: p.back, pairId: i }); });
+      cardPairs.forEach((p, i) => { 
+        state.cards.push({ id: `p${i}-1`, content: p.front, pairId: i }); 
+        state.cards.push({ id: `p${i}-2`, content: p.back, pairId: i }); 
+      });
       state.cards.sort(() => Math.random() - 0.5);
 
       els.board.innerHTML = state.cards.map(c => `
@@ -323,12 +419,17 @@
       `).join('');
 
       els.board.querySelectorAll('.memory-card').forEach(el => el.onclick = () => handle(el));
-      if (state.name !== 'User') loadUserStats(state.name);
+      if (state.name && state.name !== 'User') loadUserStats(state.name);
     }
 
     function handle(el) {
       if (state.processing || el.classList.contains('flipped') || el.classList.contains('matched')) return;
-      if (!state.timer) { state.timer = setInterval(() => { state.secs++; els.time.textContent = `${String(Math.floor(state.secs/60)).padStart(2,'0')}:${String(state.secs%60).padStart(2,'0')}`; }, 1000); }
+      if (!state.timer) { 
+        state.timer = setInterval(() => { 
+          state.secs++; 
+          els.time.textContent = `${String(Math.floor(state.secs/60)).padStart(2,'0')}:${String(state.secs%60).padStart(2,'0')}`; 
+        }, 1000); 
+      }
       el.classList.add('flipped'); state.flipped.push(el);
       if (state.flipped.length === 2) {
         state.moves++; els.moves.textContent = state.moves; state.processing = true;
@@ -347,8 +448,15 @@
       if (state.hint) return;
       const un = Array.from(els.board.querySelectorAll('.memory-card:not(.flipped):not(.matched)'));
       if (un.length < 2) return;
-      const p = {}; un.forEach(c => { if(!p[c.dataset.pair]) p[c.dataset.pair]=[]; p[c.dataset.pair].push(c); });
-      for(let k in p) if(p[k].length===2) { p[k].forEach(c => { c.classList.add('flipped'); setTimeout(()=>{if(!c.classList.contains('matched'))c.classList.remove('flipped')},1200); }); break; }
+      const p = {}; 
+      un.forEach(c => { if(!p[c.dataset.pair]) p[c.dataset.pair]=[]; p[c.dataset.pair].push(c); });
+      for(let k in p) if(p[k].length===2) { 
+        p[k].forEach(c => { 
+          c.classList.add('flipped'); 
+          setTimeout(()=>{if(!c.classList.contains('matched'))c.classList.remove('flipped')},1200); 
+        }); 
+        break; 
+      }
       state.hint = true; els.hint.disabled = true; els.hintCount.textContent = '(0)';
     };
 
@@ -357,21 +465,35 @@
       els.winMoves.textContent = state.moves; els.winTime.textContent = els.time.textContent; els.winScore.textContent = score;
       currentWinData = { moves: state.moves, time: els.time.textContent, score };
       els.winModal.classList.add('show');
-      if (state.name) saveScore(score, state.moves, els.time.textContent);
+      if (state.name && state.name !== 'User') saveScore(score, state.moves, els.time.textContent);
     }
 
     els.shareBtn.onclick = () => {
       const url = window.location.origin + window.location.pathname;
       const text = `🎮 I scored ${currentWinData.score} pts in Learny Memory Match! Moves: ${currentWinData.moves} | Time: ${currentWinData.time}\nCan you beat me? Play here: ${url}`;
-      if (navigator.share) { navigator.share({ title: 'Learny Game Score', text }).catch(() => {}); } 
-      else { navigator.clipboard.writeText(text).then(() => { els.shareBtn.innerHTML = '<i class="fa fa-check"></i> Copied!'; setTimeout(() => els.shareBtn.innerHTML = '<i class="fa fa-share-alt"></i> Share Your Score', 2000); }); }
+      if (navigator.share) { 
+        navigator.share({ title: 'Learny Game Score', text }).catch(() => {}); 
+      } else { 
+        navigator.clipboard.writeText(text).then(() => { 
+          els.shareBtn.innerHTML = '<i class="fa fa-check"></i> Copied!'; 
+          setTimeout(() => els.shareBtn.innerHTML = '<i class="fa fa-share-alt"></i> Share Your Score', 2000); 
+        }); 
+      }
     };
 
     els.startBtn.onclick = () => {
       const n = els.nameInput.value.trim();
       els.nameError.style.display = 'none';
-      if (n.length < 3 || n.length > 15) { els.nameError.textContent = 'Name must be 3-15 characters'; els.nameError.style.display = 'block'; return; }
-      if (existingNames.has(n.toLowerCase())) { els.nameError.textContent = '⚠️ Name already exists. Please enter a unique name.'; els.nameError.style.display = 'block'; return; }
+      if (n.length < 3 || n.length > 15) { 
+        els.nameError.textContent = 'Name must be 3-15 characters'; 
+        els.nameError.style.display = 'block'; 
+        return; 
+      }
+      if (existingNames.has(n.toLowerCase())) { 
+        els.nameError.textContent = '⚠️ Name already exists. Please enter a unique name.'; 
+        els.nameError.style.display = 'block'; 
+        return; 
+      }
       
       state.name = n;
       els.nameModal.classList.remove('show');
@@ -383,32 +505,74 @@
       sessionStorage.setItem('learny_game_visited', 'true');
       waitForAPP(app => {
         if (app.data.profile.name === 'User') {
-          app.data.profile.name = state.name; app.save(); app.updateGreetingUI();
+          app.data.profile.name = state.name; 
+          app.save(); 
+          app.updateGreetingUI();
         }
       });
       start();
     };
 
-    els.restart.onclick = start; els.playAgain.onclick = start;
+    els.restart.onclick = start; 
+    els.playAgain.onclick = start; 
+    
     els.tabs.forEach(btn => btn.onclick = () => {
-      els.tabs.forEach(b => b.classList.remove('active')); btn.classList.add('active');
+      els.tabs.forEach(b => b.classList.remove('active')); 
+      btn.classList.add('active');
       els.contents.forEach(c => c.classList.add('hidden'));
       document.getElementById(`tab-${btn.dataset.tab}`).classList.remove('hidden');
       if(btn.dataset.tab==='leaderboard') listenLeaderboard(renderLB);
     });
+    
     function renderLB(data) {
-      els.lbBody.innerHTML = data.length ? data.map((e, i) => `
-        <tr><td class="rank rank-${i+1}">#${i+1}</td><td>${e.name}</td><td class="score">${e.score}</td><td>${e.moves}</td><td>${e.time}</td><td style="font-size:11px;color:var(--text-muted);">${new Date(e.timestamp).toLocaleDateString()}</td></tr>
-      `).join('') : '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted);">No scores yet</td></tr>';
+      if (!state.name) {
+        els.lbBody.innerHTML = data.length ? data.map((e, i) => `
+          <tr><td class="rank rank-${i+1}">#${i+1}</td><td>${e.name}</td><td class="score">${e.score}</td><td>${e.moves}</td><td>${e.time}</td><td style="font-size:11px;color:var(--text-muted);">${new Date(e.timestamp).toLocaleDateString()}</td></tr>
+        `).join('') : '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted);">No scores yet</td></tr>';
+        return;
+      }
+      
+      // Find player's best score for highlighting
+      const playerBestScore = state.bestScore || 0;
+      
+      els.lbBody.innerHTML = data.length ? data.map((e, i) => {
+        const isCurrentUser = e.name === state.name && e.score === playerBestScore;
+        return `
+          <tr class="${isCurrentUser ? 'current-user' : ''}">
+            <td class="rank rank-${i+1}">#${i+1}</td>
+            <td>${e.name} ${isCurrentUser ? '<small style="color:var(--primary);">(You)</small>' : ''}</td>
+            <td class="score">${e.score}</td>
+            <td>${e.moves}</td>
+            <td>${e.time}</td>
+            <td style="font-size:11px;color:var(--text-muted);">${new Date(e.timestamp).toLocaleDateString()}</td>
+          </tr>
+        `;
+      }).join('') : '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted);">No scores yet</td></tr>';
     }
 
     document.addEventListener('DOMContentLoaded', () => {
       listenLeaderboard(renderLB);
       showModals();
     });
-    document.querySelectorAll('.theme-toggle').forEach(b => b.onclick = () => { document.body.classList.toggle('light'); b.innerHTML = document.body.classList.contains('light')?'<i class="fa fa-sun"></i>':'<i class="fa fa-moon"></i>'; if(APP){APP.data.darkMode=!document.body.classList.contains('light');APP.save();} });
-    document.getElementById('hamburger').onclick = () => { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebar-overlay').classList.toggle('show'); };
-    document.getElementById('sidebar-overlay').onclick = () => { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('show'); };
+    
+    document.querySelectorAll('.theme-toggle').forEach(b => b.onclick = () => { 
+      document.body.classList.toggle('light'); 
+      b.innerHTML = document.body.classList.contains('light')?'<i class="fa fa-sun"></i>':'<i class="fa fa-moon"></i>'; 
+      if(typeof APP !== 'undefined'){
+        APP.data.darkMode=!document.body.classList.contains('light');
+        APP.save();
+      } 
+    });
+    
+    document.getElementById('hamburger').onclick = () => { 
+      document.getElementById('sidebar').classList.toggle('open'); 
+      document.getElementById('sidebar-overlay').classList.toggle('show'); 
+    };
+    
+    document.getElementById('sidebar-overlay').onclick = () => { 
+      document.getElementById('sidebar').classList.remove('open'); 
+      document.getElementById('sidebar-overlay').classList.remove('show'); 
+    };
   </script>
   <script src="script.js"></script>
 </body>
