@@ -47,7 +47,8 @@
           <div class="stat-card"><div class="stat-value" id="finished-games">-</div><div class="stat-label">Finished Games</div></div>
           <div class="stat-card"><div class="stat-value" id="avg-time">-</div><div class="stat-label">Avg Time</div></div>
           <div class="stat-card"><div class="stat-value" id="avg-moves">-</div><div class="stat-label">Avg Moves</div></div>
-        </div>        <div class="admin-filters">
+        </div>
+        <div class="admin-filters">
           <input type="text" id="search-input" placeholder="🔍 Search player..." style="flex:1;">
           <select id="sort-select" style="min-width:150px;">
             <option value="score-desc">Score (High → Low)</option>
@@ -96,7 +97,8 @@
 
     function renderAll() {
       const search = document.getElementById('search-input').value.toLowerCase();
-      const sort = document.getElementById('sort-select').value;      let filtered = allData.filter(e => e.name.toLowerCase().includes(search));
+      const sort = document.getElementById('sort-select').value;
+      let filtered = allData.filter(e => e.name.toLowerCase().includes(search));
       
       filtered.sort((a,b) => {
         if(sort==='score-desc') return b.score-a.score || a.moves-b.moves;
