@@ -24,6 +24,18 @@
             gap: 24px;
             margin-bottom: 24px;
         }
+        .install-top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .install-top-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
         .step-list {
             list-style: none;
             padding: 0;
@@ -136,7 +148,6 @@
             height: 150px;
             background: #fff;
             border-radius: 12px;
-            margin: 0 auto 16px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -144,6 +155,7 @@
             font-size: 12px;
             text-align: center;
             padding: 10px;
+            flex-shrink: 0;
         }
         .qr-placeholder img {
             width: 100%;
@@ -152,8 +164,18 @@
             object-fit: contain;
         }
         
+        /* Mobile Responsive Fixes */
         @media (max-width: 768px) {
             .install-grid { grid-template-columns: 1fr; }
+            .install-top-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+            .install-top-info {
+                flex-direction: column;
+                align-items: center; /* Centers QR and Text perfectly */
+                text-align: center;
+            }
         }
     </style>
     <link rel="manifest" href="manifest.json">
@@ -161,7 +183,7 @@
 <body>
 
     <div class="app-container">
-        <!-- Sidebar (Matches your exact index.html structure) -->
+        <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-logo">L</div>
@@ -171,19 +193,23 @@
                 <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
                 <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
                 <li class="nav-item"><a href="bot.html"><i class="fa fa-robot"></i> LearnyAI</a></li>
+                <li class="nav-item"><a href="games.html"><i class="fa fa-gamepad"></i> Games</a></li>
                 <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
                 <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
                 <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+                <li class="nav-item"><a href="tuition.html"><i class="fa fa-chalkboard-teacher"></i> Tuition</a></li>
                 <li class="nav-item"><a href="motivation.html"><i class="fa fa-lightbulb"></i> Motivation</a></li>
                 <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
                 <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-stopwatch"></i> Pomodoro</a></li>
                 <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-bar"></i> Mark Analyze</a></li>
                 <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
                 <li class="nav-item"><a href="countdown.html"><i class="fa fa-hourglass-half"></i> Countdown</a></li>
+                <li class="nav-item"><a href="referral.html"><i class="fa fa-gift"></i> Referral</a></li>
                 <li class="nav-item active"><a href="install.html"><i class="fa fa-download"></i> Install App</a></li>
                 <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
                 <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
                 <li class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></li>
+                <li class="nav-item premium-nav-item"><a href="premium.html" class="premium-link"><i class="fa fa-crown" style="color: var(--warning);"></i> Get Premium</a></li>
             </ul>
             <div class="sidebar-welcome">
                 <div class="divider"></div>
@@ -205,11 +231,11 @@
                 </div>
             </div>
 
-            <!-- Top Action Bar -->
-            <div class="card mb-3" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
-                <div style="display: flex; align-items: center; gap: 16px;">
+            <!-- Top Action Bar (Fixed Mobile Alignment) -->
+            <div class="card mb-3 install-top-bar">
+                <div class="install-top-info">
                     <div class="qr-placeholder">
-                        <!-- Replace src with your actual QR code image linking to your website -->
+                        <!-- Replace data URL with your actual website URL -->
                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://yourwebsite.com" alt="Scan to Install">
                     </div>
                     <div>
@@ -290,8 +316,20 @@
                         <div class="pwa-platform">
                             <h4><i class="fa fa-mobile-alt"></i> Mobile (Android / iOS)</h4>
                             <ol class="step-list" style="margin-top: 12px;">
-                                <li><span class="step-number">1</span> <strong>Android (Chrome):</strong> Tap the 3-dot menu (⋮) > Select "Install App" or "Add to Home screen".</li>
-                                <li><span class="step-number">2</span> <strong>iOS (Safari):</strong> Tap the Share icon (<i class="fa fa-share" style="color: var(--primary);"></i>) > Scroll down and select "Add to Home Screen".</li>
+                                <li>
+                                    <span class="step-number">1</span>
+                                    <div>
+                                        <strong>Android (Chrome):</strong>
+                                        Tap the 3-dot menu (⋮) <i class="fa fa-chevron-right" style="font-size: 10px; color: var(--primary-light); margin: 0 4px;"></i> Select "Install App" or "Add to Home screen".
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="step-number">2</span>
+                                    <div>
+                                        <strong>iOS (Safari):</strong>
+                                        Tap the Share icon (<i class="fa fa-share" style="color: var(--primary-light);"></i>) <i class="fa fa-chevron-right" style="font-size: 10px; color: var(--primary-light); margin: 0 4px;"></i> Scroll down and select "Add to Home Screen".
+                                    </div>
+                                </li>
                             </ol>
                         </div>
 
@@ -396,32 +434,24 @@
     
     <!-- Page Specific Script for Share & FAQ -->
     <script>
-        // Share App Functionality (Safe fallback if not in APP object)
+        // Share App Functionality (Hooks into your existing APP methods)
         function shareApp() {
-            const text = "📚 Check out Learny! The ultimate study companion for students.\nTrack tasks, Pomodoro, marks, and more!\n🔗 " + window.location.href;
+            const url = window.location.href;
+            const text = "📚 Check out Learny! The ultimate study companion for students.\nTrack tasks, Pomodoro, marks, and more!\n🔗 " + url;
+            
             if (navigator.share) {
-                navigator.share({ title: 'Learny App', text: text, url: window.location.href }).catch(() => copyToClipboard(text));
+                navigator.share({ 
+                    title: 'Learny App', 
+                    text: text, 
+                    url: url 
+                }).catch(() => {
+                    // Fallback if user cancels the native share dialog
+                    APP.copyToClipboard(text);
+                });
             } else {
-                copyToClipboard(text);
+                // Fallback for desktop/unsupported browsers
+                APP.copyToClipboard(text);
             }
-        }
-
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                const el = document.getElementById('notification-toast');
-                if (el) {
-                    el.querySelector('span').textContent = 'Link copied to clipboard!';
-                    el.classList.add('show');
-                    setTimeout(() => el.classList.remove('show'), 3000);
-                }
-            }).catch(() => {
-                const el = document.getElementById('notification-toast');
-                if (el) {
-                    el.querySelector('span').textContent = 'Failed to copy';
-                    el.classList.add('show');
-                    setTimeout(() => el.classList.remove('show'), 3000);
-                }
-            });
         }
 
         // FAQ Toggle Logic (Matches your existing script.js pattern)
