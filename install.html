@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install Learny App</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Minor page-specific enhancements that complement your existing CSS */
+        .install-hero {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, rgba(108, 43, 217, 0.1) 0%, rgba(108, 43, 217, 0.02) 100%);
+        }
+        .install-hero-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: #fff;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 24px rgba(108, 43, 217, 0.3);
+        }
+        .step-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .step-list li {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .step-list li:last-child {
+            margin-bottom: 0;
+        }
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .step-content h4 {
+            margin: 0 0 4px 0;
+            font-size: 15px;
+            color: var(--text-main);
+        }
+        .step-content p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+        .qr-placeholder {
+            width: 150px;
+            height: 150px;
+            background: #fff;
+            border-radius: 12px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-dark);
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .detail-item {
+            text-align: center;
+            padding: 16px 8px;
+        }
+        .detail-item i {
+            font-size: 24px;
+            color: var(--primary-light);
+            margin-bottom: 8px;
+        }
+        .detail-item h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0 0 4px 0;
+            color: var(--text-main);
+        }
+        .detail-item p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Sidebar (Matches your existing structure) -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">L</div>
+                <div class="sidebar-title">Learny</div>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
+                <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+                <li class="nav-item"><a href="bot.html"><i class="fa fa-robot"></i> LearnyAI</a></li>
+                <li class="nav-item"><a href="games.html"><i class="fa fa-gamepad"></i> Games</a></li>
+                <li class9="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
+                <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+                <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+                <li class="nav-item"><a href="tuition.html"><i class="fa fa-chalkboard-teacher"></i> Tuition</a></li>
+                <li class="nav-item"><a href="motivation.html"><i class="fa fa-lightbulb"></i> Motivation</a></li>
+                <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
+                <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-stopwatch"></i> Pomodoro</a></li>
+                <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
+                <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
+                <li class="nav-item"><a href="countdown.html"><i class="fa fa-hourglass-half"></i> Countdown</a></li>
+                <li class="nav-item"><a href="referral.html"><i class="fa fa-users"></i> Referral</a></li>
+                <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+                <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+                <li class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></li>
+                <li class="nav-item premium-nav-item"><a href="premium.html" class="premium-link"><i class="fa fa-crown"></i> Get Premium</a></li>
+                <!-- Active state for current page -->
+                <li class="nav-item active"><a href="install.html"><i class="fa fa-download"></i> Install App</a></li>
+            </ul>
+            <div class="sidebar-welcome">
+                <p class="welcome-text" id="sidebar-username">Welcome, User!</p>
+                <div class="divider"></div>
+                <p>Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title"><i class="fa fa-mobile-alt"></i> Install Learny App</h1>
+                <div class="header-actions">
+                    <button class="theme-toggle" title="Toggle Theme"><i class="fa fa-moon"></i></button>
+                    <button class="hamburger"><i class="fa fa-bars"></i></button>
+                </div>
+            </div>
+
+            <!-- Hero Section -->
+            <div class="card install-hero mb-3">
+                <div class="install-hero-icon">
+                    <i class="fa fa-graduation-cap"></i>
+                </div>
+                <h2 style="margin: 0 0 8px 0; font-size: 28px; color: var(--text-bright);">Learny Application</h2>
+                <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto 24px;">
+                    Get the best learning experience with offline access, faster performance, and native app features. Choose your preferred installation method below.
+                </p>
+                <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                    <a href="learny.apk" class="btn btn-primary btn-lg" download>
+                        <i class="fa fa-android"></i> Download APK
+                    </a>
+                    <button class="btn btn-secondary btn-lg" id="install-pwa-btn">
+                        <i class="fa fa-plus-circle"></i> Install PWA
+                    </button>
+                </div>
+            </div>
+
+            <!-- APK Details Grid -->
+            <div class="stats-grid mb-3">
+                <div class="stat-card">
+                    <div class="stat-icon purple"><i class="fa fa-code-branch"></i></div>
+                    <div class="stat-info">
+                        <h3>v1.2.0</h3>
+                        <p>Current Version</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fa fa-hdd"></i></div>
+                    <div class="stat-info">
+                        <h3>~15 MB</h3>
+                        <p>App Size</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange"><i class="fa fa-calendar-check"></i></div>
+                    <div class="stat-info">
+                        <h3>Jun 2026</h3>
+                        <p>Last Updated</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue"><i class="fa fa-mobile"></i></div>
+                    <div class="stat-info">
+                        <h3>Android 8.0+</h3>
+                        <p>Requirements</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Installation Steps -->
+            <div class="grid-2 mb-3">
+                <!-- APK Steps -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fa fa-android"></i> How to Install APK</h3>
+                    </div>
+                    <ul class="step-list">
+                        <li>
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Download the File</h4>
+                                <p>Click the "Download APK" button above to save <code>learny.apk</code> to your device.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Allow Unknown Sources</h4>
+                                <p>If prompted, go to Settings > Security and enable "Install from Unknown Sources".</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Install the App</h4>
+                                <p>Open your file manager, locate the downloaded APK, and tap "Install".</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>Open & Enjoy</h4>
+                                <p>Launch Learny from your app drawer and start your learning journey! 🎯</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- PWA Steps -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fa fa-globe"></i> How to Install PWA</h3>
+                    </div>
+                    <ul class="step-list">
+                        <li>
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Open in Browser</h4>
+                                <p>Open this website in <strong>Chrome</strong> (Android/PC) or <strong>Safari</strong> (iOS).</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Open Menu</h4>
+                                <p>Tap the three dots (⋮) in Chrome, or the Share icon (↑) in Safari.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Add to Home Screen</h4>
+                                <p>Select "Add to Home screen" or "Install App" from the menu options.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>Confirm Installation</h4>
+                                <p>Tap "Add" or "Install". The Learny icon will now appear on your home screen!</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Share Section -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-share-alt"></i> Share Learny</h3>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; text-align: center;">
+                    <div>
+                        <div class="qr-placeholder">
+                            <i class="fa fa-qrcode" style="font-size: 64px; color: var(--bg-dark);"></i>
+                        </div>
+                        <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Scan to open on mobile</p>
+                    </div>
+                    <div style="flex: 1; min-width: 250px;">
+                        <p style="color: var(--text-muted); margin-bottom: 16px;">Love Learny? Share it with your friends and help them boost their productivity!</p>
+                        <div style="display: flex; gap: 12px; justify-content: center;">
+                            <button class="btn btn-primary" onclick="APP.shareApp()">
+                                <i class="fa fa-share"></i> Share Link
+                            </button>
+                            <button class="btn btn-secondary" onclick="APP.copyLink()">
+                                <i class="fa fa-copy"></i> Copy Link
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-question-circle"></i> Frequently Asked Questions</h3>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Is the Learny APK safe to install?</span>
+                        <i class="fa fa-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Yes, absolutely. The APK is officially built and signed by the Learny development team. It contains no malware, ads, or tracking scripts.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What is the difference between APK and PWA?</span>
+                        <i class="fa fa-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        The APK is a native Android application that works best on Android devices and offers offline capabilities. The PWA (Progressive Web App) works on both iOS and Android via your browser and doesn't require downloading a file from outside the app store.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Will my data sync between the APK and PWA?</span>
+                        <i class="fa fa-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Currently, Learny stores your data locally on your device for maximum privacy. If you switch between APK and PWA on the <em>same device and browser</em>, your data will remain intact.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Why am I getting an "Unknown Source" warning?</span>
+                        <i class="fa fa-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        This is a standard Android security feature for apps not downloaded from the Google Play Store. Since you are downloading the official APK directly from us, it is safe to allow this permission for the Learny installer.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="site-footer">
+                <p>Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰</p>
+                <p style="margin-top: 4px; font-size: 12px;">&copy; 2026 Learny. All rights reserved.</p
+            </footer>
+        </main>
+
+        <!-- Mobile Overlay -->
+        <div class="overlay"></div>
+    </div>
+
+    <!-- Notification Toast (Matches existing structure) -->
+    <div id="notification-toast" class="notification">
+        <i class="fa fa-info-circle"></i>
+        <span>Notification message</span>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Self-contained script for Install Page features
+        document.addEventListener('DOMContentLoaded', () => {
+            // FAQ Toggle Logic (in case it's not triggered by main script on this page)
+            document.querySelectorAll('.faq-item .faq-question').forEach(q => {
+                q.onclick = () => q.parentElement.classList.toggle('open');
+            });
+
+            // PWA Install Prompt Logic
+            let deferredPrompt;
+            const installBtn = document.getElementById('install-pwa-btn');
+            
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installBtn.style.display = 'inline-flex'; // Show button when installable
+            });
+
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        APP.showToast('Learny installed successfully! 🎉');
+                    }
+                    deferredPrompt = null;
+                } else {
+                    APP.showToast('Follow the PWA steps above to add to home screen.');
+                }
+ each
+            });
+        });
+
+        // Extend APP object with share functions if not already defined
+        if (typeof APP !== 'undefined') {
+            APP.shareApp = function() {
+                const shareData = {
+                    title: 'Learny App',
+                    text: 'Check out Learny! The best productivity and learning app. Download it now.',
+                    url: window.location.href
+                };
+                if (navigator.share) {
+                    navigator.share(shareData).catch(() => APP.copyLink());
+                } else {
+                    APP.copyLink();
+                }
+            };
+
+            APP.copyLink = function() {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    APP.showToast('Link copied to clipboard! 📋');
+                }).catch(() => {
+                    APP.showToast('Failed to copy link.');
+                });
+            };
+        }
+    </script>
+</body>
+</html>
