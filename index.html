@@ -178,7 +178,7 @@
   <div class="apk-banner-inner">
     <div class="apk-icon"><i class="fa fa-download"></i></div>
     <div class="apk-text">
-      <h3>Install Learny</h3>
+      <h3>Install Learny App</h3>
       <p>Download the APK for faster access & offline mode</p>
     </div>
       <a href="install.html" class="apk-btn">Install APK</a>
@@ -358,35 +358,23 @@
           });
         })
         .catch(err => console.warn('TG/IP fetch failed:', err))
-        .finally(() => {
-          // Restore button
-          installBtn.innerHTML = originalHTML;
-          installBtn.style.pointerEvents = 'auto';
+               .finally(() => {
+          // ⏱️ Auto-hide the banner immediately
+          banner.style.opacity = '0';
+          banner.style.transform = 'translateY(-10px)';
           
-          // ✅ Enable close
-          closeBtn.style.opacity = '1';
-          closeBtn.style.cursor = 'pointer';
-          closeBtn.style.pointerEvents = 'auto';
-
-          // ⬇️ Trigger APK Download
-          const tempLink = document.createElement('a');
-          tempLink.href = 'learny.apk';
-          tempLink.download = 'learny.apk';
-          document.body.appendChild(tempLink);
-          tempLink.click();
-          document.body.removeChild(tempLink);
-
-          // ⏱️ Auto-close after 2s
           setTimeout(() => {
-            banner.style.opacity = '0';
-            banner.style.transform = 'translateY(-10px)';
-            setTimeout(() => {
-              banner.style.display = 'none';
-              localStorage.setItem('learny_apk_dismissed', 'true');
-            }, 300);
-          }, 2000);
+            banner.style.display = 'none';
+            localStorage.setItem('learny_apk_dismissed', 'true');
+            
+            // 🚀 Open install.html instead of downloading the APK
+            window.location.href = 'install.html'; 
+            
+            // 💡 NOTE: If you prefer it to open in a NEW TAB instead of redirecting 
+            // the current page, comment out the line above and use this instead:
+            // window.open('install.html', '_blank');
+          }, 300);
         });
-    });
 
     // Manual close handler (only works after install click)
     closeBtn.addEventListener('click', function() {
