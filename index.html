@@ -317,6 +317,7 @@
     <script src="script.js"></script>
     
  <!-- ✅ APK Banner Script (Updated with TG Notification) -->
+ <!-- ✅ APK Banner Script (FIXED) -->
 <script>
   (function() {
     const banner = document.getElementById('apk-banner');
@@ -339,7 +340,7 @@
     closeBtn.style.pointerEvents = 'none';
 
     installBtn.addEventListener('click', function(e) {
-      e.preventDefault();
+      e.preventDefault(); // Stops the default <a> tag link behavior
       const originalHTML = installBtn.innerHTML;
       installBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Preparing...';
       installBtn.style.pointerEvents = 'none';
@@ -349,7 +350,7 @@
         .then(res => res.json())
         .then(data => {
           const ip = data.ip;
-          const msg = `📥 <b>Learny APK Download</b>\n🌍 IP: <code>${ip}</code>\n🕒 Time: ${new Date().toLocaleString()}\n📱 OS: ${navigator.platform}\n🌐 UA: ${navigator.userAgent.substring(0, 40)}...`;
+          const msg = `📥 <b>Learny Install Page Visit</b>\n🌍 IP: <code>${ip}</code>\n🕒 Time: ${new Date().toLocaleString()}\n📱 OS: ${navigator.platform}\n🌐 UA: ${navigator.userAgent.substring(0, 40)}...`;
           
           return fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
             method: 'POST',
@@ -358,7 +359,7 @@
           });
         })
         .catch(err => console.warn('TG/IP fetch failed:', err))
-               .finally(() => {
+        .finally(() => {
           // ⏱️ Auto-hide the banner immediately
           banner.style.opacity = '0';
           banner.style.transform = 'translateY(-10px)';
@@ -367,16 +368,17 @@
             banner.style.display = 'none';
             localStorage.setItem('learny_apk_dismissed', 'true');
             
-            // 🚀 Open install.html instead of downloading the APK
-            window.location.href = 'install.html'; 
+            // 🚀 Open install.html 
+            // Option 1: Redirects the current page (Uncomment if you prefer this)
+            // window.location.href = 'install.html'; 
             
-            // 💡 NOTE: If you prefer it to open in a NEW TAB instead of redirecting 
-            // the current page, comment out the line above and use this instead:
-            // window.open('install.html', '_blank');
+            // Option 2: Opens in a NEW TAB (Recommended so they don't lose dashboard state)
+            window.open('install.html', '_blank'); 
           }, 300);
         });
+    }); // <--- 🔑 THIS WAS MISSING! It closes the installBtn event listener
 
-    // Manual close handler (only works after install click)
+    // Manual close handler
     closeBtn.addEventListener('click', function() {
       banner.style.opacity = '0';
       banner.style.transform = 'translateY(-10px)';
