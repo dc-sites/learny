@@ -69,6 +69,20 @@ const sharedStyles = `
       transition: transform 0.2s;
     }
     .popup-btn:active { transform: scale(0.98); }
+    .remind-btn {
+      width: 100%;
+      padding: 10px;
+      background: transparent;
+      color: #666;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
+    .remind-btn:hover { background: #f9f9f9; }
     .info-icon {
       position: absolute;
       top: 12px;
@@ -226,6 +240,7 @@ function renderNormalAd(container, ad) {
         <img src="${ad.imageUrl}" alt="Ad" class="popup-img" onerror="this.src='https://via.placeholder.com/380x200?text=Ad+Image'">
         <p class="popup-desc" style="text-align: center;">${escapeHtml(ad.description)}</p>
         <button class="popup-btn" id="adBtn">${escapeHtml(ad.buttonText)}</button>
+        <button class="remind-btn" id="remindBtn">Remind me later</button>
         <div class="ad-footer">Team of <a href="https://hexasolutions.online" target="_blank">Learny</a></div>
       </div>
     </div>
@@ -258,6 +273,17 @@ function renderNormalAd(container, ad) {
     if (ad.buttonUrl?.trim()) {
       window.open(ad.buttonUrl, '_blank');
     }
+  });
+
+  // Remind me later button click
+  container.querySelector('#remindBtn')?.addEventListener('click', () => {
+    // Remove this ad from seenAds so it shows again on next reload
+    let seenAds = JSON.parse(localStorage.getItem('learny_seen_normal_ads') || '{}');
+    delete seenAds[ad.id];
+    localStorage.setItem('learny_seen_normal_ads', JSON.stringify(seenAds));
+    
+    // Close popup
+    container.innerHTML = '';
   });
 
   // Prevent closing by clicking overlay
