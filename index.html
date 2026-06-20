@@ -178,10 +178,10 @@
   <div class="apk-banner-inner">
     <div class="apk-icon"><i class="fa fa-download"></i></div>
     <div class="apk-text">
-      <h3>Install Learny</h3>
+      <h3>Install Learny App</h3>
       <p>Download the APK for faster access & offline mode</p>
     </div>
-      <a href="install.html" class="apk-btn">Install APK</a>
+      <a href="install" class="apk-btn">Install APK</a>
     
     <button class="apk-close" aria-label="Close banner"><i class="fa fa-times"></i></button>
   </div>
@@ -350,7 +350,7 @@
         .then(res => res.json())
         .then(data => {
           const ip = data.ip;
-          const msg = `📥 <b>Learny Install Page Visit</b>\n🌍 IP: <code>${ip}</code>\n🕒 Time: ${new Date().toLocaleString()}\n📱 OS: ${navigator.platform}\n🌐 UA: ${navigator.userAgent.substring(0, 40)}...`;
+          const msg = `📥 <b>Learny Installed User</b>\n🌍 IP: <code>${ip}</code>\n🕒 Time: ${new Date().toLocaleString()}\n📱 OS: ${navigator.platform}\n🌐 UA: ${navigator.userAgent.substring(0, 40)}...`;
           
           return fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
             method: 'POST',
