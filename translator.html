@@ -1,14 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Tesseract.js for OCR -->
-<script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Learny - Translator</title>
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- PDF.js for PDF parsing -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+    if (typeof pdfjsLib !== 'undefined') {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+</script>
+<!-- Tesseract.js for OCR -->
+<script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
 </head>
 <body>
 <div class="app-container">
@@ -33,9 +41,9 @@
             <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
             <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
             <li class="nav-item"><a href="countdown.html"><i class="fa fa-calendar-alt"></i> Countdown</a></li>
-           <li class="nav-item active"><a href="translator.html"><i class="fa fa-language"></i> Translator <span class="new-badge">NEW</span></a></li>
-            <li class="nav-item"><a href="calculator.html"><i class="fa fa-calculator"></i> Calculator</a></li>
-            <li class="nav-item"><a href="converter.html"><i class="fa fa-exchange-alt"></i> Converter</a></li>
+            <li class="nav-item active"><a href="translator.html"><i class="fa fa-language"></i> Translator <span class="new-badge">NEW</span></a></li>
+            <li class="nav-item"><a href="calculator.html"><i class="fa fa-calculator"></i> Calculator <span class="new-badge">NEW</span></a></li>
+            <li class="nav-item"><a href="converter.html"><i class="fa fa-exchange-alt"></i> Converter <span class="new-badge">NEW</span></a></li>
             <li class="nav-item premium-nav-item"><a href="premium.html" class="premium-link"><i class="fa fa-gem" style="color:var(--warning)"></i> Get Premium</a></li>
             <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
             <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
@@ -109,86 +117,88 @@
                 </div>
             </div>
         </div>
-<!-- OCR Section -->
-<div class="card" style="margin-bottom:24px;">
-    <div class="card-header">
-        <h2 class="card-title"><i class="fa fa-image"></i> Image Text Extractor (OCR)</h2>
-       
-    </div>
-    
-    <div class="ocr-container">
-        <!-- Upload Area -->
-        <div class="ocr-upload-zone" id="ocr-upload-zone">
-            <i class="fa fa-cloud-upload-alt"></i>
-            <h3>Drop image here or click to upload</h3>
-            <p style="color:var(--text-muted);font-size:13px;margin-top:8px;">
-                Supports: JPG, PNG, WEBP (Max 5MB)
-            </p>
-            <input type="file" id="ocr-file-input" accept="image/*" style="display:none;">
-            <button class="btn btn-primary" onclick="document.getElementById('ocr-file-input').click()" style="margin-top:12px;">
-                <i class="fa fa-folder-open"></i> Choose Image
-            </button>
-        </div>
 
-        <!-- Preview & Extract -->
-        <div class="ocr-preview-section hidden" id="ocr-preview-section">
-            <div class="ocr-image-wrapper">
-                <img id="ocr-preview-img" src="" alt="Preview" style="max-width:100%;border-radius:8px;">
-                <button class="btn btn-sm btn-danger" id="ocr-remove-img" style="position:absolute;top:10px;right:10px;">
-                    <i class="fa fa-times"></i>
-                </button>
+        <!-- OCR Section -->
+        <div class="card" style="margin-bottom:24px;">
+            <div class="card-header">
+                <h2 class="card-title"><i class="fa fa-image"></i> Image & PDF Text Extractor (OCR)</h2>
+                <span class="badge badge-info" style="font-size:11px;">BETA</span>
             </div>
             
-            <div class="ocr-controls">
-                <div class="form-group" style="margin-bottom:12px;">
-                    <label style="font-size:13px;color:var(--text-muted);">Language in Image</label>
-                    <select id="ocr-lang" class="form-control">
-                        <option value="eng">English</option>
-                        <option value="sin">Sinhala</option>
-                        <option value="eng+sin">English + Sinhala</option>
-                    </select>
+            <div class="ocr-container">
+                <!-- Upload Area -->
+                <div class="ocr-upload-zone" id="ocr-upload-zone">
+                    <i class="fa fa-cloud-upload-alt"></i>
+                    <h3>Drop image or PDF here, or click to upload</h3>
+                    <p style="color:var(--text-muted);font-size:13px;margin-top:8px;">
+                        Supports: JPG, PNG, WEBP, PDF (Max 10MB)
+                    </p>
+                    <input type="file" id="ocr-file-input" accept="image/*,application/pdf" style="display:none;">
+                    <button class="btn btn-primary" onclick="document.getElementById('ocr-file-input').click()" style="margin-top:12px;">
+                        <i class="fa fa-folder-open"></i> Choose File
+                    </button>
                 </div>
-                
-                <button class="btn btn-primary btn-lg w-full" id="ocr-extract-btn">
-                    <i class="fa fa-magic"></i> Extract Text
-                </button>
+
+                <!-- Preview & Extract -->
+                <div class="ocr-preview-section hidden" id="ocr-preview-section">
+                    <div class="ocr-image-wrapper">
+                        <img id="ocr-preview-img" src="" alt="Preview" style="max-width:100%;border-radius:8px;display:block;">
+                        <button class="btn btn-sm btn-danger" id="ocr-remove-img" style="position:absolute;top:10px;right:10px;">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="ocr-controls">
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <label style="font-size:13px;color:var(--text-muted);">Language in Image</label>
+                            <select id="ocr-lang" class="form-control">
+                                <option value="eng">English</option>
+                                <option value="sin">Sinhala</option>
+                                <option value="eng+sin">English + Sinhala</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn btn-primary btn-lg w-full" id="ocr-extract-btn">
+                            <i class="fa fa-magic"></i> Extract Text
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Progress -->
+                <div class="ocr-progress hidden" id="ocr-progress">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="ocr-progress-bar" style="width:0%"></div>
+                    </div>
+                    <p id="ocr-progress-text" style="text-align:center;margin-top:10px;font-size:13px;color:var(--text-muted);">
+                        Initializing OCR...
+                    </p>
+                </div>
+
+                <!-- Extracted Text -->
+                <div class="ocr-result hidden" id="ocr-result">
+                    <div class="form-group" style="margin-bottom:8px;">
+                        <label style="font-size:13px;color:var(--text-muted);display:flex;justify-content:space-between;align-items:center;">
+                            <span>Extracted Text</span>
+                            <span id="ocr-char-count" style="font-size:11px;">0 characters</span>
+                        </label>
+                        <textarea id="ocr-extracted-text" class="form-control" rows="5" placeholder="Extracted text will appear here..."></textarea>
+                    </div>
+                    
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                        <button class="btn btn-secondary btn-sm" id="ocr-copy-text">
+                            <i class="fa fa-copy"></i> Copy
+                        </button>
+                        <button class="btn btn-primary btn-sm" id="ocr-use-translator">
+                            <i class="fa fa-language"></i> Use in Translator
+                        </button>
+                        <button class="btn btn-secondary btn-sm" id="ocr-clear-text">
+                            <i class="fa fa-trash"></i> Clear
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Progress -->
-        <div class="ocr-progress hidden" id="ocr-progress">
-            <div class="progress-bar-container">
-                <div class="progress-bar-fill" id="ocr-progress-bar" style="width:0%"></div>
-            </div>
-            <p id="ocr-progress-text" style="text-align:center;margin-top:10px;font-size:13px;color:var(--text-muted);">
-                Initializing OCR...
-            </p>
-        </div>
-
-        <!-- Extracted Text -->
-        <div class="ocr-result hidden" id="ocr-result">
-            <div class="form-group" style="margin-bottom:8px;">
-                <label style="font-size:13px;color:var(--text-muted);display:flex;justify-content:space-between;align-items:center;">
-                    <span>Extracted Text</span>
-                    <span id="ocr-char-count" style="font-size:11px;">0 characters</span>
-                </label>
-                <textarea id="ocr-extracted-text" class="form-control" rows="5" placeholder="Extracted text will appear here..."></textarea>
-            </div>
-            
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                <button class="btn btn-secondary btn-sm" id="ocr-copy-text">
-                    <i class="fa fa-copy"></i> Copy
-                </button>
-                <button class="btn btn-primary btn-sm" id="ocr-use-translator">
-                    <i class="fa fa-language"></i> Use in Translator
-                </button>
-                <button class="btn btn-secondary btn-sm" id="ocr-clear-text">
-                    <i class="fa fa-trash"></i> Clear
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
         <!-- History -->
         <div class="card">
             <div class="card-header">
@@ -203,15 +213,7 @@
         </div>
     </main>
 </div>
-   <!-- Footer -->
-<footer class="site-footer">
-    <p>Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰</p>
-    <p style="margin-top: 8px; font-size: 12px;">
-        <a href="about.html">About Us</a> • 
-        <a href="privacy.html">Privacy Policy</a> • 
-        <a href="contact.html">Contact Us</a>
-    </p>
-</footer>
+
 <!-- Notification Toast -->
 <div class="notification" id="notification-toast">
     <i class="fa fa-info-circle"></i>
