@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learny - Calculator</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="app-container">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">L</div>
+            <div class="sidebar-title">Learny</div>
+        </div>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
+            <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+            <li class="nav-item"><a href="bot.html"><i class="fa fa-robot"></i> LearnyAI</a></li>
+            <li class="nav-item"><a href="games.html"><i class="fa fa-gamepad"></i> Games</a></li>
+            <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
+            <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+            <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+            <li class="nav-item"><a href="tuition.html"><i class="fa fa-graduation-cap"></i> Tuition</a></li>
+            <li class="nav-item"><a href="motivation.html"><i class="fa fa-quote-left"></i> Motivation</a></li>
+            <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
+            <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-hourglass-half"></i> Pomodoro</a></li>
+            <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
+            <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
+            <li class="nav-item"><a href="countdown.html"><i class="fa fa-calendar-alt"></i> Countdown</a></li>
+            <li class="nav-item"><a href="translator.html"><i class="fa fa-language"></i> Translator</a></li>
+            <li class="nav-item active"><a href="calculator.html"><i class="fa fa-calculator"></i> Calculator <span class="new-badge">NEW</span></a></li>
+            <li class="nav-item"><a href="converter.html"><i class="fa fa-exchange-alt"></i> Converter</a></li>
+            <li class="nav-item premium-nav-item"><a href="premium.html" class="premium-link"><i class="fa fa-gem" style="color:var(--warning)"></i> Get Premium</a></li>
+            <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+            <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+        </ul>
+        <div class="sidebar-welcome">
+            <p id="sidebar-username">Welcome, User!</p>
+            <div class="divider"></div>
+            <p class="welcome-text">Keep Learning 🚀</p>
+        </div>
+    </aside>
+
+    <div class="overlay"></div>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title"><i class="fa fa-calculator"></i> Scientific Calculator</h1>
+            <div class="header-actions">
+                <button class="theme-toggle"><i class="fa fa-moon"></i></button>
+                <button class="notif-btn" onclick="location.href='index.html'"><i class="fa fa-bell"></i></button>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <!-- Calculator -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fa fa-calculator"></i> Calculator</h2>
+                    <div style="display:flex;gap:8px;">
+                        <button class="btn btn-sm btn-secondary" id="calc-mode-toggle">
+                            <i class="fa fa-flask"></i> Scientific
+                        </button>
+                        <button class="btn btn-sm btn-secondary" id="calc-clear-history">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="calc-display">
+                    <div class="calc-expression" id="calc-expression">&nbsp;</div>
+                    <div class="calc-result" id="calc-result">0</div>
+                    <div class="calc-memory-indicator" id="calc-memory-indicator"></div>
+                </div>
+
+                <div class="calc-memory-row">
+                    <button class="calc-btn memory" data-action="mc">MC</button>
+                    <button class="calc-btn memory" data-action="mr">MR</button>
+                    <button class="calc-btn memory" data-action="m+">M+</button>
+                    <button class="calc-btn memory" data-action="m-">M−</button>
+                    <button class="calc-btn memory" data-action="ms">MS</button>
+                </div>
+
+                <div class="calc-grid" id="calc-grid">
+                    <!-- Buttons injected by JS -->
+                </div>
+            </div>
+
+            <!-- History -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fa fa-history"></i> History</h2>
+                </div>
+                <div id="calc-history" class="calc-history">
+                    <p class="empty-text">No calculations yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Reference -->
+        <div class="card" style="margin-top:24px;">
+            <div class="card-header">
+                <h2 class="card-title"><i class="fa fa-info-circle"></i> Quick Reference</h2>
+            </div>
+            <div class="calc-reference">
+                <div class="ref-item"><strong>π</strong> = 3.14159...</div>
+                <div class="ref-item"><strong>e</strong> = 2.71828...</div>
+                <div class="ref-item"><strong>sin/cos/tan</strong> = Trigonometry</div>
+                <div class="ref-item"><strong>log</strong> = Base 10</div>
+                <div class="ref-item"><strong>ln</strong> = Natural log</div>
+                <div class="ref-item"><strong>√</strong> = Square root</div>
+                <div class="ref-item"><strong>x²</strong> = Square</div>
+                <div class="ref-item"><strong>xʸ</strong> = Power</div>
+                <div class="ref-item"><strong>!</strong> = Factorial</div>
+                <div class="ref-item"><strong>1/x</strong> = Reciprocal</div>
+            </div>
+        </div>
+    </main>
+</div>
+   <!-- Footer -->
+<footer class="site-footer">
+    <p>Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰</p>
+    <p style="margin-top: 8px; font-size: 12px;">
+        <a href="about.html">About Us</a> • 
+        <a href="privacy.html">Privacy Policy</a> • 
+        <a href="contact.html">Contact Us</a>
+    </p>
+</footer>
+<div class="notification" id="notification-toast">
+    <i class="fa fa-info-circle"></i>
+    <span>Notification</span>
+</div>
+
+<script src="script.js"></script>
+<script src="new.js"></script>
+</body>
+</html>

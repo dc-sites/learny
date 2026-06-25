@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Tesseract.js for OCR -->
+<script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learny - Translator</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">L</div>
+            <div class="sidebar-title">Learny</div>
+        </div>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
+            <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+            <li class="nav-item"><a href="bot.html"><i class="fa fa-robot"></i> LearnyAI</a></li>
+            <li class="nav-item"><a href="games.html"><i class="fa fa-gamepad"></i> Games</a></li>
+            <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
+            <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+            <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+            <li class="nav-item"><a href="tuition.html"><i class="fa fa-graduation-cap"></i> Tuition</a></li>
+            <li class="nav-item"><a href="motivation.html"><i class="fa fa-quote-left"></i> Motivation</a></li>
+            <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
+            <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-hourglass-half"></i> Pomodoro</a></li>
+            <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
+            <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
+            <li class="nav-item"><a href="countdown.html"><i class="fa fa-calendar-alt"></i> Countdown</a></li>
+           <li class="nav-item active"><a href="translator.html"><i class="fa fa-language"></i> Translator <span class="new-badge">NEW</span></a></li>
+            <li class="nav-item"><a href="calculator.html"><i class="fa fa-calculator"></i> Calculator</a></li>
+            <li class="nav-item"><a href="converter.html"><i class="fa fa-exchange-alt"></i> Converter</a></li>
+            <li class="nav-item premium-nav-item"><a href="premium.html" class="premium-link"><i class="fa fa-gem" style="color:var(--warning)"></i> Get Premium</a></li>
+            <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+            <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+        </ul>
+        <div class="sidebar-welcome">
+            <p id="sidebar-username">Welcome, User!</p>
+            <div class="divider"></div>
+            <p class="welcome-text">Keep Learning 🚀</p>
+        </div>
+    </aside>
+
+    <div class="overlay"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title"><i class="fa fa-language"></i> Translator</h1>
+            <div class="header-actions">
+                <button class="theme-toggle"><i class="fa fa-moon"></i></button>
+                <button class="notif-btn" onclick="location.href='index.html'"><i class="fa fa-bell"></i></button>
+            </div>
+        </div>
+
+        <!-- Translator Card -->
+        <div class="card" style="margin-bottom:24px;">
+            <div class="card-header">
+                <h2 class="card-title"><i class="fa fa-exchange-alt"></i> Translate Text</h2>
+                <button class="btn btn-sm btn-secondary" id="swap-langs">
+                    <i class="fa fa-sync-alt"></i> Swap
+                </button>
+            </div>
+
+            <div class="translator-layout">
+                <div class="translator-box">
+                    <div class="translator-label">
+                        <span id="source-lang-label">English</span>
+                        <span class="translator-char-count" id="char-count">0 / 1000</span>
+                    </div>
+                    <textarea id="source-text" class="form-control translator-input" 
+                        placeholder="Type text here..." maxlength="1000" rows="6"></textarea>
+                    <div class="translator-actions">
+                        <button class="btn btn-sm btn-secondary" id="clear-source">
+                            <i class="fa fa-times"></i> Clear
+                        </button>
+                        <button class="btn btn-sm btn-secondary" id="paste-source">
+                            <i class="fa fa-paste"></i> Paste
+                        </button>
+                    </div>
+                </div>
+
+                <button class="translator-arrow" id="translate-btn" title="Translate">
+                    <i class="fa fa-arrow-right"></i>
+                </button>
+
+                <div class="translator-box">
+                    <div class="translator-label">
+                        <span id="target-lang-label">සිංහල</span>
+                        <button class="btn btn-sm btn-secondary" id="copy-result" style="padding:4px 10px;">
+                            <i class="fa fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <div id="result-text" class="translator-result">Translation will appear here...</div>
+                    <div class="translator-actions">
+                        <button class="btn btn-sm btn-primary" id="speak-result">
+                            <i class="fa fa-volume-up"></i> Listen
+                        </button>
+                        <button class="btn btn-sm btn-success" id="save-translation">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- OCR Section -->
+<div class="card" style="margin-bottom:24px;">
+    <div class="card-header">
+        <h2 class="card-title"><i class="fa fa-image"></i> Image Text Extractor (OCR)</h2>
+       
+    </div>
+    
+    <div class="ocr-container">
+        <!-- Upload Area -->
+        <div class="ocr-upload-zone" id="ocr-upload-zone">
+            <i class="fa fa-cloud-upload-alt"></i>
+            <h3>Drop image here or click to upload</h3>
+            <p style="color:var(--text-muted);font-size:13px;margin-top:8px;">
+                Supports: JPG, PNG, WEBP (Max 5MB)
+            </p>
+            <input type="file" id="ocr-file-input" accept="image/*" style="display:none;">
+            <button class="btn btn-primary" onclick="document.getElementById('ocr-file-input').click()" style="margin-top:12px;">
+                <i class="fa fa-folder-open"></i> Choose Image
+            </button>
+        </div>
+
+        <!-- Preview & Extract -->
+        <div class="ocr-preview-section hidden" id="ocr-preview-section">
+            <div class="ocr-image-wrapper">
+                <img id="ocr-preview-img" src="" alt="Preview" style="max-width:100%;border-radius:8px;">
+                <button class="btn btn-sm btn-danger" id="ocr-remove-img" style="position:absolute;top:10px;right:10px;">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="ocr-controls">
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label style="font-size:13px;color:var(--text-muted);">Language in Image</label>
+                    <select id="ocr-lang" class="form-control">
+                        <option value="eng">English</option>
+                        <option value="sin">Sinhala</option>
+                        <option value="eng+sin">English + Sinhala</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary btn-lg w-full" id="ocr-extract-btn">
+                    <i class="fa fa-magic"></i> Extract Text
+                </button>
+            </div>
+        </div>
+
+        <!-- Progress -->
+        <div class="ocr-progress hidden" id="ocr-progress">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="ocr-progress-bar" style="width:0%"></div>
+            </div>
+            <p id="ocr-progress-text" style="text-align:center;margin-top:10px;font-size:13px;color:var(--text-muted);">
+                Initializing OCR...
+            </p>
+        </div>
+
+        <!-- Extracted Text -->
+        <div class="ocr-result hidden" id="ocr-result">
+            <div class="form-group" style="margin-bottom:8px;">
+                <label style="font-size:13px;color:var(--text-muted);display:flex;justify-content:space-between;align-items:center;">
+                    <span>Extracted Text</span>
+                    <span id="ocr-char-count" style="font-size:11px;">0 characters</span>
+                </label>
+                <textarea id="ocr-extracted-text" class="form-control" rows="5" placeholder="Extracted text will appear here..."></textarea>
+            </div>
+            
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn btn-secondary btn-sm" id="ocr-copy-text">
+                    <i class="fa fa-copy"></i> Copy
+                </button>
+                <button class="btn btn-primary btn-sm" id="ocr-use-translator">
+                    <i class="fa fa-language"></i> Use in Translator
+                </button>
+                <button class="btn btn-secondary btn-sm" id="ocr-clear-text">
+                    <i class="fa fa-trash"></i> Clear
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+        <!-- History -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title"><i class="fa fa-history"></i> Translation History</h2>
+                <button class="btn btn-sm btn-danger" id="clear-history">
+                    <i class="fa fa-trash"></i> Clear All
+                </button>
+            </div>
+            <div id="history-list" class="translator-history">
+                <p class="empty-text">No translations saved yet.</p>
+            </div>
+        </div>
+    </main>
+</div>
+   <!-- Footer -->
+<footer class="site-footer">
+    <p>Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰</p>
+    <p style="margin-top: 8px; font-size: 12px;">
+        <a href="about.html">About Us</a> • 
+        <a href="privacy.html">Privacy Policy</a> • 
+        <a href="contact.html">Contact Us</a>
+    </p>
+</footer>
+<!-- Notification Toast -->
+<div class="notification" id="notification-toast">
+    <i class="fa fa-info-circle"></i>
+    <span>Notification</span>
+</div>
+
+<script src="script.js"></script>
+<script src="new.js"></script>
+</body>
+</html>
