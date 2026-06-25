@@ -907,10 +907,12 @@ const NEW = {
     },
 
     /* ==========================================================
-       OCR MODULE (Image Text Extractor)
+       OCR MODULE (Image & PDF Text Extractor)
        ========================================================== */
     ocr: {
         currentImage: null,
+        currentPdf: null,
+        isPdf: false,
 
         init() {
             this.bindEvents();
@@ -986,30 +988,114 @@ const NEW = {
         },
 
         handleFile(file) {
-            if (!file.type.startsWith('image/')) {
-                APP.showToast('Please upload an image file');
-                return;
-            }
-            if (file.size > 5 * 1024 * 1024) {
-                APP.showToast('Image size must be less than 5MB');
+            const isPdf = file.type === 'application/pdf';
+            const isImage = file.type.startsWith('image/');
+
+            if (!isPdf && !isImage) {
+                APP.showToast('Please upload an image or PDF file');
                 return;
             }
 
-            this.currentImage = file;
+            const maxSize = isPdf ? 10 * 1024 * 1024 : 5 * 1024 * 1024;
+            if (file.size > maxSize) {
+                APP.showToast(`${isPdf ? 'PDF' : 'Image'} size must be less than ${maxSize / (1024*1024)}MB`);
+                return;
+            }
+
+            this.isPdf = isPdf;
+            
+            if (isPdf) {
+                this.currentPdf = file;
+                this.currentImage = null;
+                this.showPdfPreview(file);
+            } else {
+                this.currentImage = file;
+                this.currentPdf = null;
+                this.showImagePreview(file);
+            }
+        },
+
+        showImagePreview(file) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 const previewImg = document.getElementById('ocr-preview-img');
                 const previewSection = document.getElementById('ocr-preview-section');
                 const uploadZone = document.getElementById('ocr-upload-zone');
                 
-                if (previewImg) previewImg.src = e.target.result;
+                if (previewImg) {
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = 'block';
+                }
                 if (uploadZone) uploadZone.classList.add('hidden');
                 if (previewSection) previewSection.classList.remove('hidden');
+                
+                const pdfInfo = document.getElementById('ocr-pdf-info');
+                if (pdfInfo) pdfInfo.classList.add('hidden');
             };
             reader.readAsDataURL(file);
         },
 
+        showPdfPreview(file) {
+            const previewImg = document.getElementById('ocr-preview-img');
+            const previewSection = document.getElementById('ocr-preview-section');
+            const uploadZone = document.getElementById('ocr-upload-zone');
+            
+            if (previewImg) previewImg.style.display = 'none';
+            
+            let pdfInfo = document.getElementById('ocr-pdf-info');
+            if (!pdfInfo) {
+                pdfInfo = document.createElement('div');
+                pdfInfo.id = 'ocr-pdf-info';
+                pdfInfo.className = 'ocr-pdf-info';
+                previewSection?.appendChild(pdfInfo);
+            }
+            
+            pdfInfo.innerHTML = `
+                <div class="pdf-preview-icon">
+                    <i class="fa fa-file-pdf"></i>
+                </div>
+                <div class="pdf-preview-details">
+                    <h4>${file.name}</h4>
+                    <p>${(file.size / (1024 * 1024)).toFixed(2)} MB</p>
+                    <p class="pdf-pages-count" id="pdf-pages-count">Loading...</p>
+                </div>
+            `;
+            pdfInfo.classList.remove('hidden');
+            
+            if (uploadZone) uploadZone.classList.add('hidden');
+            if (previewSection) previewSection.classList.remove('hidden');
+            
+            this.getPdfPageCount(file);
+        },
+
+        async getPdfPageCount(file) {
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                const pageCount = pdf.numPages;
+                
+                const pageCountEl = document.getElementById('pdf-pages-count');
+                if (pageCountEl) {
+                    pageCountEl.textContent = `${pageCount} page${pageCount > 1 ? 's' : ''}`;
+                }
+            } catch (error) {
+                console.error('PDF Error:', error);
+                const pageCountEl = document.getElementById('pdf-pages-count');
+                if (pageCountEl) {
+                    pageCountEl.textContent = 'Unable to read PDF';
+                }
+            }
+        },
+
         async extractText() {
+            if (this.isPdf) {
+                await this.extractFromPdf();
+            } else {
+                await this.extractFromImage();
+            }
+        },
+
+        async extractFromImage() {
             const lang = document.getElementById('ocr-lang')?.value || 'eng';
             const progressBar = document.getElementById('ocr-progress-bar');
             const progressText = document.getElementById('ocr-progress-text');
@@ -1065,17 +1151,101 @@ const NEW = {
             }
         },
 
+        async extractFromPdf() {
+            const lang = document.getElementById('ocr-lang')?.value || 'eng';
+            const progressBar = document.getElementById('ocr-progress-bar');
+            const progressText = document.getElementById('ocr-progress-text');
+            const progressSection = document.getElementById('ocr-progress');
+            const resultSection = document.getElementById('ocr-result');
+            const extractedText = document.getElementById('ocr-extracted-text');
+            const charCount = document.getElementById('ocr-char-count');
+            const extractBtn = document.getElementById('ocr-extract-btn');
+
+            if (!this.currentPdf) {
+                APP.showToast('Please select a PDF first');
+                return;
+            }
+
+            if (progressSection) progressSection.classList.remove('hidden');
+            if (resultSection) resultSection.classList.add('hidden');
+            if (extractBtn) extractBtn.disabled = true;
+
+            try {
+                const arrayBuffer = await this.currentPdf.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                const totalPages = pdf.numPages;
+                let allText = '';
+
+                for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+                    if (progressText) {
+                        progressText.textContent = `Processing page ${pageNum} of ${totalPages}...`;
+                    }
+
+                    const page = await pdf.getPage(pageNum);
+                    const viewport = page.getViewport({ scale: 2.0 });
+                    
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    await page.render({
+                        canvasContext: context,
+                        viewport: viewport
+                    }).promise;
+
+                    const canvasBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+
+                    const result = await Tesseract.recognize(
+                        canvasBlob,
+                        lang,
+                        {
+                            logger: (m) => {
+                                if (m.status === 'recognizing text') {
+                                    const pageProgress = m.progress;
+                                    const totalProgress = ((pageNum - 1 + pageProgress) / totalPages) * 100;
+                                    if (progressBar) progressBar.style.width = totalProgress + '%';
+                                }
+                            }
+                        }
+                    );
+
+                    allText += `\n--- Page ${pageNum} ---\n${result.data.text}\n`;
+                }
+
+                if (extractedText) extractedText.value = allText.trim();
+                if (charCount) charCount.textContent = `${allText.length} characters`;
+                if (resultSection) resultSection.classList.remove('hidden');
+                
+                APP.showToast(`Extracted text from ${totalPages} page${totalPages > 1 ? 's' : ''}!`);
+
+            } catch (error) {
+                console.error('PDF OCR Error:', error);
+                APP.showToast('Failed to extract text from PDF. Try again.');
+            } finally {
+                if (extractBtn) extractBtn.disabled = false;
+                setTimeout(() => {
+                    if (progressSection) progressSection.classList.add('hidden');
+                    if (progressBar) progressBar.style.width = '0%';
+                }, 1000);
+            }
+        },
+
         resetOCR() {
             this.currentImage = null;
+            this.currentPdf = null;
+            this.isPdf = false;
             const uploadZone = document.getElementById('ocr-upload-zone');
             const previewSection = document.getElementById('ocr-preview-section');
             const fileInput = document.getElementById('ocr-file-input');
             const extractedText = document.getElementById('ocr-extracted-text');
+            const pdfInfo = document.getElementById('ocr-pdf-info');
             
             if (uploadZone) uploadZone.classList.remove('hidden');
             if (previewSection) previewSection.classList.add('hidden');
             if (fileInput) fileInput.value = '';
             if (extractedText) extractedText.value = '';
+            if (pdfInfo) pdfInfo.classList.add('hidden');
             
             document.getElementById('ocr-progress')?.classList.add('hidden');
             document.getElementById('ocr-result')?.classList.add('hidden');
