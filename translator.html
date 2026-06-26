@@ -112,7 +112,6 @@
         </div>
       </div>
 
-      <!-- ✅ FIXED: Progress indicator with real percentage -->
       <div id="file-progress" class="ocr-progress" style="display:none;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
           <div style="display:flex;align-items:center;gap:8px;">
@@ -129,7 +128,6 @@
         <p id="file-progress-status" style="margin-top:8px;font-size:12px;color:var(--text-muted);">Initializing...</p>
       </div>
 
-      <!-- ✅ FIXED: Extracted text section (mobile-friendly) -->
       <div id="extracted-section" style="display:none;margin-top:20px;animation:fadeIn 0.3s ease;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
           <div style="display:flex;align-items:center;gap:8px;">
@@ -142,7 +140,6 @@
           </div>
         </div>
         <div id="extracted-text" style="background:var(--bg-dark);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;max-height:200px;overflow-y:auto;color:var(--text-main);font-size:14px;line-height:1.6;white-space:pre-wrap;word-wrap:break-word;"></div>
-        <!-- ✅ Filename shown BELOW the text (responsive on mobile) -->
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;flex-wrap:wrap;gap:8px;">
           <span id="extracted-source" style="font-size:12px;color:var(--text-muted);background:var(--bg-card-hover);padding:4px 10px;border-radius:10px;display:inline-flex;align-items:center;gap:6px;">
             <i class="fa fa-file"></i> <span id="extracted-source-text">file</span>
@@ -173,6 +170,7 @@
 <script>
 /* ============ TRANSLATOR MODULE ============ */
 (function() {
+  const CHUNK_SIZE = 500; // MyMemory API limit per request
   const T = {
     history: [],
     lastTranslation: null,
@@ -282,6 +280,7 @@
       if (src) src.textContent = from === 'en' ? 'English' : 'Sinhala';
       if (tgt) tgt.textContent = to === 'si' ? 'Sinhala' : 'English';
     },
+    // ✅ FIXED: Split text into chunks of 500 chars and translate each
     async translate() {
       const inp = document.getElementById('trans-input');
       const res = document.getElementById('trans-result');
@@ -289,18 +288,85 @@
       if (!inp || !res || !sel) return;
       const text = inp.value.trim();
       if (!text) return APP.showToast('Please enter text to translate');
+      
       res.textContent = 'Translating...';
       const lang = sel.value;
+      const [srcLang, tgtLang] = lang.split('|');
+      
       try {
-        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${lang}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        const translated = data.responseData?.translatedText || 'Translation failed';
-        res.textContent = translated;
-        this.lastTranslation = { from: text, to: translated, lang: lang, time: new Date().toISOString() };
+        // Split text into chunks of CHUNK_SIZE (500) characters
+        const chunks = this.splitTextIntoChunks(text, CHUNK_SIZE);
+        const totalChunks = chunks.length;
+        let translatedParts = [];
+        
+        for (let i = 0; i < chunks.length; i++) {
+          // Update progress
+          if (totalChunks > 1) {
+            res.textContent = `Translating... (${i + 1}/${totalChunks} parts)`;
+          }
+          
+          const chunk = chunks[i];
+          const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk)}&langpair=${srcLang}|${tgtLang}`;
+          const response = await fetch(url);
+          const data = await response.json();
+          
+          if (data.responseStatus === 200 && data.responseData?.translatedText) {
+            translatedParts.push(data.responseData.translatedText);
+          } else {
+            // If chunk fails, keep original text for that chunk
+            translatedParts.push(chunk);
+          }
+          
+          // Small delay to avoid rate limiting
+          if (i < chunks.length - 1) {
+            await new Promise(r => setTimeout(r, 300));
+          }
+        }
+        
+        const finalTranslation = translatedParts.join(' ');
+        res.textContent = finalTranslation;
+        this.lastTranslation = {
+          from: text,
+          to: finalTranslation,
+          lang: lang,
+          time: new Date().toISOString()
+        };
       } catch (err) {
+        console.error('Translation error:', err);
         res.textContent = 'Error: Could not translate. Check internet.';
       }
+    },
+    // ✅ Split text into chunks without breaking words
+    splitTextIntoChunks(text, maxSize) {
+      if (text.length <= maxSize) return [text];
+      
+      const chunks = [];
+      let remaining = text;
+      
+      while (remaining.length > 0) {
+        if (remaining.length <= maxSize) {
+          chunks.push(remaining);
+          break;
+        }
+        
+        // Find last space or punctuation within maxSize
+        let splitPoint = maxSize;
+        const lastSpace = remaining.lastIndexOf(' ', maxSize);
+        const lastNewline = remaining.lastIndexOf('\n', maxSize);
+        const lastPeriod = remaining.lastIndexOf('.', maxSize);
+        const lastComma = remaining.lastIndexOf(',', maxSize);
+        
+        const breakPoints = [lastSpace, lastNewline, lastPeriod, lastComma].filter(p => p > maxSize * 0.5);
+        
+        if (breakPoints.length > 0) {
+          splitPoint = Math.max(...breakPoints) + 1;
+        }
+        
+        chunks.push(remaining.substring(0, splitPoint).trim());
+        remaining = remaining.substring(splitPoint).trim();
+      }
+      
+      return chunks;
     },
     speak(text, lang) {
       if (!text || !('speechSynthesis' in window)) return;
@@ -383,7 +449,6 @@
         inp.focus();
       }
     },
-    // ✅ FIXED: OCR progress with real percentage
     async handleImage(file) {
       if (!file) return;
       if (!window.Tesseract) return APP.showToast('OCR library still loading...');
@@ -401,7 +466,6 @@
             } else if (m.status === 'initializing api') {
               this.updateProgress(55, 'Preparing recognizer...');
             } else if (m.status === 'recognizing text') {
-              // Main recognition phase: 60% to 99%
               const pct = 60 + Math.round(m.progress * 39);
               this.updateProgress(pct, 'Recognizing text...');
             }
@@ -425,7 +489,6 @@
         this.hideProgress();
       }
     },
-    // ✅ FIXED: PDF progress with real percentage
     async handlePDF(file) {
       if (!file) return;
       if (!window.pdfjsLib) return APP.showToast('PDF library still loading...');
@@ -470,7 +533,6 @@
         if (t) t.textContent = msg;
       }
     },
-    // ✅ FIXED: Real percentage update
     updateProgress(pct, status) {
       const bar = document.getElementById('file-progress-bar');
       const percentEl = document.getElementById('file-progress-percent');
