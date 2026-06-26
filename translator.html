@@ -7,211 +7,359 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
 </head>
 <body>
 <div class="app-container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-logo">L</div>
-            <div class="sidebar-title">Learny</div>
-        </div>
-        <ul class="nav-list">
-            <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
-            <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
-            <li class="nav-item"><a href="bot.html"><i class="fa fa-robot"></i> LearnyAI</a></li>
-            <li class="nav-item"><a href="games.html"><i class="fa fa-gamepad"></i> Games</a></li>
-            <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
-            <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
-            <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
-            <li class="nav-item"><a href="tuition.html"><i class="fa fa-graduation-cap"></i> Tuition</a></li>
-            <li class="nav-item"><a href="motivation.html"><i class="fa fa-quote-left"></i> Motivation</a></li>
-            <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
-            <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-hourglass-half"></i> Pomodoro</a></li>
-            <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
-            <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
-            <li class="nav-item"><a href="countdown.html"><i class="fa fa-calendar-alt"></i> Countdown</a></li>
-            <li class="nav-item active"><a href="translator.html"><i class="fa fa-language"></i> Translator <span class="new-badge">NEW</span></a></li>
-            <li class="nav-item"><a href="calculator.html"><i class="fa fa-calculator"></i> Calculator <span class="new-badge">NEW</span></a></li>
-            <li class="nav-item"><a href="converter.html"><i class="fa fa-exchange-alt"></i> Converter <span class="new-badge">NEW</span></a></li>
-            <li class="nav-item premium-nav-item"><a href="premium.html" class="premium-link"><i class="fa fa-gem" style="color:var(--warning)"></i> Get Premium</a></li>
-            <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
-            <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
-        </ul>
-        <div class="sidebar-welcome">
-            <p id="sidebar-username">Welcome, User!</p>
-            <div class="divider"></div>
-            <p class="welcome-text">Keep Learning 🚀</p>
-        </div>
-    </aside>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">L</div>
+      <div class="sidebar-title">Learny</div>
+    </div>
+    <ul class="nav-list">
+      <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
+      <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+      <li class="nav-item"><a href="bot.html"><i class="fa fa-robot"></i> LearnyAI</a></li>
+      <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
+      <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+      <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+      <li class="nav-item"><a href="tuition.html"><i class="fa fa-graduation-cap"></i> Tuition</a></li>
+      <li class="nav-item"><a href="motivation.html"><i class="fa fa-quote-left"></i> Motivation</a></li>
+      <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
+      <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-hourglass-half"></i> Pomodoro</a></li>
+      <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-bar"></i> Mark Analyze</a></li>
+      <li class="nav-item"><a href="countdown.html"><i class="fa fa-calendar-alt"></i> Countdown</a></li>
+      <li class="nav-item active"><a href="translator.html"><i class="fa fa-language"></i> Translator <span class="new-badge">NEW</span></a></li>
+      <li class="nav-item"><a href="calculator.html"><i class="fa fa-calculator"></i> Calculator</a></li>
+      <li class="nav-item"><a href="converter.html"><i class="fa fa-exchange-alt"></i> Converter</a></li>
+      <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+      <li class="nav-item"><a href="premium.html"><i class="fa fa-gem" style="color:var(--warning)"></i> Get Premium</a></li>
+    </ul>
+    <div class="sidebar-welcome">
+      <div class="divider"></div>
+      <p id="sidebar-username">Welcome, User!</p>
+    </div>
+  </aside>
 
-    <div class="overlay"></div>
+  <div class="overlay"></div>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="page-header">
-            <h1 class="page-title"><i class="fa fa-language"></i> Translator</h1>
-            <div class="header-actions">
-                <button class="theme-toggle"><i class="fa fa-moon"></i></button>
-                <button class="notif-btn" onclick="location.href='index.html'"><i class="fa fa-bell"></i></button>
-            </div>
-        </div>
+  <main class="main-content">
+    <div class="page-header">
+      <div class="page-title"><i class="fa fa-language"></i> Translator</div>
+      <div class="header-actions">
+        <button class="theme-toggle"><i class="fa fa-moon"></i></button>
+      </div>
+    </div>
 
-        <!-- Translator Card -->
-        <div class="card" style="margin-bottom:24px;">
-            <div class="card-header">
-                <h2 class="card-title"><i class="fa fa-exchange-alt"></i> Translate Text</h2>
-                <button class="btn btn-sm btn-secondary" id="swap-langs">
-                    <i class="fa fa-sync-alt"></i> Swap
-                </button>
-            </div>
+    <div class="card mb-3">
+      <div class="card-header">
+        <div class="card-title"><i class="fa fa-exchange-alt"></i> Translate Text</div>
+        <select id="trans-lang" class="form-control" style="width:auto;padding:6px 30px 6px 12px;">
+          <option value="en|si">English → Sinhala</option>
+          <option value="si|en">Sinhala → English</option>
+        </select>
+      </div>
 
-            <div class="translator-layout">
-                <div class="translator-box">
-                    <div class="translator-label">
-                        <span id="source-lang-label">English</span>
-                        <span class="translator-char-count" id="char-count">0 / 1000</span>
-                    </div>
-                    <textarea id="source-text" class="form-control translator-input" 
-                        placeholder="Type text here..." maxlength="1000" rows="6"></textarea>
-                    <div class="translator-actions">
-                        <button class="btn btn-sm btn-secondary" id="clear-source">
-                            <i class="fa fa-times"></i> Clear
-                        </button>
-                        <button class="btn btn-sm btn-secondary" id="paste-source">
-                            <i class="fa fa-paste"></i> Paste
-                        </button>
-                    </div>
-                </div>
-
-                <button class="translator-arrow" id="translate-btn" title="Translate">
-                    <i class="fa fa-arrow-right"></i>
-                </button>
-
-                <div class="translator-box">
-                    <div class="translator-label">
-                        <span id="target-lang-label">සිංහල</span>
-                        <button class="btn btn-sm btn-secondary" id="copy-result" style="padding:4px 10px;">
-                            <i class="fa fa-copy"></i> Copy
-                        </button>
-                    </div>
-                    <div id="result-text" class="translator-result">Translation will appear here...</div>
-                    <div class="translator-actions">
-                        <button class="btn btn-sm btn-primary" id="speak-result">
-                            <i class="fa fa-volume-up"></i> Listen
-                        </button>
-                        <button class="btn btn-sm btn-success" id="save-translation">
-                            <i class="fa fa-save"></i> Save
-                        </button>
-                    </div>
-                </div>
-            </div>
+      <div class="translator-layout">
+        <div class="translator-box">
+          <div class="translator-label">
+            <span id="source-lang-label">English</span>
+            <span class="translator-char-count"><span id="char-count">0</span>/5000</span>
+          </div>
+          <textarea id="trans-input" class="form-control translator-input" placeholder="Type or paste text here..." maxlength="5000"></textarea>
+          <div class="translator-actions">
+            <button class="btn btn-secondary btn-sm" id="trans-clear"><i class="fa fa-times"></i> Clear</button>
+            <button class="btn btn-secondary btn-sm" id="trans-paste"><i class="fa fa-paste"></i> Paste</button>
+            <button class="btn btn-secondary btn-sm" id="trans-speak"><i class="fa fa-volume-up"></i> Speak</button>
+          </div>
         </div>
 
-        <!-- OCR Section -->
-        <div class="card" style="margin-bottom:24px;">
-            <div class="card-header">
-                <h2 class="card-title"><i class="fa fa-image"></i> Image & PDF Text Extractor (OCR)</h2>
-                <span class="badge badge-info" style="font-size:11px;">BETA1</span>
-            </div>
-            
-            <div class="ocr-container">
-                <!-- Upload Area -->
-                <div class="ocr-upload-zone" id="ocr-upload-zone">
-                    <i class="fa fa-cloud-upload-alt"></i>
-                    <h3>Drop image or PDF here, or click to upload</h3>
-                    <p style="color:var(--text-muted);font-size:13px;margin-top:8px;">
-                        Supports: JPG, PNG, WEBP, PDF (Max 10MB)
-                    </p>
-                    <input type="file" id="ocr-file-input" accept="image/*,application/pdf" style="display:none;">
-                    <button class="btn btn-primary" onclick="document.getElementById('ocr-file-input').click()" style="margin-top:12px;">
-                        <i class="fa fa-folder-open"></i> Choose File
-                    </button>
-                </div>
+        <button class="translator-arrow" id="trans-swap" title="Swap languages"><i class="fa fa-exchange-alt"></i></button>
 
-                <!-- Preview & Extract -->
-                <div class="ocr-preview-section hidden" id="ocr-preview-section">
-                    <div class="ocr-image-wrapper">
-                        <img id="ocr-preview-img" src="" alt="Preview" style="max-width:100%;border-radius:8px;display:block;">
-                        <button class="btn btn-sm btn-danger" id="ocr-remove-img" style="position:absolute;top:10px;right:10px;">
-                            <i class="fa fa-times"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="ocr-controls">
-                        <div class="form-group" style="margin-bottom:12px;">
-                            <label style="font-size:13px;color:var(--text-muted);">Language in Image</label>
-                            <select id="ocr-lang" class="form-control">
-                                <option value="eng">English</option>
-                                <option value="sin">Sinhala</option>
-                                <option value="eng+sin">English + Sinhala</option>
-                            </select>
-                        </div>
-                        
-                        <button class="btn btn-primary btn-lg w-full" id="ocr-extract-btn">
-                            <i class="fa fa-magic"></i> Extract Text
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Progress -->
-                <div class="ocr-progress hidden" id="ocr-progress">
-                    <div class="progress-bar-container">
-                        <div class="progress-bar-fill" id="ocr-progress-bar" style="width:0%"></div>
-                    </div>
-                    <p id="ocr-progress-text" style="text-align:center;margin-top:10px;font-size:13px;color:var(--text-muted);">
-                        Initializing OCR...
-                    </p>
-                </div>
-
-                <!-- Extracted Text -->
-                <div class="ocr-result hidden" id="ocr-result">
-                    <div class="form-group" style="margin-bottom:8px;">
-                        <label style="font-size:13px;color:var(--text-muted);display:flex;justify-content:space-between;align-items:center;">
-                            <span>Extracted Text</span>
-                            <span id="ocr-char-count" style="font-size:11px;">0 characters</span>
-                        </label>
-                        <textarea id="ocr-extracted-text" class="form-control" rows="5" placeholder="Extracted text will appear here..."></textarea>
-                    </div>
-                    
-                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                        <button class="btn btn-secondary btn-sm" id="ocr-copy-text">
-                            <i class="fa fa-copy"></i> Copy
-                        </button>
-                        <button class="btn btn-primary btn-sm" id="ocr-use-translator">
-                            <i class="fa fa-language"></i> Use in Translator
-                        </button>
-                        <button class="btn btn-secondary btn-sm" id="ocr-clear-text">
-                            <i class="fa fa-trash"></i> Clear
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <div class="translator-box">
+          <div class="translator-label">
+            <span id="target-lang-label">Sinhala</span>
+            <button class="btn btn-sm btn-secondary" id="trans-copy" style="padding:4px 10px;font-size:11px;"><i class="fa fa-copy"></i> Copy</button>
+          </div>
+          <div id="trans-result" class="translator-result">Translation will appear here...</div>
+          <div class="translator-actions">
+            <button class="btn btn-secondary btn-sm" id="trans-speak-result"><i class="fa fa-volume-up"></i> Speak</button>
+            <button class="btn btn-secondary btn-sm" id="trans-save"><i class="fa fa-bookmark"></i> Save</button>
+          </div>
         </div>
+      </div>
 
-        <!-- History -->
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title"><i class="fa fa-history"></i> Translation History</h2>
-                <button class="btn btn-sm btn-danger" id="clear-history">
-                    <i class="fa fa-trash"></i> Clear All
-                </button>
-            </div>
-            <div id="history-list" class="translator-history">
-                <p class="empty-text">No translations saved yet.</p>
-            </div>
+      <div style="text-align:center;margin-top:20px;">
+        <button class="btn btn-primary btn-lg" id="trans-translate"><i class="fa fa-language"></i> Translate</button>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-header">
+        <div class="card-title"><i class="fa fa-file-upload"></i> Extract Text from File</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="ocr-upload-zone" id="img-upload-zone">
+          <i class="fa fa-image"></i>
+          <h3>Upload Image</h3>
+          <p style="color:var(--text-muted);font-size:12px;">JPG, PNG (OCR)</p>
+          <input type="file" id="img-upload" accept="image/*" style="display:none;">
         </div>
-    </main>
+        <div class="ocr-upload-zone" id="pdf-upload-zone">
+          <i class="fa fa-file-pdf" style="color:var(--danger)"></i>
+          <h3>Upload PDF</h3>
+          <p style="color:var(--text-muted);font-size:12px;">Extract text from PDF</p>
+          <input type="file" id="pdf-upload" accept="application/pdf" style="display:none;">
+        </div>
+      </div>
+      <div id="file-progress" class="ocr-progress" style="display:none;">
+        <p style="margin-bottom:10px;"><i class="fa fa-spinner fa-spin"></i> <span id="file-progress-text">Processing...</span></p>
+        <div class="progress-bar-container"><div class="progress-bar-fill" id="file-progress-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><i class="fa fa-history"></i> Translation History</div>
+        <button class="btn btn-danger btn-sm" id="clear-history"><i class="fa fa-trash"></i> Clear All</button>
+      </div>
+      <div id="trans-history" class="translator-history">
+        <p class="empty-text">No history yet. Start translating!</p>
+      </div>
+    </div>
+  </main>
 </div>
 
-<!-- Notification Toast -->
-<div class="notification" id="notification-toast">
-    <i class="fa fa-info-circle"></i>
-    <span>Notification</span>
-</div>
-
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="script.js"></script>
-<script src="new.js"></script>
+<script>
+/* ============ TRANSLATOR MODULE ============ */
+(function() {
+  const T = {
+    history: [],
+    lastTranslation: null,
+    init() {
+      this.loadHistory();
+      this.bindEvents();
+      this.renderHistory();
+      this.updateLangLabels();
+    },
+    bindEvents() {
+      const input = document.getElementById('trans-input');
+      const langSel = document.getElementById('trans-lang');
+      if (input) input.addEventListener('input', () => {
+        const c = document.getElementById('char-count');
+        if (c) c.textContent = input.value.length;
+      });
+      if (langSel) langSel.addEventListener('change', () => this.updateLangLabels());
+
+      const btn = (id, fn) => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('click', fn);
+      };
+
+      btn('trans-translate', () => this.translate());
+      btn('trans-clear', () => {
+        const inp = document.getElementById('trans-input');
+        const res = document.getElementById('trans-result');
+        const cc = document.getElementById('char-count');
+        if (inp) inp.value = '';
+        if (res) res.textContent = 'Translation will appear here...';
+        if (cc) cc.textContent = '0';
+      });
+      btn('trans-paste', async () => {
+        try {
+          const text = await navigator.clipboard.readText();
+          const inp = document.getElementById('trans-input');
+          if (inp) { inp.value = text; const cc = document.getElementById('char-count'); if (cc) cc.textContent = text.length; }
+        } catch { APP.showToast('Paste permission denied'); }
+      });
+      btn('trans-copy', () => {
+        const res = document.getElementById('trans-result');
+        if (!res) return;
+        const text = res.textContent;
+        if (!text || text === 'Translation will appear here...') return;
+        navigator.clipboard.writeText(text).then(() => APP.showToast('Copied!'));
+      });
+      btn('trans-swap', () => {
+        const sel = document.getElementById('trans-lang');
+        if (!sel) return;
+        sel.value = sel.value === 'en|si' ? 'si|en' : 'en|si';
+        this.updateLangLabels();
+        const inp = document.getElementById('trans-input');
+        const res = document.getElementById('trans-result');
+        if (res && res.textContent && res.textContent !== 'Translation will appear here...') {
+          if (inp) { inp.value = res.textContent; const cc = document.getElementById('char-count'); if (cc) cc.textContent = inp.value.length; }
+        }
+      });
+      btn('trans-save', () => this.saveToHistory());
+      btn('trans-speak', () => { const inp = document.getElementById('trans-input'); if (inp) this.speak(inp.value, 'en'); });
+      btn('trans-speak-result', () => {
+        const res = document.getElementById('trans-result');
+        const sel = document.getElementById('trans-lang');
+        if (!res || !sel) return;
+        const lang = sel.value.split('|')[1];
+        this.speak(res.textContent, lang === 'si' ? 'si' : 'en');
+      });
+      btn('clear-history', () => {
+        if (confirm('Clear all translation history?')) {
+          this.history = []; this.saveHistory(); this.renderHistory(); APP.showToast('History cleared');
+        }
+      });
+
+      const imgZone = document.getElementById('img-upload-zone');
+      const imgInput = document.getElementById('img-upload');
+      if (imgZone && imgInput) {
+        imgZone.addEventListener('click', () => imgInput.click());
+        imgInput.addEventListener('change', (e) => { if (e.target.files[0]) this.handleImage(e.target.files[0]); });
+      }
+      const pdfZone = document.getElementById('pdf-upload-zone');
+      const pdfInput = document.getElementById('pdf-upload');
+      if (pdfZone && pdfInput) {
+        pdfZone.addEventListener('click', () => pdfInput.click());
+        pdfInput.addEventListener('change', (e) => { if (e.target.files[0]) this.handlePDF(e.target.files[0]); });
+      }
+    },
+    updateLangLabels() {
+      const sel = document.getElementById('trans-lang');
+      if (!sel) return;
+      const [from, to] = sel.value.split('|');
+      const src = document.getElementById('source-lang-label');
+      const tgt = document.getElementById('target-lang-label');
+      if (src) src.textContent = from === 'en' ? 'English' : 'Sinhala';
+      if (tgt) tgt.textContent = to === 'si' ? 'Sinhala' : 'English';
+    },
+    async translate() {
+      const inp = document.getElementById('trans-input');
+      const res = document.getElementById('trans-result');
+      const sel = document.getElementById('trans-lang');
+      if (!inp || !res || !sel) return;
+      const text = inp.value.trim();
+      if (!text) return APP.showToast('Please enter text to translate');
+      res.textContent = 'Translating...';
+      const lang = sel.value;
+      try {
+        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${lang}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        const translated = data.responseData?.translatedText || 'Translation failed';
+        res.textContent = translated;
+        this.lastTranslation = { from: text, to: translated, lang: lang, time: new Date().toISOString() };
+      } catch (err) {
+        res.textContent = 'Error: Could not translate. Check internet.';
+      }
+    },
+    speak(text, lang) {
+      if (!text || !('speechSynthesis' in window)) return;
+      if (text === 'Translation will appear here...') return;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = lang === 'si' ? 'si-LK' : 'en-US';
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utter);
+    },
+    saveToHistory() {
+      if (!this.lastTranslation) return APP.showToast('Nothing to save yet');
+      this.history.unshift(this.lastTranslation);
+      if (this.history.length > 50) this.history.pop();
+      this.saveHistory(); this.renderHistory(); APP.showToast('Saved to history ✓');
+    },
+    loadHistory() {
+      try { this.history = JSON.parse(localStorage.getItem('learny_trans_history') || '[]'); }
+      catch { this.history = []; }
+    },
+    saveHistory() { localStorage.setItem('learny_trans_history', JSON.stringify(this.history)); },
+    renderHistory() {
+      const el = document.getElementById('trans-history');
+      if (!el) return;
+      if (this.history.length === 0) { el.innerHTML = '<p class="empty-text">No history yet. Start translating!</p>'; return; }
+      el.innerHTML = this.history.map((h, i) => {
+        const [from, to] = h.lang.split('|');
+        const time = new Date(h.time).toLocaleString();
+        return `<div class="history-item">
+          <div class="history-header">
+            <span class="history-lang">${from.toUpperCase()} → ${to.toUpperCase()}</span>
+            <span class="history-time">${time}</span>
+          </div>
+          <div class="history-source">${this.escapeHtml(h.from)}</div>
+          <div class="history-result">${this.escapeHtml(h.to)}</div>
+          <div class="history-actions">
+            <button class="btn btn-sm btn-secondary" onclick="window._transLoad(${i})"><i class="fa fa-redo"></i> Reuse</button>
+            <button class="btn btn-sm btn-danger" onclick="window._transDelete(${i})"><i class="fa fa-trash"></i></button>
+          </div>
+        </div>`;
+      }).join('');
+    },
+    loadFromHistory(i) {
+      const h = this.history[i];
+      if (!h) return;
+      const sel = document.getElementById('trans-lang');
+      const inp = document.getElementById('trans-input');
+      const res = document.getElementById('trans-result');
+      const cc = document.getElementById('char-count');
+      if (sel) sel.value = h.lang;
+      if (inp) inp.value = h.from;
+      if (res) res.textContent = h.to;
+      if (cc) cc.textContent = h.from.length;
+      this.updateLangLabels();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+    deleteHistory(i) { this.history.splice(i, 1); this.saveHistory(); this.renderHistory(); },
+    escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    },
+    async handleImage(file) {
+      if (!file) return;
+      if (!window.Tesseract) return APP.showToast('OCR library still loading...');
+      this.showProgress('Extracting text from image...');
+      try {
+        const result = await Tesseract.recognize(file, 'eng');
+        const text = result.data.text;
+        const inp = document.getElementById('trans-input');
+        const cc = document.getElementById('char-count');
+        if (inp) inp.value = text;
+        if (cc) cc.textContent = text.length;
+        APP.showToast('Text extracted! ✓');
+      } catch (e) { APP.showToast('OCR failed'); }
+      this.hideProgress();
+    },
+    async handlePDF(file) {
+      if (!file) return;
+      if (!window.pdfjsLib) return APP.showToast('PDF library still loading...');
+      this.showProgress('Extracting text from PDF...');
+      try {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        const buf = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+        let fullText = '';
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          fullText += content.items.map(it => it.str).join(' ') + '\n';
+          this.updateProgress((i / pdf.numPages) * 100);
+        }
+        const inp = document.getElementById('trans-input');
+        const cc = document.getElementById('char-count');
+        if (inp) inp.value = fullText.trim();
+        if (cc) cc.textContent = fullText.length;
+        APP.showToast('PDF text extracted! ✓');
+      } catch (e) { APP.showToast('PDF extraction failed'); }
+      this.hideProgress();
+    },
+    showProgress(msg) {
+      const p = document.getElementById('file-progress');
+      if (p) { p.style.display = 'block'; const t = document.getElementById('file-progress-text'); if (t) t.textContent = msg; }
+    },
+    updateProgress(pct) { const bar = document.getElementById('file-progress-bar'); if (bar) bar.style.width = pct + '%'; },
+    hideProgress() { const p = document.getElementById('file-progress'); if (p) p.style.display = 'none'; }
+  };
+
+  window._transLoad = (i) => T.loadFromHistory(i);
+  window._transDelete = (i) => T.deleteHistory(i);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => T.init(), 100);
+  });
+})();
+</script>
 </body>
 </html>
