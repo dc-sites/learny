@@ -1,13 +1,14 @@
 /* =========================================================
-   LEARNY - OTHER.JS
+   LEARNY - OTHER.JS (FIXED VERSION)
    Translator | Calculator | Converter
-   Extends the main APP object
    ========================================================= */
 
 // ============ TRANSLATOR MODULE ============
 APP.translator = {
   history: [],
+  lastTranslation: null,
   init() {
+    console.log('[Translator] Initializing...');
     this.loadHistory();
     this.bindEvents();
     this.renderHistory();
@@ -18,47 +19,72 @@ APP.translator = {
     const langSel = document.getElementById('trans-lang');
     if (input) {
       input.addEventListener('input', () => {
-        document.getElementById('char-count').textContent = input.value.length;
+        const c = document.getElementById('char-count');
+        if (c) c.textContent = input.value.length;
       });
     }
     if (langSel) langSel.addEventListener('change', () => this.updateLangLabels());
 
-    document.getElementById('trans-translate')?.addEventListener('click', () => this.translate());
-    document.getElementById('trans-clear')?.addEventListener('click', () => {
-      document.getElementById('trans-input').value = '';
-      document.getElementById('trans-result').textContent = 'Translation will appear here...';
-      document.getElementById('char-count').textContent = '0';
-    });
-    document.getElementById('trans-paste')?.addEventListener('click', async () => {
-      try {
-        const text = await navigator.clipboard.readText();
-        document.getElementById('trans-input').value = text;
-        document.getElementById('char-count').textContent = text.length;
-      } catch { APP.showToast('Paste permission denied'); }
-    });
-    document.getElementById('trans-copy')?.addEventListener('click', () => {
-      const text = document.getElementById('trans-result').textContent;
-      navigator.clipboard.writeText(text).then(() => APP.showToast('Copied!'));
-    });
-    document.getElementById('trans-swap')?.addEventListener('click', () => {
-      const sel = document.getElementById('trans-lang');
-      sel.value = sel.value === 'en|si' ? 'si|en' : 'en|si';
-      this.updateLangLabels();
-      // Swap content too
+    const btn = (id, fn) => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('click', fn);
+    };
+
+    btn('trans-translate', () => this.translate());
+    btn('trans-clear', () => {
       const inp = document.getElementById('trans-input');
       const res = document.getElementById('trans-result');
-      if (res.textContent && res.textContent !== 'Translation will appear here...') {
-        inp.value = res.textContent;
-        document.getElementById('char-count').textContent = inp.value.length;
+      const cc = document.getElementById('char-count');
+      if (inp) inp.value = '';
+      if (res) res.textContent = 'Translation will appear here...';
+      if (cc) cc.textContent = '0';
+    });
+    btn('trans-paste', async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        const inp = document.getElementById('trans-input');
+        if (inp) {
+          inp.value = text;
+          const cc = document.getElementById('char-count');
+          if (cc) cc.textContent = text.length;
+        }
+      } catch { APP.showToast('Paste permission denied'); }
+    });
+    btn('trans-copy', () => {
+      const res = document.getElementById('trans-result');
+      if (!res) return;
+      const text = res.textContent;
+      if (!text || text === 'Translation will appear here...') return;
+      navigator.clipboard.writeText(text).then(() => APP.showToast('Copied!'));
+    });
+    btn('trans-swap', () => {
+      const sel = document.getElementById('trans-lang');
+      if (!sel) return;
+      sel.value = sel.value === 'en|si' ? 'si|en' : 'en|si';
+      this.updateLangLabels();
+      const inp = document.getElementById('trans-input');
+      const res = document.getElementById('trans-result');
+      if (res && res.textContent && res.textContent !== 'Translation will appear here...') {
+        if (inp) {
+          inp.value = res.textContent;
+          const cc = document.getElementById('char-count');
+          if (cc) cc.textContent = inp.value.length;
+        }
       }
     });
-    document.getElementById('trans-save')?.addEventListener('click', () => this.saveToHistory());
-    document.getElementById('trans-speak')?.addEventListener('click', () => this.speak(document.getElementById('trans-input').value, 'en'));
-    document.getElementById('trans-speak-result')?.addEventListener('click', () => {
-      const lang = document.getElementById('trans-lang').value.split('|')[1];
-      this.speak(document.getElementById('trans-result').textContent, lang === 'si' ? 'si' : 'en');
+    btn('trans-save', () => this.saveToHistory());
+    btn('trans-speak', () => {
+      const inp = document.getElementById('trans-input');
+      if (inp) this.speak(inp.value, 'en');
     });
-    document.getElementById('clear-history')?.addEventListener('click', () => {
+    btn('trans-speak-result', () => {
+      const res = document.getElementById('trans-result');
+      const sel = document.getElementById('trans-lang');
+      if (!res || !sel) return;
+      const lang = sel.value.split('|')[1];
+      this.speak(res.textContent, lang === 'si' ? 'si' : 'en');
+    });
+    btn('clear-history', () => {
       if (confirm('Clear all translation history?')) {
         this.history = [];
         this.saveHistory();
@@ -72,57 +98,80 @@ APP.translator = {
     const imgInput = document.getElementById('img-upload');
     if (imgZone && imgInput) {
       imgZone.addEventListener('click', () => imgInput.click());
-      imgInput.addEventListener('change', (e) => this.handleImage(e.target.files[0]));
+      imgInput.addEventListener('change', (e) => {
+        if (e.target.files[0]) this.handleImage(e.target.files[0]);
+      });
     }
     // PDF upload
     const pdfZone = document.getElementById('pdf-upload-zone');
     const pdfInput = document.getElementById('pdf-upload');
     if (pdfZone && pdfInput) {
       pdfZone.addEventListener('click', () => pdfInput.click());
-      pdfInput.addEventListener('change', (e) => this.handlePDF(e.target.files[0]));
+      pdfInput.addEventListener('change', (e) => {
+        if (e.target.files[0]) this.handlePDF(e.target.files[0]);
+      });
     }
   },
   updateLangLabels() {
-    const val = document.getElementById('trans-lang').value;
-    const [from, to] = val.split('|');
-    document.getElementById('source-lang-label').textContent = from === 'en' ? 'English' : 'Sinhala';
-    document.getElementById('target-lang-label').textContent = to === 'si' ? 'Sinhala' : 'English';
+    const sel = document.getElementById('trans-lang');
+    if (!sel) return;
+    const [from, to] = sel.value.split('|');
+    const src = document.getElementById('source-lang-label');
+    const tgt = document.getElementById('target-lang-label');
+    if (src) src.textContent = from === 'en' ? 'English' : 'Sinhala';
+    if (tgt) tgt.textContent = to === 'si' ? 'Sinhala' : 'English';
   },
   async translate() {
-    const text = document.getElementById('trans-input').value.trim();
+    const inp = document.getElementById('trans-input');
+    const res = document.getElementById('trans-result');
+    const sel = document.getElementById('trans-lang');
+    if (!inp || !res || !sel) return;
+
+    const text = inp.value.trim();
     if (!text) return APP.showToast('Please enter text to translate');
-    const lang = document.getElementById('trans-lang').value;
-    const resultEl = document.getElementById('trans-result');
-    resultEl.textContent = 'Translating...';
+
+    res.textContent = 'Translating...';
+    const lang = sel.value;
+
     try {
       const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${lang}`;
-      const res = await fetch(url);
-      const data = await res.json();
+      const response = await fetch(url);
+      const data = await response.json();
       const translated = data.responseData?.translatedText || 'Translation failed';
-      resultEl.textContent = translated;
-      this.lastTranslation = { from: text, to: translated, lang, time: new Date().toISOString() };
+      res.textContent = translated;
+      this.lastTranslation = {
+        from: text,
+        to: translated,
+        lang: lang,
+        time: new Date().toISOString()
+      };
     } catch (err) {
-      resultEl.textContent = 'Error: Could not translate. Check internet.';
+      console.error('Translation error:', err);
+      res.textContent = 'Error: Could not translate. Check internet connection.';
     }
   },
   speak(text, lang) {
     if (!text || !('speechSynthesis' in window)) return;
+    if (text === 'Translation will appear here...') return;
     const utter = new SpeechSynthesisUtterance(text);
     utter.lang = lang === 'si' ? 'si-LK' : 'en-US';
     speechSynthesis.cancel();
     speechSynthesis.speak(utter);
   },
   saveToHistory() {
-    if (!this.lastTranslation) return APP.showToast('Nothing to save');
+    if (!this.lastTranslation) return APP.showToast('Nothing to save yet');
     this.history.unshift(this.lastTranslation);
     if (this.history.length > 50) this.history.pop();
     this.saveHistory();
     this.renderHistory();
-    APP.showToast('Saved to history');
+    APP.showToast('Saved to history ✓');
   },
   loadHistory() {
-    try { this.history = JSON.parse(localStorage.getItem('learny_trans_history') || '[]'); }
-    catch { this.history = []; }
+    try {
+      this.history = JSON.parse(localStorage.getItem('learny_trans_history') || '[]');
+    } catch {
+      this.history = [];
+    }
   },
   saveHistory() {
     localStorage.setItem('learny_trans_history', JSON.stringify(this.history));
@@ -155,10 +204,14 @@ APP.translator = {
   loadFromHistory(i) {
     const h = this.history[i];
     if (!h) return;
-    document.getElementById('trans-lang').value = h.lang;
-    document.getElementById('trans-input').value = h.from;
-    document.getElementById('trans-result').textContent = h.to;
-    document.getElementById('char-count').textContent = h.from.length;
+    const sel = document.getElementById('trans-lang');
+    const inp = document.getElementById('trans-input');
+    const res = document.getElementById('trans-result');
+    const cc = document.getElementById('char-count');
+    if (sel) sel.value = h.lang;
+    if (inp) inp.value = h.from;
+    if (res) res.textContent = h.to;
+    if (cc) cc.textContent = h.from.length;
     this.updateLangLabels();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   },
@@ -168,25 +221,37 @@ APP.translator = {
     this.renderHistory();
   },
   escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
   },
   async handleImage(file) {
     if (!file) return;
-    if (!window.Tesseract) return APP.showToast('OCR library loading... please wait');
+    if (!window.Tesseract) {
+      APP.showToast('OCR library still loading... please wait a moment');
+      return;
+    }
     this.showProgress('Extracting text from image...');
     try {
-      const { data: { text } } = await Tesseract.recognize(file, 'eng+sin');
-      document.getElementById('trans-input').value = text;
-      document.getElementById('char-count').textContent = text.length;
-      APP.showToast('Text extracted!');
+      const result = await Tesseract.recognize(file, 'eng');
+      const text = result.data.text;
+      const inp = document.getElementById('trans-input');
+      const cc = document.getElementById('char-count');
+      if (inp) inp.value = text;
+      if (cc) cc.textContent = text.length;
+      APP.showToast('Text extracted! ✓');
     } catch (e) {
+      console.error(e);
       APP.showToast('OCR failed: ' + e.message);
     }
     this.hideProgress();
   },
   async handlePDF(file) {
     if (!file) return;
-    if (!window.pdfjsLib) return APP.showToast('PDF library loading... please wait');
+    if (!window.pdfjsLib) {
+      APP.showToast('PDF library still loading... please wait');
+      return;
+    }
     this.showProgress('Extracting text from PDF...');
     try {
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -199,17 +264,24 @@ APP.translator = {
         fullText += content.items.map(it => it.str).join(' ') + '\n';
         this.updateProgress((i / pdf.numPages) * 100);
       }
-      document.getElementById('trans-input').value = fullText.trim();
-      document.getElementById('char-count').textContent = fullText.length;
-      APP.showToast('PDF text extracted!');
+      const inp = document.getElementById('trans-input');
+      const cc = document.getElementById('char-count');
+      if (inp) inp.value = fullText.trim();
+      if (cc) cc.textContent = fullText.length;
+      APP.showToast('PDF text extracted! ✓');
     } catch (e) {
+      console.error(e);
       APP.showToast('PDF extraction failed');
     }
     this.hideProgress();
   },
   showProgress(msg) {
     const p = document.getElementById('file-progress');
-    if (p) { p.style.display = 'block'; document.getElementById('file-progress-text').textContent = msg; }
+    if (p) {
+      p.style.display = 'block';
+      const t = document.getElementById('file-progress-text');
+      if (t) t.textContent = msg;
+    }
   },
   updateProgress(pct) {
     const bar = document.getElementById('file-progress-bar');
@@ -229,10 +301,12 @@ APP.calculator = {
   history: [],
   scientific: true,
   init() {
+    console.log('[Calculator] Initializing...');
     this.loadHistory();
     this.bindEvents();
     this.renderHistory();
     this.updateMemIndicator();
+    this.updateDisplay();
   },
   bindEvents() {
     document.querySelectorAll('.calc-btn[data-val]').forEach(btn => {
@@ -244,22 +318,30 @@ APP.calculator = {
     document.querySelectorAll('.calc-btn[data-mem]').forEach(btn => {
       btn.addEventListener('click', () => this.memoryOp(btn.dataset.mem));
     });
-    document.getElementById('calc-mode-toggle')?.addEventListener('click', () => {
-      this.scientific = !this.scientific;
-      const grid = document.getElementById('calc-sci-grid');
-      if (grid) grid.style.display = this.scientific ? 'grid' : 'none';
-      document.getElementById('calc-mode-toggle').innerHTML = this.scientific
-        ? '<i class="fa fa-th"></i> Basic' : '<i class="fa fa-flask"></i> Scientific';
-    });
-    document.getElementById('calc-clear-history')?.addEventListener('click', () => {
-      if (confirm('Clear calculator history?')) {
-        this.history = [];
-        this.saveHistory();
-        this.renderHistory();
-      }
-    });
-    // Keyboard support
-    document.addEventListener('keydown', (e) => this.handleKey(e));
+    const toggle = document.getElementById('calc-mode-toggle');
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        this.scientific = !this.scientific;
+        const grid = document.getElementById('calc-sci-grid');
+        if (grid) grid.style.display = this.scientific ? 'grid' : 'none';
+        toggle.innerHTML = this.scientific
+          ? '<i class="fa fa-th"></i> Basic'
+          : '<i class="fa fa-flask"></i> Scientific';
+      });
+    }
+    const clearHist = document.getElementById('calc-clear-history');
+    if (clearHist) {
+      clearHist.addEventListener('click', () => {
+        if (confirm('Clear calculator history?')) {
+          this.history = [];
+          this.saveHistory();
+          this.renderHistory();
+        }
+      });
+    }
+    // Keyboard support - only on calculator page
+    this._keyHandler = (e) => this.handleKey(e);
+    document.addEventListener('keydown', this._keyHandler);
   },
   inputValue(v) {
     this.expr += v;
@@ -279,7 +361,7 @@ APP.calculator = {
   memoryOp(op) {
     const cur = parseFloat(this.result) || 0;
     if (op === 'MC') this.memory = 0;
-    else if (op === 'MR') { this.expr += this.memory.toString(); }
+    else if (op === 'MR') this.expr += this.memory.toString();
     else if (op === 'M+') this.memory += cur;
     else if (op === 'M-') this.memory -= cur;
     else if (op === 'MS') this.memory = cur;
@@ -302,18 +384,20 @@ APP.calculator = {
     try {
       let e = this.expr;
       // Replace constants
-      e = e.replace(/pi/g, Math.PI.toString());
-      e = e.replace(/(?<![a-zA-Z])e(?![a-zA-Z])/g, Math.E.toString());
+      e = e.replace(/\bpi\b/g, Math.PI.toString());
+      e = e.replace(/\be\b/g, Math.E.toString());
       // Factorial
       e = e.replace(/(\d+(?:\.\d+)?)!/g, (m, n) => this.factorial(parseFloat(n)).toString());
       // Powers
       e = e.replace(/\^/g, '**');
-      // Scientific functions (convert degrees to radians for trig)
-      const toRad = '(Math.PI/180)*';
-      e = e.replace(/sin\(/g, `Math.sin(${toRad}(`).replace(/cos\(/g, `Math.cos(${toRad}(`).replace(/tan\(/g, `Math.tan(${toRad}(`);
-      e = e.replace(/asin\(/g, `(180/Math.PI)*Math.asin(`);
-      e = e.replace(/acos\(/g, `(180/Math.PI)*Math.acos(`);
-      e = e.replace(/atan\(/g, `(180/Math.PI)*Math.atan(`);
+      // Scientific functions (degrees)
+      const toRad = '((Math.PI/180)*';
+      e = e.replace(/sin\(/g, `Math.sin(${toRad}(`);
+      e = e.replace(/cos\(/g, `Math.cos(${toRad}(`);
+      e = e.replace(/tan\(/g, `Math.tan(${toRad}(`);
+      e = e.replace(/asin\(/g, '((180/Math.PI)*Math.asin(');
+      e = e.replace(/acos\(/g, '((180/Math.PI)*Math.acos(');
+      e = e.replace(/atan\(/g, '((180/Math.PI)*Math.atan(');
       e = e.replace(/sqrt\(/g, 'Math.sqrt(');
       e = e.replace(/log\(/g, 'Math.log10(');
       e = e.replace(/ln\(/g, 'Math.log(');
@@ -323,11 +407,6 @@ APP.calculator = {
       const open = (e.match(/\(/g) || []).length;
       const close = (e.match(/\)/g) || []).length;
       for (let i = 0; i < open - close; i++) e += ')';
-
-      // Safety check
-      if (!/^[\d+\-*/().\s,MathsincotaqrtlgabepEPI]*$/.test(e.replace(/Math\.\w+/g, ''))) {
-        throw new Error('Invalid');
-      }
 
       const val = Function('"use strict";return (' + e + ')')();
       if (!isFinite(val)) throw new Error('Math error');
@@ -339,8 +418,13 @@ APP.calculator = {
       this.renderHistory();
       this.expr = this.result;
     } catch (err) {
+      console.error('Calc error:', err);
       this.result = 'Error';
-      setTimeout(() => { this.result = '0'; this.updateDisplay(); }, 1500);
+      this.updateDisplay();
+      setTimeout(() => {
+        this.result = '0';
+        this.updateDisplay();
+      }, 1500);
     }
   },
   updateDisplay() {
@@ -350,6 +434,7 @@ APP.calculator = {
     if (resEl) resEl.textContent = this.result;
   },
   handleKey(e) {
+    // Only handle keys if calculator page is visible
     if (!document.querySelector('.calc-display')) return;
     const k = e.key;
     if (/[0-9.+\-*/()%]/.test(k)) { this.inputValue(k); e.preventDefault(); }
@@ -358,10 +443,15 @@ APP.calculator = {
     else if (k === 'Escape') { this.doAction('clear'); e.preventDefault(); }
   },
   loadHistory() {
-    try { this.history = JSON.parse(localStorage.getItem('learny_calc_history') || '[]'); }
-    catch { this.history = []; }
+    try {
+      this.history = JSON.parse(localStorage.getItem('learny_calc_history') || '[]');
+    } catch {
+      this.history = [];
+    }
   },
-  saveHistory() { localStorage.setItem('learny_calc_history', JSON.stringify(this.history)); },
+  saveHistory() {
+    localStorage.setItem('learny_calc_history', JSON.stringify(this.history));
+  },
   renderHistory() {
     const el = document.getElementById('calc-history');
     if (!el) return;
@@ -470,7 +560,6 @@ APP.converter = {
         'mg/dm3':   { name: 'mg/dm³', factor: 1 },
         'g/L':      { name: 'g/L', factor: 1000 },
         'g/dm3':    { name: 'g/dm³', factor: 1000 },
-        'mol/L':    { name: 'mol/L', factor: 1000 },
         'percent':  { name: 'Percent (%)', factor: 10000 }
       }
     },
@@ -500,6 +589,7 @@ APP.converter = {
   quiz: { questions: [], current: 0, score: 0, answered: false },
 
   init() {
+    console.log('[Converter] Initializing...');
     this.renderTabs();
     this.renderUnits();
     this.bindEvents();
@@ -538,32 +628,47 @@ APP.converter = {
     toSel.value = keys.length > 1 ? keys[1] : keys[0];
   },
   bindEvents() {
-    document.getElementById('conv-from-val')?.addEventListener('input', () => this.convert());
-    document.getElementById('conv-from-unit')?.addEventListener('change', () => this.convert());
-    document.getElementById('conv-to-unit')?.addEventListener('change', () => this.convert());
-    document.getElementById('conv-swap')?.addEventListener('click', () => {
+    const fromVal = document.getElementById('conv-from-val');
+    const fromUnit = document.getElementById('conv-from-unit');
+    const toUnit = document.getElementById('conv-to-unit');
+    const swap = document.getElementById('conv-swap');
+    const qStart = document.getElementById('quiz-start');
+    const qStartMain = document.getElementById('quiz-start-main');
+    const qNext = document.getElementById('quiz-next');
+    const qSkip = document.getElementById('quiz-skip');
+    const qRetry = document.getElementById('quiz-retry');
+
+    if (fromVal) fromVal.addEventListener('input', () => this.convert());
+    if (fromUnit) fromUnit.addEventListener('change', () => this.convert());
+    if (toUnit) toUnit.addEventListener('change', () => this.convert());
+    if (swap) swap.addEventListener('click', () => {
       const f = document.getElementById('conv-from-unit');
       const t = document.getElementById('conv-to-unit');
       const tmp = f.value; f.value = t.value; t.value = tmp;
       this.convert();
     });
-    document.getElementById('quiz-start')?.addEventListener('click', () => this.startQuiz());
-    document.getElementById('quiz-start-main')?.addEventListener('click', () => this.startQuiz());
-    document.getElementById('quiz-next')?.addEventListener('click', () => this.nextQuestion());
-    document.getElementById('quiz-skip')?.addEventListener('click', () => this.nextQuestion());
-    document.getElementById('quiz-retry')?.addEventListener('click', () => this.startQuiz());
+    if (qStart) qStart.addEventListener('click', () => this.startQuiz());
+    if (qStartMain) qStartMain.addEventListener('click', () => this.startQuiz());
+    if (qNext) qNext.addEventListener('click', () => this.nextQuestion());
+    if (qSkip) qSkip.addEventListener('click', () => this.nextQuestion());
+    if (qRetry) qRetry.addEventListener('click', () => this.startQuiz());
   },
   convert() {
     const cat = this.categories[this.currentCat];
-    const val = parseFloat(document.getElementById('conv-from-val').value);
-    const from = document.getElementById('conv-from-unit').value;
-    const to = document.getElementById('conv-to-unit').value;
+    const fromValEl = document.getElementById('conv-from-val');
+    const fromUnitEl = document.getElementById('conv-from-unit');
+    const toUnitEl = document.getElementById('conv-to-unit');
     const resultEl = document.getElementById('conv-to-val');
     const formulaEl = document.getElementById('conv-formula-text');
+    if (!fromValEl || !fromUnitEl || !toUnitEl || !resultEl) return;
+
+    const val = parseFloat(fromValEl.value);
+    const from = fromUnitEl.value;
+    const to = toUnitEl.value;
+
     if (isNaN(val)) { resultEl.value = ''; return; }
 
-    let result;
-    let formula;
+    let result, formula;
     if (cat.special && this.currentCat === 'temperature') {
       const r = this.convertTemp(val, from, to);
       result = r.value;
@@ -582,13 +687,24 @@ APP.converter = {
     if (from === 'C') c = val;
     else if (from === 'F') c = (val - 32) * 5/9;
     else c = val - 273.15;
+
     let r, f;
-    if (to === 'C') { r = c; f = `${val}°F → ${((val-32)*5/9).toFixed(2)}°C`; if (from === 'K') f = `${val}K → ${(val-273.15).toFixed(2)}°C`; if (from === 'C') f = 'Same unit'; }
-    else if (to === 'F') { r = c * 9/5 + 32; f = `°C → (°C × 9/5) + 32`; }
-    else { r = c + 273.15; f = `°C → °C + 273.15`; }
+    if (to === 'C') {
+      r = c;
+      if (from === 'F') f = `${val}°F → ${c.toFixed(2)}°C`;
+      else if (from === 'K') f = `${val}K → ${c.toFixed(2)}°C`;
+      else f = 'Same unit';
+    } else if (to === 'F') {
+      r = c * 9/5 + 32;
+      f = `°C → (°C × 9/5) + 32`;
+    } else {
+      r = c + 273.15;
+      f = `°C → °C + 273.15`;
+    }
     return { value: r, formula: f };
   },
   formatNumber(n) {
+    if (isNaN(n)) return '0';
     if (Math.abs(n) < 0.0001 && n !== 0) return n.toExponential(4);
     if (Math.abs(n) > 1e9) return n.toExponential(4);
     return Math.round(n * 1e8) / 1e8;
@@ -610,9 +726,12 @@ APP.converter = {
   // ===== QUIZ =====
   startQuiz() {
     this.quiz = { questions: this.generateQuestions(10), current: 0, score: 0, answered: false };
-    document.getElementById('quiz-intro').style.display = 'none';
-    document.getElementById('quiz-result').style.display = 'none';
-    document.getElementById('quiz-game').style.display = 'block';
+    const intro = document.getElementById('quiz-intro');
+    const result = document.getElementById('quiz-result');
+    const game = document.getElementById('quiz-game');
+    if (intro) intro.style.display = 'none';
+    if (result) result.style.display = 'none';
+    if (game) game.style.display = 'block';
     this.showQuestion();
   },
   generateQuestions(n) {
@@ -644,32 +763,42 @@ APP.converter = {
   },
   generateOptions(correct) {
     const opts = new Set([this.formatNumber(correct)]);
-    while (opts.size < 4) {
+    let attempts = 0;
+    while (opts.size < 4 && attempts < 50) {
       const factor = 0.1 + Math.random() * 10;
       const v = this.formatNumber(correct * factor);
       if (v !== this.formatNumber(correct)) opts.add(v);
+      attempts++;
     }
     return [...opts].sort(() => Math.random() - 0.5);
   },
   showQuestion() {
     const q = this.quiz.questions[this.quiz.current];
-    document.getElementById('quiz-q-num').textContent = this.quiz.current + 1;
-    document.getElementById('quiz-score').textContent = this.quiz.score;
-    document.getElementById('quiz-progress-bar').style.width = ((this.quiz.current) / 10 * 100) + '%';
-    document.getElementById('quiz-question').textContent =
-      `Convert ${q.value} ${q.from} to ${q.to} (${q.catName})`;
+    const qNum = document.getElementById('quiz-q-num');
+    const score = document.getElementById('quiz-score');
+    const progBar = document.getElementById('quiz-progress-bar');
+    const qText = document.getElementById('quiz-question');
     const optsEl = document.getElementById('quiz-options');
-    optsEl.innerHTML = q.options.map((o, i) => {
-      const letter = ['A', 'B', 'C', 'D'][i];
-      return `<div class="quiz-option" data-val="${o}">
-        <div class="quiz-option-letter">${letter}</div>
-        <div>${o}</div>
-      </div>`;
-    }).join('');
-    optsEl.querySelectorAll('.quiz-option').forEach(opt => {
-      opt.addEventListener('click', () => this.answerQuestion(opt.dataset.val));
-    });
-    document.getElementById('quiz-next').style.display = 'none';
+    const nextBtn = document.getElementById('quiz-next');
+
+    if (qNum) qNum.textContent = this.quiz.current + 1;
+    if (score) score.textContent = this.quiz.score;
+    if (progBar) progBar.style.width = ((this.quiz.current) / 10 * 100) + '%';
+    if (qText) qText.textContent = `Convert ${q.value} ${q.from} to ${q.to} (${q.catName})`;
+
+    if (optsEl) {
+      optsEl.innerHTML = q.options.map((o, i) => {
+        const letter = ['A', 'B', 'C', 'D'][i];
+        return `<div class="quiz-option" data-val="${o}">
+          <div class="quiz-option-letter">${letter}</div>
+          <div>${o}</div>
+        </div>`;
+      }).join('');
+      optsEl.querySelectorAll('.quiz-option').forEach(opt => {
+        opt.addEventListener('click', () => this.answerQuestion(opt.dataset.val));
+      });
+    }
+    if (nextBtn) nextBtn.style.display = 'none';
     this.quiz.answered = false;
   },
   answerQuestion(val) {
@@ -685,10 +814,12 @@ APP.converter = {
       this.quiz.score++;
       APP.showToast('✅ Correct!');
     } else {
-      APP.showToast('❌ Correct answer: ' + q.correct);
+      APP.showToast('❌ Correct: ' + q.correct);
     }
-    document.getElementById('quiz-score').textContent = this.quiz.score;
-    document.getElementById('quiz-next').style.display = 'inline-flex';
+    const score = document.getElementById('quiz-score');
+    if (score) score.textContent = this.quiz.score;
+    const nextBtn = document.getElementById('quiz-next');
+    if (nextBtn) nextBtn.style.display = 'inline-flex';
   },
   nextQuestion() {
     this.quiz.current++;
@@ -696,29 +827,40 @@ APP.converter = {
     else this.showQuestion();
   },
   endQuiz() {
-    document.getElementById('quiz-game').style.display = 'none';
-    document.getElementById('quiz-result').style.display = 'block';
+    const game = document.getElementById('quiz-game');
+    const result = document.getElementById('quiz-result');
+    if (game) game.style.display = 'none';
+    if (result) result.style.display = 'block';
+
     const score = this.quiz.score;
-    document.getElementById('quiz-correct').textContent = score;
-    document.getElementById('quiz-wrong').textContent = 10 - score;
-    document.getElementById('quiz-percent').textContent = (score * 10) + '%';
-    let icon = '🏆', title = 'Excellent!';
-    if (score < 4) { icon = '📚'; title = 'Keep Practicing!'; }
-    else if (score < 7) { icon = '👍'; title = 'Good Job!'; }
-    else if (score < 10) { icon = '🌟'; title = 'Great Work!'; }
-    document.getElementById('quiz-result-icon').textContent = icon;
-    document.getElementById('quiz-result-title').textContent = title;
+    const correct = document.getElementById('quiz-correct');
+    const wrong = document.getElementById('quiz-wrong');
+    const percent = document.getElementById('quiz-percent');
+    const icon = document.getElementById('quiz-result-icon');
+    const title = document.getElementById('quiz-result-title');
+
+    if (correct) correct.textContent = score;
+    if (wrong) wrong.textContent = 10 - score;
+    if (percent) percent.textContent = (score * 10) + '%';
+
+    let iconText = '🏆', titleText = 'Excellent!';
+    if (score < 4) { iconText = '📚'; titleText = 'Keep Practicing!'; }
+    else if (score < 7) { iconText = '👍'; titleText = 'Good Job!'; }
+    else if (score < 10) { iconText = '🌟'; titleText = 'Great Work!'; }
+
+    if (icon) icon.textContent = iconText;
+    if (title) title.textContent = titleText;
   }
 };
 
-// ============ PAGE ROUTER ============
+// ============ PAGE ROUTER - FIXED ============
 (function() {
   const origInit = APP.init.bind(APP);
   APP.init = function() {
     origInit();
     const path = window.location.pathname.split('/').pop();
-    if (path.includes('translator.html')) this.translator.init();
-    if (path.includes('calculator.html')) this.calculator.init();
-    if (path.includes('converter.html')) this.converter.init();
+    if (path.includes('translator.html')) APP.translator.init();
+    else if (path.includes('calculator.html')) APP.calculator.init();
+    else if (path.includes('converter.html')) APP.converter.init();
   };
 })();
