@@ -71,7 +71,6 @@
             <button class="btn btn-secondary btn-sm" id="trans-paste"><i class="fa fa-paste"></i> Paste</button>
             <button class="btn btn-secondary btn-sm" id="trans-speak"><i class="fa fa-volume-up"></i> Speak</button>
           </div>
-          <!-- ✅ Translate button moved here (below first language input) -->
           <button class="btn btn-primary" id="trans-translate" style="width:100%;justify-content:center;margin-top:8px;">
             <i class="fa fa-language"></i> Translate
           </button>
@@ -112,18 +111,30 @@
           <input type="file" id="pdf-upload" accept="application/pdf" style="display:none;">
         </div>
       </div>
+
+      <!-- ✅ FIXED: Progress indicator with real percentage -->
       <div id="file-progress" class="ocr-progress" style="display:none;">
-        <p style="margin-bottom:10px;"><i class="fa fa-spinner fa-spin"></i> <span id="file-progress-text">Processing...</span></p>
-        <div class="progress-bar-container"><div class="progress-bar-fill" id="file-progress-bar" style="width:0%"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i class="fa fa-spinner fa-spin" style="color:var(--primary);"></i>
+            <strong id="file-progress-text" style="color:var(--text-main);font-size:14px;">Processing...</strong>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span id="file-progress-percent" style="font-weight:700;color:var(--primary-light);font-size:14px;min-width:40px;text-align:right;">0%</span>
+          </div>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="file-progress-bar" style="width:0%"></div>
+        </div>
+        <p id="file-progress-status" style="margin-top:8px;font-size:12px;color:var(--text-muted);">Initializing...</p>
       </div>
 
-      <!-- ✅ NEW: Extracted text display section -->
+      <!-- ✅ FIXED: Extracted text section (mobile-friendly) -->
       <div id="extracted-section" style="display:none;margin-top:20px;animation:fadeIn 0.3s ease;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
           <div style="display:flex;align-items:center;gap:8px;">
             <i class="fa fa-check-circle" style="color:var(--success);font-size:18px;"></i>
             <strong style="color:var(--text-main);">Extracted Text</strong>
-            <span id="extracted-source" style="font-size:11px;color:var(--text-muted);background:var(--bg-card-hover);padding:2px 8px;border-radius:10px;"></span>
           </div>
           <div style="display:flex;gap:6px;">
             <button class="btn btn-sm btn-secondary" id="extracted-copy"><i class="fa fa-copy"></i> Copy</button>
@@ -131,9 +142,15 @@
           </div>
         </div>
         <div id="extracted-text" style="background:var(--bg-dark);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;max-height:200px;overflow-y:auto;color:var(--text-main);font-size:14px;line-height:1.6;white-space:pre-wrap;word-wrap:break-word;"></div>
-        <button class="btn btn-primary" id="extracted-connect" style="width:100%;justify-content:center;margin-top:12px;">
-          <i class="fa fa-link"></i> Connect to Translator
-        </button>
+        <!-- ✅ Filename shown BELOW the text (responsive on mobile) -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;flex-wrap:wrap;gap:8px;">
+          <span id="extracted-source" style="font-size:12px;color:var(--text-muted);background:var(--bg-card-hover);padding:4px 10px;border-radius:10px;display:inline-flex;align-items:center;gap:6px;">
+            <i class="fa fa-file"></i> <span id="extracted-source-text">file</span>
+          </span>
+          <button class="btn btn-primary btn-sm" id="extracted-connect">
+            <i class="fa fa-link"></i> Connect to Translator
+          </button>
+        </div>
       </div>
     </div>
 
@@ -230,7 +247,6 @@
         }
       });
 
-      // ✅ Extracted text actions
       btn('extracted-connect', () => this.connectExtracted());
       btn('extracted-copy', () => {
         if (this.extractedText) {
@@ -244,14 +260,12 @@
         if (sec) sec.style.display = 'none';
       });
 
-      // Image upload
       const imgZone = document.getElementById('img-upload-zone');
       const imgInput = document.getElementById('img-upload');
       if (imgZone && imgInput) {
         imgZone.addEventListener('click', () => imgInput.click());
         imgInput.addEventListener('change', (e) => { if (e.target.files[0]) this.handleImage(e.target.files[0]); });
       }
-      // PDF upload
       const pdfZone = document.getElementById('pdf-upload-zone');
       const pdfInput = document.getElementById('pdf-upload');
       if (pdfZone && pdfInput) {
@@ -346,20 +360,17 @@
     escapeHtml(s) {
       return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     },
-    // ✅ Show extracted text in the new section
     showExtracted(text, source) {
       this.extractedText = text;
       this.extractedSource = source;
       const sec = document.getElementById('extracted-section');
       const textEl = document.getElementById('extracted-text');
-      const srcEl = document.getElementById('extracted-source');
+      const srcEl = document.getElementById('extracted-source-text');
       if (sec) sec.style.display = 'block';
       if (textEl) textEl.textContent = text;
       if (srcEl) srcEl.textContent = source;
-      // Scroll to extracted section
       if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     },
-    // ✅ Connect extracted text to translator input
     connectExtracted() {
       if (!this.extractedText) return;
       const inp = document.getElementById('trans-input');
@@ -368,64 +379,110 @@
         inp.value = this.extractedText;
         if (cc) cc.textContent = this.extractedText.length;
         APP.showToast('Text connected to translator ✓');
-        // Scroll to translator
         inp.scrollIntoView({ behavior: 'smooth', block: 'center' });
         inp.focus();
       }
     },
+    // ✅ FIXED: OCR progress with real percentage
     async handleImage(file) {
       if (!file) return;
       if (!window.Tesseract) return APP.showToast('OCR library still loading...');
       this.showProgress('Extracting text from image...');
+      this.updateProgress(0, 'Initializing OCR engine...');
       try {
-        const result = await Tesseract.recognize(file, 'eng');
+        const result = await Tesseract.recognize(file, 'eng', {
+          logger: (m) => {
+            if (m.status === 'loading tesseract core') {
+              this.updateProgress(Math.round(m.progress * 20), 'Loading OCR core...');
+            } else if (m.status === 'initializing tesseract') {
+              this.updateProgress(20 + Math.round(m.progress * 10), 'Initializing...');
+            } else if (m.status === 'loading language traineddata') {
+              this.updateProgress(30 + Math.round(m.progress * 20), 'Loading language data...');
+            } else if (m.status === 'initializing api') {
+              this.updateProgress(55, 'Preparing recognizer...');
+            } else if (m.status === 'recognizing text') {
+              // Main recognition phase: 60% to 99%
+              const pct = 60 + Math.round(m.progress * 39);
+              this.updateProgress(pct, 'Recognizing text...');
+            }
+          }
+        });
+        this.updateProgress(100, 'Complete!');
         const text = result.data.text.trim();
         if (!text) {
           APP.showToast('No text found in image');
-          this.hideProgress();
+          setTimeout(() => this.hideProgress(), 1500);
           return;
         }
-        this.showExtracted(text, 'Image: ' + file.name);
-        APP.showToast('✅ Text extracted successfully!');
+        setTimeout(() => {
+          this.hideProgress();
+          this.showExtracted(text, file.name);
+          APP.showToast('✅ Text extracted successfully!');
+        }, 600);
       } catch (e) {
+        console.error(e);
         APP.showToast('OCR failed');
+        this.hideProgress();
       }
-      this.hideProgress();
     },
+    // ✅ FIXED: PDF progress with real percentage
     async handlePDF(file) {
       if (!file) return;
       if (!window.pdfjsLib) return APP.showToast('PDF library still loading...');
       this.showProgress('Extracting text from PDF...');
+      this.updateProgress(0, 'Loading PDF...');
       try {
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         const buf = await file.arrayBuffer();
+        this.updateProgress(10, 'Reading document...');
         const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
         let fullText = '';
-        for (let i = 1; i <= pdf.numPages; i++) {
+        const totalPages = pdf.numPages;
+        for (let i = 1; i <= totalPages; i++) {
+          this.updateProgress(10 + Math.round((i / totalPages) * 85), `Extracting page ${i} of ${totalPages}...`);
           const page = await pdf.getPage(i);
           const content = await page.getTextContent();
           fullText += content.items.map(it => it.str).join(' ') + '\n';
-          this.updateProgress((i / pdf.numPages) * 100);
         }
+        this.updateProgress(100, 'Complete!');
         const text = fullText.trim();
         if (!text) {
           APP.showToast('No text found in PDF');
-          this.hideProgress();
+          setTimeout(() => this.hideProgress(), 1500);
           return;
         }
-        this.showExtracted(text, 'PDF: ' + file.name);
-        APP.showToast('✅ PDF text extracted successfully!');
+        setTimeout(() => {
+          this.hideProgress();
+          this.showExtracted(text, file.name);
+          APP.showToast('✅ PDF text extracted successfully!');
+        }, 600);
       } catch (e) {
+        console.error(e);
         APP.showToast('PDF extraction failed');
+        this.hideProgress();
       }
-      this.hideProgress();
     },
     showProgress(msg) {
       const p = document.getElementById('file-progress');
-      if (p) { p.style.display = 'block'; const t = document.getElementById('file-progress-text'); if (t) t.textContent = msg; }
+      if (p) {
+        p.style.display = 'block';
+        const t = document.getElementById('file-progress-text');
+        if (t) t.textContent = msg;
+      }
     },
-    updateProgress(pct) { const bar = document.getElementById('file-progress-bar'); if (bar) bar.style.width = pct + '%'; },
-    hideProgress() { const p = document.getElementById('file-progress'); if (p) p.style.display = 'none'; }
+    // ✅ FIXED: Real percentage update
+    updateProgress(pct, status) {
+      const bar = document.getElementById('file-progress-bar');
+      const percentEl = document.getElementById('file-progress-percent');
+      const statusEl = document.getElementById('file-progress-status');
+      if (bar) bar.style.width = pct + '%';
+      if (percentEl) percentEl.textContent = Math.round(pct) + '%';
+      if (statusEl && status) statusEl.textContent = status;
+    },
+    hideProgress() {
+      const p = document.getElementById('file-progress');
+      if (p) p.style.display = 'none';
+    }
   };
 
   window._transLoad = (i) => T.loadFromHistory(i);
