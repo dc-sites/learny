@@ -10,131 +10,290 @@
 </head>
 <body>
 <div class="app-container">
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-logo">L</div>
-            <div class="sidebar-title">Learny</div>
-        </div>
-        <ul class="nav-list">
-            <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
-            <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
-            <li class="nav-item"><a href="bot.html"><i class="fa fa-robot"></i> LearnyAI</a></li>
-            <li class="nav-item"><a href="games.html"><i class="fa fa-gamepad"></i> Games</a></li>
-            <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
-            <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
-            <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
-            <li class="nav-item"><a href="tuition.html"><i class="fa fa-graduation-cap"></i> Tuition</a></li>
-            <li class="nav-item"><a href="motivation.html"><i class="fa fa-quote-left"></i> Motivation</a></li>
-            <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
-            <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-hourglass-half"></i> Pomodoro</a></li>
-            <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
-            <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
-            <li class="nav-item"><a href="countdown.html"><i class="fa fa-calendar-alt"></i> Countdown</a></li>
-            <li class="nav-item"><a href="translator.html"><i class="fa fa-language"></i> Translator</a></li>
-            <li class="nav-item active"><a href="calculator.html"><i class="fa fa-calculator"></i> Calculator <span class="new-badge">NEW</span></a></li>
-            <li class="nav-item"><a href="converter.html"><i class="fa fa-exchange-alt"></i> Converter</a></li>
-            <li class="nav-item premium-nav-item"><a href="premium.html" class="premium-link"><i class="fa fa-gem" style="color:var(--warning)"></i> Get Premium</a></li>
-            <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
-            <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
-        </ul>
-        <div class="sidebar-welcome">
-            <p id="sidebar-username">Welcome, User!</p>
-            <div class="divider"></div>
-            <p class="welcome-text">Keep Learning 🚀</p>
-        </div>
-    </aside>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">L</div>
+      <div class="sidebar-title">Learny</div>
+    </div>
+    <ul class="nav-list">
+      <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
+      <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+      <li class="nav-item"><a href="bot.html"><i class="fa fa-robot"></i> LearnyAI</a></li>
+      <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
+      <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+      <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+      <li class="nav-item"><a href="tuition.html"><i class="fa fa-graduation-cap"></i> Tuition</a></li>
+      <li class="nav-item"><a href="motivation.html"><i class="fa fa-quote-left"></i> Motivation</a></li>
+      <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
+      <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-hourglass-half"></i> Pomodoro</a></li>
+      <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-bar"></i> Mark Analyze</a></li>
+      <li class="nav-item"><a href="countdown.html"><i class="fa fa-calendar-alt"></i> Countdown</a></li>
+      <li class="nav-item"><a href="translator.html"><i class="fa fa-language"></i> Translator</a></li>
+      <li class="nav-item active"><a href="calculator.html"><i class="fa fa-calculator"></i> Calculator <span class="new-badge">NEW</span></a></li>
+      <li class="nav-item"><a href="converter.html"><i class="fa fa-exchange-alt"></i> Converter</a></li>
+      <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+      <li class="nav-item"><a href="premium.html"><i class="fa fa-gem" style="color:var(--warning)"></i> Get Premium</a></li>
+    </ul>
+    <div class="sidebar-welcome">
+      <div class="divider"></div>
+      <p id="sidebar-username">Welcome, User!</p>
+    </div>
+  </aside>
 
-    <div class="overlay"></div>
+  <div class="overlay"></div>
 
-    <main class="main-content">
-        <div class="page-header">
-            <h1 class="page-title"><i class="fa fa-calculator"></i> Scientific Calculator</h1>
-            <div class="header-actions">
-                <button class="theme-toggle"><i class="fa fa-moon"></i></button>
-                <button class="notif-btn" onclick="location.href='index.html'"><i class="fa fa-bell"></i></button>
-            </div>
-        </div>
+  <main class="main-content">
+    <div class="page-header">
+      <div class="page-title"><i class="fa fa-calculator"></i> Scientific Calculator</div>
+      <div class="header-actions">
+        <button class="theme-toggle"><i class="fa fa-moon"></i></button>
+      </div>
+    </div>
 
-        <div class="grid-2">
-            <!-- Calculator -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title"><i class="fa fa-calculator"></i> Calculator</h2>
-                    <div style="display:flex;gap:8px;">
-                        <button class="btn btn-sm btn-secondary" id="calc-mode-toggle">
-                            <i class="fa fa-flask"></i> Scientific
-                        </button>
-                        <button class="btn btn-sm btn-secondary" id="calc-clear-history">
-                            <i class="fa fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="calc-display">
-                    <div class="calc-expression" id="calc-expression">&nbsp;</div>
-                    <div class="calc-result" id="calc-result">0</div>
-                    <div class="calc-memory-indicator" id="calc-memory-indicator"></div>
-                </div>
-
-                <div class="calc-memory-row">
-                    <button class="calc-btn memory" data-action="mc">MC</button>
-                    <button class="calc-btn memory" data-action="mr">MR</button>
-                    <button class="calc-btn memory" data-action="m+">M+</button>
-                    <button class="calc-btn memory" data-action="m-">M−</button>
-                    <button class="calc-btn memory" data-action="ms">MS</button>
-                </div>
-
-                <div class="calc-grid" id="calc-grid">
-                    <!-- Buttons injected by JS -->
-                </div>
-            </div>
-
-            <!-- History -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title"><i class="fa fa-history"></i> History</h2>
-                </div>
-                <div id="calc-history" class="calc-history">
-                    <p class="empty-text">No calculations yet.</p>
-                </div>
-            </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fa fa-calculator"></i> Calculator</div>
+          <button class="btn btn-sm btn-secondary" id="calc-mode-toggle"><i class="fa fa-flask"></i> Scientific</button>
         </div>
 
-        <!-- Quick Reference -->
-        <div class="card" style="margin-top:24px;">
-            <div class="card-header">
-                <h2 class="card-title"><i class="fa fa-info-circle"></i> Quick Reference</h2>
-            </div>
-            <div class="calc-reference">
-                <div class="ref-item"><strong>π</strong> = 3.14159...</div>
-                <div class="ref-item"><strong>e</strong> = 2.71828...</div>
-                <div class="ref-item"><strong>sin/cos/tan</strong> = Trigonometry</div>
-                <div class="ref-item"><strong>log</strong> = Base 10</div>
-                <div class="ref-item"><strong>ln</strong> = Natural log</div>
-                <div class="ref-item"><strong>√</strong> = Square root</div>
-                <div class="ref-item"><strong>x²</strong> = Square</div>
-                <div class="ref-item"><strong>xʸ</strong> = Power</div>
-                <div class="ref-item"><strong>!</strong> = Factorial</div>
-                <div class="ref-item"><strong>1/x</strong> = Reciprocal</div>
-            </div>
+        <div class="calc-display">
+          <div class="calc-memory-indicator" id="calc-mem-ind"></div>
+          <div class="calc-expression" id="calc-expr">&nbsp;</div>
+          <div class="calc-result" id="calc-result">0</div>
         </div>
-    </main>
-</div>
-   <!-- Footer -->
-<footer class="site-footer">
-    <p>Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰</p>
-    <p style="margin-top: 8px; font-size: 12px;">
-        <a href="about.html">About Us</a> • 
-        <a href="privacy.html">Privacy Policy</a> • 
-        <a href="contact.html">Contact Us</a>
-    </p>
-</footer>
-<div class="notification" id="notification-toast">
-    <i class="fa fa-info-circle"></i>
-    <span>Notification</span>
+
+        <div class="calc-memory-row">
+          <button class="calc-btn memory" data-mem="MC">MC</button>
+          <button class="calc-btn memory" data-mem="MR">MR</button>
+          <button class="calc-btn memory" data-mem="M+">M+</button>
+          <button class="calc-btn memory" data-mem="M-">M-</button>
+          <button class="calc-btn memory" data-mem="MS">MS</button>
+        </div>
+
+        <div class="calc-grid">
+          <div class="calc-sci-grid" id="calc-sci-grid">
+            <button class="calc-btn sci" data-val="sin(">sin</button>
+            <button class="calc-btn sci" data-val="cos(">cos</button>
+            <button class="calc-btn sci" data-val="tan(">tan</button>
+            <button class="calc-btn sci" data-val="log(">log</button>
+            <button class="calc-btn sci" data-val="ln(">ln</button>
+            <button class="calc-btn sci" data-val="asin(">sin⁻¹</button>
+            <button class="calc-btn sci" data-val="acos(">cos⁻¹</button>
+            <button class="calc-btn sci" data-val="atan(">tan⁻¹</button>
+            <button class="calc-btn sci" data-val="sqrt(">√</button>
+            <button class="calc-btn sci" data-val="^2">x²</button>
+            <button class="calc-btn sci" data-val="^">xʸ</button>
+            <button class="calc-btn sci" data-val="^3">x³</button>
+            <button class="calc-btn sci" data-val="pi">π</button>
+            <button class="calc-btn sci" data-val="e">e</button>
+            <button class="calc-btn sci" data-val="!">n!</button>
+            <button class="calc-btn sci" data-val="(">(</button>
+            <button class="calc-btn sci" data-val=")">)</button>
+            <button class="calc-btn sci" data-val="abs(">|x|</button>
+            <button class="calc-btn sci" data-val="1/">1/x</button>
+            <button class="calc-btn sci" data-val="%">%</button>
+          </div>
+
+          <div class="calc-basic-grid">
+            <button class="calc-btn func" data-act="clear">AC</button>
+            <button class="calc-btn func" data-act="back">⌫</button>
+            <button class="calc-btn op" data-val="%">%</button>
+            <button class="calc-btn op" data-val="/">÷</button>
+
+            <button class="calc-btn" data-val="7">7</button>
+            <button class="calc-btn" data-val="8">8</button>
+            <button class="calc-btn" data-val="9">9</button>
+            <button class="calc-btn op" data-val="*">×</button>
+
+            <button class="calc-btn" data-val="4">4</button>
+            <button class="calc-btn" data-val="5">5</button>
+            <button class="calc-btn" data-val="6">6</button>
+            <button class="calc-btn op" data-val="-">−</button>
+
+            <button class="calc-btn" data-val="1">1</button>
+            <button class="calc-btn" data-val="2">2</button>
+            <button class="calc-btn" data-val="3">3</button>
+            <button class="calc-btn op" data-val="+">+</button>
+
+            <button class="calc-btn" data-val="0" style="grid-column:span 2;">0</button>
+            <button class="calc-btn" data-val=".">.</button>
+            <button class="calc-btn equals" data-act="equals">=</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa fa-history"></i> History</div>
+            <button class="btn btn-sm btn-danger" id="calc-clear-history"><i class="fa fa-trash"></i></button>
+          </div>
+          <div id="calc-history" class="calc-history">
+            <p class="empty-text">No calculations yet</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa fa-book"></i> Quick Reference</div>
+          </div>
+          <div class="calc-reference">
+            <div class="ref-item"><strong>π</strong> = 3.14159...</div>
+            <div class="ref-item"><strong>e</strong> = 2.71828...</div>
+            <div class="ref-item"><strong>√x</strong> = sqrt(x)</div>
+            <div class="ref-item"><strong>x²</strong> = x * x</div>
+            <div class="ref-item"><strong>log</strong> = base 10</div>
+            <div class="ref-item"><strong>ln</strong> = natural log</div>
+            <div class="ref-item"><strong>n!</strong> = factorial</div>
+            <div class="ref-item"><strong>xʸ</strong> = power</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </div>
 
 <script src="script.js"></script>
-<script src="new.js"></script>
+<script>
+/* ============ CALCULATOR MODULE ============ */
+(function() {
+  const C = {
+    expr: '', result: '0', memory: 0, history: [], scientific: true,
+    init() {
+      this.loadHistory(); this.bindEvents(); this.renderHistory();
+      this.updateMemIndicator(); this.updateDisplay();
+    },
+    bindEvents() {
+      document.querySelectorAll('.calc-btn[data-val]').forEach(btn => {
+        btn.addEventListener('click', () => this.inputValue(btn.dataset.val));
+      });
+      document.querySelectorAll('.calc-btn[data-act]').forEach(btn => {
+        btn.addEventListener('click', () => this.doAction(btn.dataset.act));
+      });
+      document.querySelectorAll('.calc-btn[data-mem]').forEach(btn => {
+        btn.addEventListener('click', () => this.memoryOp(btn.dataset.mem));
+      });
+      const toggle = document.getElementById('calc-mode-toggle');
+      if (toggle) {
+        toggle.addEventListener('click', () => {
+          this.scientific = !this.scientific;
+          const grid = document.getElementById('calc-sci-grid');
+          if (grid) grid.style.display = this.scientific ? 'grid' : 'none';
+          toggle.innerHTML = this.scientific ? '<i class="fa fa-th"></i> Basic' : '<i class="fa fa-flask"></i> Scientific';
+        });
+      }
+      const clearHist = document.getElementById('calc-clear-history');
+      if (clearHist) {
+        clearHist.addEventListener('click', () => {
+          if (confirm('Clear calculator history?')) { this.history = []; this.saveHistory(); this.renderHistory(); }
+        });
+      }
+      document.addEventListener('keydown', (e) => this.handleKey(e));
+    },
+    inputValue(v) { this.expr += v; this.updateDisplay(); },
+    doAction(act) {
+      if (act === 'clear') { this.expr = ''; this.result = '0'; }
+      else if (act === 'back') { this.expr = this.expr.slice(0, -1); }
+      else if (act === 'equals') { this.calculate(); }
+      this.updateDisplay();
+    },
+    memoryOp(op) {
+      const cur = parseFloat(this.result) || 0;
+      if (op === 'MC') this.memory = 0;
+      else if (op === 'MR') this.expr += this.memory.toString();
+      else if (op === 'M+') this.memory += cur;
+      else if (op === 'M-') this.memory -= cur;
+      else if (op === 'MS') this.memory = cur;
+      this.updateMemIndicator(); this.updateDisplay();
+    },
+    updateMemIndicator() {
+      const el = document.getElementById('calc-mem-ind');
+      if (el) el.textContent = this.memory !== 0 ? 'M' : '';
+    },
+    factorial(n) {
+      if (n < 0 || !Number.isInteger(n)) return NaN;
+      if (n > 170) return Infinity;
+      let r = 1; for (let i = 2; i <= n; i++) r *= i; return r;
+    },
+    calculate() {
+      if (!this.expr) return;
+      try {
+        let e = this.expr;
+        e = e.replace(/\bpi\b/g, Math.PI.toString());
+        e = e.replace(/\be\b/g, Math.E.toString());
+        e = e.replace(/(\d+(?:\.\d+)?)!/g, (m, n) => this.factorial(parseFloat(n)).toString());
+        e = e.replace(/\^/g, '**');
+        const toRad = '((Math.PI/180)*';
+        e = e.replace(/sin\(/g, `Math.sin(${toRad}(`);
+        e = e.replace(/cos\(/g, `Math.cos(${toRad}(`);
+        e = e.replace(/tan\(/g, `Math.tan(${toRad}(`);
+        e = e.replace(/asin\(/g, '((180/Math.PI)*Math.asin(');
+        e = e.replace(/acos\(/g, '((180/Math.PI)*Math.acos(');
+        e = e.replace(/atan\(/g, '((180/Math.PI)*Math.atan(');
+        e = e.replace(/sqrt\(/g, 'Math.sqrt(');
+        e = e.replace(/log\(/g, 'Math.log10(');
+        e = e.replace(/ln\(/g, 'Math.log(');
+        e = e.replace(/abs\(/g, 'Math.abs(');
+        const open = (e.match(/\(/g) || []).length;
+        const close = (e.match(/\)/g) || []).length;
+        for (let i = 0; i < open - close; i++) e += ')';
+        const val = Function('"use strict";return (' + e + ')')();
+        if (!isFinite(val)) throw new Error('Math error');
+        const rounded = Math.round(val * 1e10) / 1e10;
+        this.result = rounded.toString();
+        this.history.unshift({ expr: this.expr, result: this.result, time: Date.now() });
+        if (this.history.length > 30) this.history.pop();
+        this.saveHistory(); this.renderHistory(); this.expr = this.result;
+      } catch (err) {
+        this.result = 'Error'; this.updateDisplay();
+        setTimeout(() => { this.result = '0'; this.updateDisplay(); }, 1500);
+      }
+    },
+    updateDisplay() {
+      const exprEl = document.getElementById('calc-expr');
+      const resEl = document.getElementById('calc-result');
+      if (exprEl) exprEl.textContent = this.expr || '\u00A0';
+      if (resEl) resEl.textContent = this.result;
+    },
+    handleKey(e) {
+      if (!document.querySelector('.calc-display')) return;
+      const k = e.key;
+      if (/[0-9.+\-*/()%]/.test(k)) { this.inputValue(k); e.preventDefault(); }
+      else if (k === 'Enter' || k === '=') { this.doAction('equals'); e.preventDefault(); }
+      else if (k === 'Backspace') { this.doAction('back'); e.preventDefault(); }
+      else if (k === 'Escape') { this.doAction('clear'); e.preventDefault(); }
+    },
+    loadHistory() {
+      try { this.history = JSON.parse(localStorage.getItem('learny_calc_history') || '[]'); }
+      catch { this.history = []; }
+    },
+    saveHistory() { localStorage.setItem('learny_calc_history', JSON.stringify(this.history)); },
+    renderHistory() {
+      const el = document.getElementById('calc-history');
+      if (!el) return;
+      if (this.history.length === 0) { el.innerHTML = '<p class="empty-text">No calculations yet</p>'; return; }
+      el.innerHTML = this.history.map((h, i) => `
+        <div class="calc-history-item" onclick="window._calcLoad(${i})">
+          <div class="calc-history-expr">${this.escapeHtml(h.expr)} =</div>
+          <div class="calc-history-result">${this.escapeHtml(h.result)}</div>
+        </div>`).join('');
+    },
+    loadFromHistory(i) {
+      const h = this.history[i]; if (!h) return;
+      this.expr = h.result; this.result = h.result; this.updateDisplay();
+    },
+    escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+  };
+
+  window._calcLoad = (i) => C.loadFromHistory(i);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => C.init(), 100);
+  });
+})();
+</script>
 </body>
 </html>
