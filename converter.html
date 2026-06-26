@@ -50,14 +50,11 @@
       </div>
     </div>
 
-    <!-- Converter Tabs -->
     <div class="card mb-3">
       <div class="card-header">
         <div class="card-title"><i class="fa fa-ruler-combined"></i> Convert Units</div>
       </div>
-
       <div class="converter-tabs" id="conv-tabs"></div>
-
       <div class="converter-body">
         <div class="converter-row">
           <div class="converter-input-group">
@@ -65,16 +62,13 @@
             <input type="number" id="conv-from-val" class="form-control" placeholder="Enter value" value="1">
             <select id="conv-from-unit" class="form-control"></select>
           </div>
-
           <button class="converter-swap" id="conv-swap" title="Swap"><i class="fa fa-exchange-alt"></i></button>
-
           <div class="converter-input-group">
             <label>To</label>
             <input type="text" id="conv-to-val" class="form-control" readonly placeholder="Result">
             <select id="conv-to-unit" class="form-control"></select>
           </div>
         </div>
-
         <div class="converter-formula" id="conv-formula">
           <i class="fa fa-info-circle"></i>
           <span id="conv-formula-text">Select units to see formula</span>
@@ -82,7 +76,6 @@
       </div>
     </div>
 
-    <!-- Quick Reference -->
     <div class="card mb-3">
       <div class="card-header">
         <div class="card-title"><i class="fa fa-table"></i> Common Conversions</div>
@@ -90,21 +83,18 @@
       <div id="conv-reference" class="calc-reference"></div>
     </div>
 
-    <!-- Quiz -->
     <div class="card">
       <div class="card-header">
         <div class="card-title"><i class="fa fa-question-circle"></i> Conversion Quiz</div>
         <button class="btn btn-sm btn-primary" id="quiz-start"><i class="fa fa-play"></i> Start Quiz</button>
       </div>
-
       <div id="quiz-area">
         <div class="quiz-locked" id="quiz-intro">
           <div class="quiz-lock-icon"><i class="fa fa-brain"></i></div>
           <h3>Test Your Knowledge!</h3>
-          <p>Answer 10 conversion questions. Each correct answer earns points. Challenge yourself!</p>
+          <p>Answer 10 conversion questions. Each correct answer earns points.</p>
           <button class="btn btn-primary" id="quiz-start-main"><i class="fa fa-play"></i> Start Quiz</button>
         </div>
-
         <div id="quiz-game" style="display:none;">
           <div class="quiz-header">
             <div class="quiz-progress"><div class="quiz-progress-bar" id="quiz-progress-bar"></div></div>
@@ -113,35 +103,23 @@
               <span><i class="fa fa-star" style="color:var(--warning)"></i> Score: <span id="quiz-score">0</span></span>
             </div>
           </div>
-
           <div class="quiz-question-card">
             <div class="quiz-question" id="quiz-question">Question here</div>
             <div class="quiz-options" id="quiz-options"></div>
           </div>
-
           <div class="quiz-footer">
             <button class="btn btn-secondary" id="quiz-skip"><i class="fa fa-forward"></i> Skip</button>
             <button class="btn btn-primary" id="quiz-next" style="display:none;"><i class="fa fa-arrow-right"></i> Next</button>
           </div>
         </div>
-
         <div id="quiz-result" style="display:none;">
           <div class="quiz-result">
             <div class="quiz-result-icon" id="quiz-result-icon">🏆</div>
             <h2 id="quiz-result-title">Quiz Complete!</h2>
             <div class="quiz-result-stats">
-              <div class="result-stat">
-                <div class="result-value" id="quiz-correct">0</div>
-                <div class="result-label">Correct</div>
-              </div>
-              <div class="result-stat">
-                <div class="result-value" id="quiz-wrong">0</div>
-                <div class="result-label">Wrong</div>
-              </div>
-              <div class="result-stat">
-                <div class="result-value" id="quiz-percent">0%</div>
-                <div class="result-label">Accuracy</div>
-              </div>
+              <div class="result-stat"><div class="result-value" id="quiz-correct">0</div><div class="result-label">Correct</div></div>
+              <div class="result-stat"><div class="result-value" id="quiz-wrong">0</div><div class="result-label">Wrong</div></div>
+              <div class="result-stat"><div class="result-value" id="quiz-percent">0%</div><div class="result-label">Accuracy</div></div>
             </div>
             <button class="btn btn-primary" id="quiz-retry"><i class="fa fa-redo"></i> Try Again</button>
           </div>
@@ -152,6 +130,278 @@
 </div>
 
 <script src="script.js"></script>
-<script src="other.js"></script>
+<script>
+/* ============ CONVERTER MODULE ============ */
+(function() {
+  const V = {
+    categories: {
+      length: { icon: 'ruler', name: 'Length', units: {
+        'mm': { name: 'Millimeter (mm)', factor: 0.001 }, 'cm': { name: 'Centimeter (cm)', factor: 0.01 },
+        'dm': { name: 'Decimeter (dm)', factor: 0.1 }, 'm': { name: 'Meter (m)', factor: 1 },
+        'km': { name: 'Kilometer (km)', factor: 1000 }, 'nm': { name: 'Nanometer (nm)', factor: 1e-9 },
+        'μm': { name: 'Micrometer (μm)', factor: 1e-6 }, 'in': { name: 'Inch (in)', factor: 0.0254 },
+        'ft': { name: 'Foot (ft)', factor: 0.3048 }, 'yd': { name: 'Yard (yd)', factor: 0.9144 },
+        'mi': { name: 'Mile (mi)', factor: 1609.344 }
+      }},
+      mass: { icon: 'weight', name: 'Mass', units: {
+        'mg': { name: 'Milligram (mg)', factor: 0.001 }, 'g': { name: 'Gram (g)', factor: 1 },
+        'kg': { name: 'Kilogram (kg)', factor: 1000 }, 't': { name: 'Tonne (t)', factor: 1e6 },
+        'lb': { name: 'Pound (lb)', factor: 453.592 }, 'oz': { name: 'Ounce (oz)', factor: 28.3495 }
+      }},
+      volume: { icon: 'flask', name: 'Volume', units: {
+        'mL': { name: 'Milliliter (mL)', factor: 0.001 }, 'cm3': { name: 'Cubic cm (cm³)', factor: 0.001 },
+        'dm3': { name: 'Cubic dm (dm³)', factor: 1 }, 'L': { name: 'Liter (L)', factor: 1 },
+        'm3': { name: 'Cubic m (m³)', factor: 1000 }, 'gal': { name: 'Gallon (US)', factor: 3.78541 },
+        'ft3': { name: 'Cubic foot (ft³)', factor: 28.3168 }
+      }},
+      area: { icon: 'vector-square', name: 'Area', units: {
+        'mm2': { name: 'mm²', factor: 1e-6 }, 'cm2': { name: 'cm²', factor: 1e-4 },
+        'm2': { name: 'm²', factor: 1 }, 'km2': { name: 'km²', factor: 1e6 },
+        'ha': { name: 'Hectare', factor: 10000 }, 'acre': { name: 'Acre', factor: 4046.86 }
+      }},
+      temperature: { icon: 'thermometer-half', name: 'Temperature', units: {
+        'C': { name: 'Celsius (°C)' }, 'F': { name: 'Fahrenheit (°F)' }, 'K': { name: 'Kelvin (K)' }
+      }, special: true },
+      time: { icon: 'clock', name: 'Time', units: {
+        'ms': { name: 'Millisecond', factor: 0.001 }, 's': { name: 'Second', factor: 1 },
+        'min': { name: 'Minute', factor: 60 }, 'hr': { name: 'Hour', factor: 3600 },
+        'day': { name: 'Day', factor: 86400 }, 'week': { name: 'Week', factor: 604800 },
+        'year': { name: 'Year', factor: 31536000 }
+      }},
+      speed: { icon: 'tachometer-alt', name: 'Speed', units: {
+        'm/s': { name: 'Meter/sec', factor: 1 }, 'km/h': { name: 'Km/hour', factor: 0.277778 },
+        'mph': { name: 'Mile/hour', factor: 0.44704 }, 'knot': { name: 'Knot', factor: 0.514444 }
+      }},
+      concentration: { icon: 'vial', name: 'Concentration', units: {
+        'ppm': { name: 'ppm', factor: 1 }, 'mg/dm3': { name: 'mg/dm³', factor: 1 },
+        'g/L': { name: 'g/L', factor: 1000 }, 'g/dm3': { name: 'g/dm³', factor: 1000 },
+        'percent': { name: 'Percent (%)', factor: 10000 }
+      }},
+      data: { icon: 'database', name: 'Data', units: {
+        'B': { name: 'Byte', factor: 1 }, 'KB': { name: 'Kilobyte', factor: 1024 },
+        'MB': { name: 'Megabyte', factor: 1048576 }, 'GB': { name: 'Gigabyte', factor: 1073741824 },
+        'TB': { name: 'Terabyte', factor: 1099511627776 }
+      }},
+      energy: { icon: 'bolt', name: 'Energy', units: {
+        'J': { name: 'Joule', factor: 1 }, 'kJ': { name: 'Kilojoule', factor: 1000 },
+        'cal': { name: 'Calorie', factor: 4.184 }, 'kcal': { name: 'Kilocalorie', factor: 4184 },
+        'Wh': { name: 'Watt-hour', factor: 3600 }, 'kWh': { name: 'Kilowatt-hour', factor: 3600000 }
+      }}
+    },
+    currentCat: 'length',
+    quiz: { questions: [], current: 0, score: 0, answered: false },
+    init() {
+      this.renderTabs(); this.renderUnits(); this.bindEvents(); this.convert(); this.renderReference();
+    },
+    renderTabs() {
+      const tabs = document.getElementById('conv-tabs');
+      if (!tabs) return;
+      tabs.innerHTML = Object.entries(this.categories).map(([k, v]) =>
+        `<div class="conv-tab ${k === this.currentCat ? 'active' : ''}" data-cat="${k}">
+          <i class="fa fa-${v.icon}"></i> ${v.name}</div>`
+      ).join('');
+      tabs.querySelectorAll('.conv-tab').forEach(t => {
+        t.addEventListener('click', () => {
+          this.currentCat = t.dataset.cat; this.renderTabs(); this.renderUnits(); this.convert(); this.renderReference();
+        });
+      });
+    },
+    renderUnits() {
+      const cat = this.categories[this.currentCat];
+      const fromSel = document.getElementById('conv-from-unit');
+      const toSel = document.getElementById('conv-to-unit');
+      if (!fromSel || !toSel) return;
+      const opts = Object.entries(cat.units).map(([k, v]) => `<option value="${k}">${v.name}</option>`).join('');
+      fromSel.innerHTML = opts; toSel.innerHTML = opts;
+      const keys = Object.keys(cat.units);
+      fromSel.value = keys[0]; toSel.value = keys.length > 1 ? keys[1] : keys[0];
+    },
+    bindEvents() {
+      const fromVal = document.getElementById('conv-from-val');
+      const fromUnit = document.getElementById('conv-from-unit');
+      const toUnit = document.getElementById('conv-to-unit');
+      const swap = document.getElementById('conv-swap');
+      if (fromVal) fromVal.addEventListener('input', () => this.convert());
+      if (fromUnit) fromUnit.addEventListener('change', () => this.convert());
+      if (toUnit) toUnit.addEventListener('change', () => this.convert());
+      if (swap) swap.addEventListener('click', () => {
+        const f = document.getElementById('conv-from-unit');
+        const t = document.getElementById('conv-to-unit');
+        const tmp = f.value; f.value = t.value; t.value = tmp; this.convert();
+      });
+      const btn = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('click', fn); };
+      btn('quiz-start', () => this.startQuiz());
+      btn('quiz-start-main', () => this.startQuiz());
+      btn('quiz-next', () => this.nextQuestion());
+      btn('quiz-skip', () => this.nextQuestion());
+      btn('quiz-retry', () => this.startQuiz());
+    },
+    convert() {
+      const cat = this.categories[this.currentCat];
+      const fromValEl = document.getElementById('conv-from-val');
+      const fromUnitEl = document.getElementById('conv-from-unit');
+      const toUnitEl = document.getElementById('conv-to-unit');
+      const resultEl = document.getElementById('conv-to-val');
+      const formulaEl = document.getElementById('conv-formula-text');
+      if (!fromValEl || !fromUnitEl || !toUnitEl || !resultEl) return;
+      const val = parseFloat(fromValEl.value);
+      const from = fromUnitEl.value, to = toUnitEl.value;
+      if (isNaN(val)) { resultEl.value = ''; return; }
+      let result, formula;
+      if (cat.special && this.currentCat === 'temperature') {
+        const r = this.convertTemp(val, from, to); result = r.value; formula = r.formula;
+      } else {
+        const fromFactor = cat.units[from].factor;
+        const toFactor = cat.units[to].factor;
+        result = (val * fromFactor) / toFactor;
+        formula = `1 ${from} = ${(fromFactor / toFactor).toPrecision(6)} ${to}`;
+      }
+      resultEl.value = this.formatNumber(result);
+      if (formulaEl) formulaEl.textContent = formula;
+    },
+    convertTemp(val, from, to) {
+      let c;
+      if (from === 'C') c = val;
+      else if (from === 'F') c = (val - 32) * 5/9;
+      else c = val - 273.15;
+      let r, f;
+      if (to === 'C') { r = c; f = from === 'F' ? `${val}°F → ${c.toFixed(2)}°C` : from === 'K' ? `${val}K → ${c.toFixed(2)}°C` : 'Same unit'; }
+      else if (to === 'F') { r = c * 9/5 + 32; f = `°C → (°C × 9/5) + 32`; }
+      else { r = c + 273.15; f = `°C → °C + 273.15`; }
+      return { value: r, formula: f };
+    },
+    formatNumber(n) {
+      if (isNaN(n)) return '0';
+      if (Math.abs(n) < 0.0001 && n !== 0) return n.toExponential(4);
+      if (Math.abs(n) > 1e9) return n.toExponential(4);
+      return Math.round(n * 1e8) / 1e8;
+    },
+    renderReference() {
+      const el = document.getElementById('conv-reference');
+      if (!el) return;
+      const cat = this.categories[this.currentCat];
+      const keys = Object.keys(cat.units);
+      if (keys.length < 2) { el.innerHTML = ''; return; }
+      const base = keys[0];
+      el.innerHTML = keys.slice(1, 7).map(k => {
+        const factor = cat.units[base].factor / cat.units[k].factor;
+        return `<div class="ref-item"><strong>1 ${base}</strong> = ${this.formatNumber(factor)} ${k}</div>`;
+      }).join('');
+    },
+    startQuiz() {
+      this.quiz = { questions: this.generateQuestions(10), current: 0, score: 0, answered: false };
+      const intro = document.getElementById('quiz-intro');
+      const result = document.getElementById('quiz-result');
+      const game = document.getElementById('quiz-game');
+      if (intro) intro.style.display = 'none';
+      if (result) result.style.display = 'none';
+      if (game) game.style.display = 'block';
+      this.showQuestion();
+    },
+    generateQuestions(n) {
+      const questions = [];
+      const catKeys = Object.keys(this.categories).filter(k => k !== 'temperature');
+      for (let i = 0; i < n; i++) {
+        const catKey = catKeys[Math.floor(Math.random() * catKeys.length)];
+        const cat = this.categories[catKey];
+        const unitKeys = Object.keys(cat.units);
+        const fromIdx = Math.floor(Math.random() * unitKeys.length);
+        let toIdx = Math.floor(Math.random() * unitKeys.length);
+        while (toIdx === fromIdx) toIdx = Math.floor(Math.random() * unitKeys.length);
+        const from = unitKeys[fromIdx], to = unitKeys[toIdx];
+        const value = this.randomValue();
+        const correct = (value * cat.units[from].factor) / cat.units[to].factor;
+        questions.push({ catName: cat.name, from, to, value, correct: this.formatNumber(correct), options: this.generateOptions(correct) });
+      }
+      return questions;
+    },
+    randomValue() {
+      const vals = [1, 2, 5, 10, 25, 50, 100, 250, 500, 1000, 0.5, 2.5, 7.5];
+      return vals[Math.floor(Math.random() * vals.length)];
+    },
+    generateOptions(correct) {
+      const opts = new Set([this.formatNumber(correct)]);
+      let attempts = 0;
+      while (opts.size < 4 && attempts < 50) {
+        const factor = 0.1 + Math.random() * 10;
+        const v = this.formatNumber(correct * factor);
+        if (v !== this.formatNumber(correct)) opts.add(v);
+        attempts++;
+      }
+      return [...opts].sort(() => Math.random() - 0.5);
+    },
+    showQuestion() {
+      const q = this.quiz.questions[this.quiz.current];
+      const qNum = document.getElementById('quiz-q-num');
+      const score = document.getElementById('quiz-score');
+      const progBar = document.getElementById('quiz-progress-bar');
+      const qText = document.getElementById('quiz-question');
+      const optsEl = document.getElementById('quiz-options');
+      const nextBtn = document.getElementById('quiz-next');
+      if (qNum) qNum.textContent = this.quiz.current + 1;
+      if (score) score.textContent = this.quiz.score;
+      if (progBar) progBar.style.width = ((this.quiz.current) / 10 * 100) + '%';
+      if (qText) qText.textContent = `Convert ${q.value} ${q.from} to ${q.to} (${q.catName})`;
+      if (optsEl) {
+        optsEl.innerHTML = q.options.map((o, i) => {
+          const letter = ['A', 'B', 'C', 'D'][i];
+          return `<div class="quiz-option" data-val="${o}"><div class="quiz-option-letter">${letter}</div><div>${o}</div></div>`;
+        }).join('');
+        optsEl.querySelectorAll('.quiz-option').forEach(opt => {
+          opt.addEventListener('click', () => this.answerQuestion(opt.dataset.val));
+        });
+      }
+      if (nextBtn) nextBtn.style.display = 'none';
+      this.quiz.answered = false;
+    },
+    answerQuestion(val) {
+      if (this.quiz.answered) return;
+      this.quiz.answered = true;
+      const q = this.quiz.questions[this.quiz.current];
+      const opts = document.querySelectorAll('#quiz-options .quiz-option');
+      opts.forEach(o => {
+        if (o.dataset.val === q.correct) o.classList.add('correct');
+        else if (o.dataset.val === val) o.classList.add('wrong');
+      });
+      if (val === q.correct) { this.quiz.score++; APP.showToast('✅ Correct!'); }
+      else APP.showToast('❌ Correct: ' + q.correct);
+      const score = document.getElementById('quiz-score');
+      if (score) score.textContent = this.quiz.score;
+      const nextBtn = document.getElementById('quiz-next');
+      if (nextBtn) nextBtn.style.display = 'inline-flex';
+    },
+    nextQuestion() {
+      this.quiz.current++;
+      if (this.quiz.current >= 10) this.endQuiz();
+      else this.showQuestion();
+    },
+    endQuiz() {
+      const game = document.getElementById('quiz-game');
+      const result = document.getElementById('quiz-result');
+      if (game) game.style.display = 'none';
+      if (result) result.style.display = 'block';
+      const score = this.quiz.score;
+      const correct = document.getElementById('quiz-correct');
+      const wrong = document.getElementById('quiz-wrong');
+      const percent = document.getElementById('quiz-percent');
+      const icon = document.getElementById('quiz-result-icon');
+      const title = document.getElementById('quiz-result-title');
+      if (correct) correct.textContent = score;
+      if (wrong) wrong.textContent = 10 - score;
+      if (percent) percent.textContent = (score * 10) + '%';
+      let iconText = '🏆', titleText = 'Excellent!';
+      if (score < 4) { iconText = '📚'; titleText = 'Keep Practicing!'; }
+      else if (score < 7) { iconText = '👍'; titleText = 'Good Job!'; }
+      else if (score < 10) { iconText = '🌟'; titleText = 'Great Work!'; }
+      if (icon) icon.textContent = iconText;
+      if (title) title.textContent = titleText;
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => V.init(), 100);
+  });
+})();
+</script>
 </body>
 </html>
