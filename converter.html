@@ -3,205 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Learny - Converter</title>
+<title>Learny - Unit Converter</title>
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 <div class="app-container">
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-logo">L</div>
-            <div class="sidebar-title">Learny</div>
-        </div>
-        <ul class="nav-list">
-            <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
-            <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
-            <li class="nav-item"><a href="bot.html"><i class="fa fa-robot"></i> LearnyAI</a></li>
-            <li class="nav-item"><a href="games.html"><i class="fa fa-gamepad"></i> Games</a></li>
-            <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
-            <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
-            <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
-            <li class="nav-item"><a href="tuition.html"><i class="fa fa-graduation-cap"></i> Tuition</a></li>
-            <li class="nav-item"><a href="motivation.html"><i class="fa fa-quote-left"></i> Motivation</a></li>
-            <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
-            <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-hourglass-half"></i> Pomodoro</a></li>
-            <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
-            <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
-            <li class="nav-item"><a href="countdown.html"><i class="fa fa-calendar-alt"></i> Countdown</a></li>
-            <li class="nav-item"><a href="translator.html"><i class="fa fa-language"></i> Translator</a></li>
-            <li class="nav-item"><a href="calculator.html"><i class="fa fa-calculator"></i> Calculator</a></li>
-            <li class="nav-item active"><a href="converter.html"><i class="fa fa-exchange-alt"></i> Converter <span class="new-badge">NEW</span></a></li>
-            <li class="nav-item premium-nav-item"><a href="premium.html" class="premium-link"><i class="fa fa-gem" style="color:var(--warning)"></i> Get Premium</a></li>
-            <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
-            <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
-        </ul>
-        <div class="sidebar-welcome">
-            <p id="sidebar-username">Welcome, User!</p>
-            <div class="divider"></div>
-            <p class="welcome-text">Keep Learning 🚀</p>
-        </div>
-    </aside>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">L</div>
+      <div class="sidebar-title">Learny</div>
+    </div>
+    <ul class="nav-list">
+      <li class="nav-item"><a href="index.html"><i class="fa fa-home"></i> Dashboard</a></li>
+      <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+      <li class="nav-item"><a href="bot.html"><i class="fa fa-robot"></i> LearnyAI</a></li>
+      <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
+      <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+      <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+      <li class="nav-item"><a href="tuition.html"><i class="fa fa-graduation-cap"></i> Tuition</a></li>
+      <li class="nav-item"><a href="motivation.html"><i class="fa fa-quote-left"></i> Motivation</a></li>
+      <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
+      <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-hourglass-half"></i> Pomodoro</a></li>
+      <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-bar"></i> Mark Analyze</a></li>
+      <li class="nav-item"><a href="countdown.html"><i class="fa fa-calendar-alt"></i> Countdown</a></li>
+      <li class="nav-item"><a href="translator.html"><i class="fa fa-language"></i> Translator</a></li>
+      <li class="nav-item"><a href="calculator.html"><i class="fa fa-calculator"></i> Calculator</a></li>
+      <li class="nav-item active"><a href="converter.html"><i class="fa fa-exchange-alt"></i> Converter <span class="new-badge">NEW</span></a></li>
+      <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+      <li class="nav-item"><a href="premium.html"><i class="fa fa-gem" style="color:var(--warning)"></i> Get Premium</a></li>
+    </ul>
+    <div class="sidebar-welcome">
+      <div class="divider"></div>
+      <p id="sidebar-username">Welcome, User!</p>
+    </div>
+  </aside>
 
-    <div class="overlay"></div>
+  <div class="overlay"></div>
 
-    <main class="main-content">
-        <div class="page-header">
-            <h1 class="page-title"><i class="fa fa-exchange-alt"></i> Unit Converter</h1>
-            <div class="header-actions">
-                <button class="theme-toggle"><i class="fa fa-moon"></i></button>
-                <button class="notif-btn" onclick="location.href='index.html'"><i class="fa fa-bell"></i></button>
-            </div>
-        </div>
+  <main class="main-content">
+    <div class="page-header">
+      <div class="page-title"><i class="fa fa-exchange-alt"></i> Unit Converter</div>
+      <div class="header-actions">
+        <button class="theme-toggle"><i class="fa fa-moon"></i></button>
+      </div>
+    </div>
 
-        <!-- Category Tabs -->
-        <div class="card" style="margin-bottom:24px;">
-            <div class="converter-tabs">
-                <button class="conv-tab active" data-category="length">
-                    <i class="fa fa-ruler"></i> Length
-                </button>
-                <button class="conv-tab" data-category="volume">
-                    <i class="fa fa-cube"></i> Volume
-                </button>
-                <button class="conv-tab" data-category="concentration">
-                    <i class="fa fa-flask"></i> Concentration
-                </button>
-                <button class="conv-tab" data-category="area">
-                    <i class="fa fa-vector-square"></i> Area
-                </button>
-                <button class="conv-tab" data-category="mass">
-                    <i class="fa fa-weight-hanging"></i> Mass
-                </button>
-            </div>
+    <!-- Converter Tabs -->
+    <div class="card mb-3">
+      <div class="card-header">
+        <div class="card-title"><i class="fa fa-ruler-combined"></i> Convert Units</div>
+      </div>
 
-            <div class="converter-body">
-                <div class="converter-row">
-                    <div class="converter-input-group">
-                        <label>From</label>
-                        <input type="number" id="conv-from-value" class="form-control" placeholder="Enter value" value="1">
-                        <select id="conv-from-unit" class="form-control"></select>
-                    </div>
+      <div class="converter-tabs" id="conv-tabs"></div>
 
-                    <button class="converter-swap" id="conv-swap">
-                        <i class="fa fa-exchange-alt"></i>
-                    </button>
+      <div class="converter-body">
+        <div class="converter-row">
+          <div class="converter-input-group">
+            <label>From</label>
+            <input type="number" id="conv-from-val" class="form-control" placeholder="Enter value" value="1">
+            <select id="conv-from-unit" class="form-control"></select>
+          </div>
 
-                    <div class="converter-input-group">
-                        <label>To</label>
-                        <input type="text" id="conv-to-value" class="form-control" readonly>
-                        <select id="conv-to-unit" class="form-control"></select>
-                    </div>
-                </div>
+          <button class="converter-swap" id="conv-swap" title="Swap"><i class="fa fa-exchange-alt"></i></button>
 
-                <div class="converter-formula" id="conv-formula">
-                    <i class="fa fa-lightbulb"></i>
-                    <span id="conv-formula-text">Formula will appear here</span>
-                </div>
-            </div>
+          <div class="converter-input-group">
+            <label>To</label>
+            <input type="text" id="conv-to-val" class="form-control" readonly placeholder="Result">
+            <select id="conv-to-unit" class="form-control"></select>
+          </div>
         </div>
 
-        <!-- Quick Convert Table -->
-        <div class="card" style="margin-bottom:24px;">
-            <div class="card-header">
-                <h2 class="card-title"><i class="fa fa-table"></i> Quick Reference</h2>
-            </div>
-            <div class="table-responsive">
-                <table class="data-table" id="conv-table">
-                    <thead>
-                        <tr>
-                            <th>Input Value</th>
-                            <th id="conv-table-unit">Unit</th>
-                        </tr>
-                    </thead>
-                    <tbody id="conv-table-body"></tbody>
-                </table>
-            </div>
+        <div class="converter-formula" id="conv-formula">
+          <i class="fa fa-info-circle"></i>
+          <span id="conv-formula-text">Select units to see formula</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Reference -->
+    <div class="card mb-3">
+      <div class="card-header">
+        <div class="card-title"><i class="fa fa-table"></i> Common Conversions</div>
+      </div>
+      <div id="conv-reference" class="calc-reference"></div>
+    </div>
+
+    <!-- Quiz -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><i class="fa fa-question-circle"></i> Conversion Quiz</div>
+        <button class="btn btn-sm btn-primary" id="quiz-start"><i class="fa fa-play"></i> Start Quiz</button>
+      </div>
+
+      <div id="quiz-area">
+        <div class="quiz-locked" id="quiz-intro">
+          <div class="quiz-lock-icon"><i class="fa fa-brain"></i></div>
+          <h3>Test Your Knowledge!</h3>
+          <p>Answer 10 conversion questions. Each correct answer earns points. Challenge yourself!</p>
+          <button class="btn btn-primary" id="quiz-start-main"><i class="fa fa-play"></i> Start Quiz</button>
         </div>
 
-        <!-- Quiz Section (Premium Locked) -->
-        <div class="card" id="quiz-card">
-            <div class="card-header">
-                <h2 class="card-title">
-                    <i class="fa fa-question-circle"></i> Converter Quiz
-                    <span class="premium-badge"><i class="fa fa-gem"></i> Premium</span>
-                </h2>
-                <button class="btn btn-sm btn-primary" id="start-quiz-btn">
-                    <i class="fa fa-play"></i> Start Quiz
-                </button>
+        <div id="quiz-game" style="display:none;">
+          <div class="quiz-header">
+            <div class="quiz-progress"><div class="quiz-progress-bar" id="quiz-progress-bar"></div></div>
+            <div class="quiz-stats">
+              <span><i class="fa fa-question"></i> Question <span id="quiz-q-num">1</span>/10</span>
+              <span><i class="fa fa-star" style="color:var(--warning)"></i> Score: <span id="quiz-score">0</span></span>
             </div>
+          </div>
 
-            <div id="quiz-locked" class="quiz-locked">
-                <div class="quiz-lock-icon"><i class="fa fa-lock"></i></div>
-                <h3>Premium Feature</h3>
-                <p>Unlock 10 challenging converter problems to test your skills and earn achievements!</p>
-                <button class="btn btn-primary btn-lg" onclick="location.href='premium.html'">
-                    <i class="fa fa-gem"></i> Get Premium
-                </button>
-            </div>
+          <div class="quiz-question-card">
+            <div class="quiz-question" id="quiz-question">Question here</div>
+            <div class="quiz-options" id="quiz-options"></div>
+          </div>
 
-            <div id="quiz-active" class="quiz-active hidden">
-                <div class="quiz-header">
-                    <div class="quiz-progress">
-                        <div class="quiz-progress-bar" id="quiz-progress-bar"></div>
-                    </div>
-                    <div class="quiz-stats">
-                        <span><i class="fa fa-question"></i> <span id="quiz-current">1</span>/10</span>
-                        <span><i class="fa fa-check" style="color:var(--success)"></i> <span id="quiz-score">0</span></span>
-                        <span><i class="fa fa-clock" style="color:var(--warning)"></i> <span id="quiz-timer">00:00</span></span>
-                    </div>
-                </div>
-
-                <div class="quiz-question-card">
-                    <div class="quiz-question" id="quiz-question">Loading...</div>
-                    <div class="quiz-options" id="quiz-options"></div>
-                </div>
-
-                <div class="quiz-footer">
-                    <button class="btn btn-secondary" id="quiz-skip">Skip</button>
-                    <button class="btn btn-primary" id="quiz-next" disabled>Next</button>
-                </div>
-            </div>
-
-            <div id="quiz-result" class="quiz-result hidden">
-                <div class="quiz-result-icon" id="quiz-result-icon">🏆</div>
-                <h2 id="quiz-result-title">Quiz Complete!</h2>
-                <div class="quiz-result-stats">
-                    <div class="result-stat">
-                        <div class="result-value" id="result-score">0/10</div>
-                        <div class="result-label">Score</div>
-                    </div>
-                    <div class="result-stat">
-                        <div class="result-value" id="result-percent">0%</div>
-                        <div class="result-label">Accuracy</div>
-                    </div>
-                    <div class="result-stat">
-                        <div class="result-value" id="result-time">00:00</div>
-                        <div class="result-label">Time</div>
-                    </div>
-                </div>
-                <button class="btn btn-primary btn-lg" id="quiz-restart">
-                    <i class="fa fa-redo"></i> Try Again
-                </button>
-            </div>
+          <div class="quiz-footer">
+            <button class="btn btn-secondary" id="quiz-skip"><i class="fa fa-forward"></i> Skip</button>
+            <button class="btn btn-primary" id="quiz-next" style="display:none;"><i class="fa fa-arrow-right"></i> Next</button>
+          </div>
         </div>
-    </main>
-</div>
-   <!-- Footer -->
-<footer class="site-footer">
-    <p>Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰</p>
-    <p style="margin-top: 8px; font-size: 12px;">
-        <a href="about.html">About Us</a> • 
-        <a href="privacy.html">Privacy Policy</a> • 
-        <a href="contact.html">Contact Us</a>
-    </p>
-</footer>
-<div class="notification" id="notification-toast">
-    <i class="fa fa-info-circle"></i>
-    <span>Notification</span>
+
+        <div id="quiz-result" style="display:none;">
+          <div class="quiz-result">
+            <div class="quiz-result-icon" id="quiz-result-icon">🏆</div>
+            <h2 id="quiz-result-title">Quiz Complete!</h2>
+            <div class="quiz-result-stats">
+              <div class="result-stat">
+                <div class="result-value" id="quiz-correct">0</div>
+                <div class="result-label">Correct</div>
+              </div>
+              <div class="result-stat">
+                <div class="result-value" id="quiz-wrong">0</div>
+                <div class="result-label">Wrong</div>
+              </div>
+              <div class="result-stat">
+                <div class="result-value" id="quiz-percent">0%</div>
+                <div class="result-label">Accuracy</div>
+              </div>
+            </div>
+            <button class="btn btn-primary" id="quiz-retry"><i class="fa fa-redo"></i> Try Again</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </div>
 
 <script src="script.js"></script>
-<script src="new.js"></script>
+<script src="other.js"></script>
 </body>
 </html>
