@@ -1,6 +1,7 @@
 /* ============================================================
-   LEARNY - NEW.JS (COMPLETE)
+   LEARNY - NEW.JS (FINAL COMPLETE VERSION)
    Handles: Translator, Calculator, Converter, Quiz, OCR
+   Works on: Local & GitHub Pages
    ============================================================ */
 
 const NEW = {
@@ -25,14 +26,15 @@ const NEW = {
             const charCount = document.getElementById('char-count');
             if (src) {
                 src.addEventListener('input', () => {
-                    charCount.textContent = `${src.value.length} / 1000`;
+                    if (charCount) charCount.textContent = `${src.value.length} / 1000`;
                 });
             }
 
             document.getElementById('translate-btn')?.addEventListener('click', () => this.translate());
             document.getElementById('swap-langs')?.addEventListener('click', () => this.swapLanguages());
             document.getElementById('clear-source')?.addEventListener('click', () => {
-                document.getElementById('source-text').value = '';
+                const srcEl = document.getElementById('source-text');
+                if (srcEl) srcEl.value = '';
                 if (charCount) charCount.textContent = '0 / 1000';
             });
             document.getElementById('paste-source')?.addEventListener('click', () => this.pasteText());
@@ -47,13 +49,14 @@ const NEW = {
         },
 
         async translate() {
-            const text = document.getElementById('source-text').value.trim();            const resultEl = document.getElementById('result-text');
+            const text = document.getElementById('source-text')?.value.trim();
+            const resultEl = document.getElementById('result-text');
             if (!text) {
-                APP.showToast('Please enter text to translate');
+                if (typeof APP !== 'undefined') APP.showToast('Please enter text to translate');
                 return;
             }
 
-            resultEl.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Translating...';
+            if (resultEl) resultEl.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Translating...';
 
             try {
                 const langPair = `${this.sourceLang}|${this.targetLang}`;
@@ -63,7 +66,7 @@ const NEW = {
 
                 if (data.responseStatus === 200 && data.responseData) {
                     const translated = data.responseData.translatedText;
-                    resultEl.textContent = translated;
+                    if (resultEl) resultEl.textContent = translated;
                     this.lastTranslation = {
                         source: text,
                         result: translated,
@@ -72,46 +75,54 @@ const NEW = {
                         time: new Date().toISOString()
                     };
                 } else {
-                    resultEl.textContent = 'Translation failed. Try again.';
+                    if (resultEl) resultEl.textContent = 'Translation failed. Try again.';
                 }
             } catch (err) {
-                resultEl.textContent = 'Network error. Check connection.';
+                if (resultEl) resultEl.textContent = 'Network error. Check connection.';
                 console.error(err);
             }
         },
 
         swapLanguages() {
             [this.sourceLang, this.targetLang] = [this.targetLang, this.sourceLang];
-            document.getElementById('source-lang-label').textContent = this.sourceLang === 'en' ? 'English' : 'සිංහල';
-            document.getElementById('target-lang-label').textContent = this.targetLang === 'en' ? 'English' : 'සිංහල';
+            const srcLabel = document.getElementById('source-lang-label');
+            const tgtLabel = document.getElementById('target-lang-label');
+            if (srcLabel) srcLabel.textContent = this.sourceLang === 'en' ? 'English' : 'සිංහල';
+            if (tgtLabel) tgtLabel.textContent = this.targetLang === 'en' ? 'English' : 'සිංහල';
 
             const src = document.getElementById('source-text');
             const result = document.getElementById('result-text');
-            const resultText = result.textContent;
+            const resultText = result?.textContent;
             if (resultText && !resultText.includes('Translation will appear') && !resultText.includes('Translating')) {
-                src.value = resultText;
-                document.getElementById('char-count').textContent = `${resultText.length} / 1000`;
+                if (src) src.value = resultText;
+                const charCount = document.getElementById('char-count');
+                if (charCount) charCount.textContent = `${resultText.length} / 1000`;
             }
-            APP.showToast('Languages swapped');
+            if (typeof APP !== 'undefined') APP.showToast('Languages swapped');
         },
 
         async pasteText() {
-            try {                const text = await navigator.clipboard.readText();
-                document.getElementById('source-text').value = text;
-                document.getElementById('char-count').textContent = `${text.length} / 1000`;
+            try {
+                const text = await navigator.clipboard.readText();
+                const src = document.getElementById('source-text');
+                if (src) src.value = text;
+                const charCount = document.getElementById('char-count');
+                if (charCount) charCount.textContent = `${text.length} / 1000`;
             } catch {
-                APP.showToast('Paste permission denied');
+                if (typeof APP !== 'undefined') APP.showToast('Paste permission denied');
             }
         },
 
         copyResult() {
-            const text = document.getElementById('result-text').textContent;
+            const text = document.getElementById('result-text')?.textContent;
             if (!text || text.includes('Translation will appear')) return;
-            navigator.clipboard.writeText(text).then(() => APP.showToast('Copied!'));
+            navigator.clipboard.writeText(text).then(() => {
+                if (typeof APP !== 'undefined') APP.showToast('Copied!');
+            });
         },
 
         speakResult() {
-            const text = document.getElementById('result-text').textContent;
+            const text = document.getElementById('result-text')?.textContent;
             if (!text || text.includes('Translation will appear')) return;
             if ('speechSynthesis' in window) {
                 const utter = new SpeechSynthesisUtterance(text);
@@ -119,20 +130,20 @@ const NEW = {
                 utter.rate = 0.9;
                 speechSynthesis.speak(utter);
             } else {
-                APP.showToast('Speech not supported');
+                if (typeof APP !== 'undefined') APP.showToast('Speech not supported');
             }
         },
 
         saveTranslation() {
             if (!this.lastTranslation) {
-                APP.showToast('Nothing to save');
+                if (typeof APP !== 'undefined') APP.showToast('Nothing to save');
                 return;
             }
             this.history.unshift(this.lastTranslation);
             if (this.history.length > 50) this.history.pop();
             this.saveHistory();
             this.renderHistory();
-            APP.showToast('Saved to history ✓');
+            if (typeof APP !== 'undefined') APP.showToast('Saved to history ✓');
         },
 
         clearHistory() {
@@ -140,12 +151,13 @@ const NEW = {
             this.history = [];
             this.saveHistory();
             this.renderHistory();
-            APP.showToast('History cleared');
+            if (typeof APP !== 'undefined') APP.showToast('History cleared');
         },
 
         saveHistory() {
             localStorage.setItem('learny_translator_history', JSON.stringify(this.history));
         },
+
         loadHistory() {
             const saved = localStorage.getItem('learny_translator_history');
             if (saved) this.history = JSON.parse(saved);
@@ -184,7 +196,9 @@ const NEW = {
         },
 
         copyItem(i) {
-            navigator.clipboard.writeText(this.history[i].result).then(() => APP.showToast('Copied!'));
+            navigator.clipboard.writeText(this.history[i].result).then(() => {
+                if (typeof APP !== 'undefined') APP.showToast('Copied!');
+            });
         },
 
         deleteItem(i) {
@@ -194,7 +208,8 @@ const NEW = {
         },
 
         escapeHtml(str) {
-            const div = document.createElement('div');            div.textContent = str;
+            const div = document.createElement('div');
+            div.textContent = str;
             return div.innerHTML;
         }
     },
@@ -243,7 +258,8 @@ const NEW = {
             { label: '6', action: '6' },
             { label: '−', action: '-', class: 'op' },
             { label: '1', action: '1' },
-            { label: '2', action: '2' },            { label: '3', action: '3' },
+            { label: '2', action: '2' },
+            { label: '3', action: '3' },
             { label: '+', action: '+', class: 'op' },
             { label: '±', action: 'negate', class: 'func' },
             { label: '0', action: '0' },
@@ -292,7 +308,8 @@ const NEW = {
         bindEvents() {
             document.getElementById('calc-mode-toggle')?.addEventListener('click', () => {
                 this.isScientific = !this.isScientific;
-                const btn = document.getElementById('calc-mode-toggle');                btn.innerHTML = this.isScientific ? '<i class="fa fa-flask"></i> Scientific' : '<i class="fa fa-th"></i> Basic';
+                const btn = document.getElementById('calc-mode-toggle');
+                if (btn) btn.innerHTML = this.isScientific ? '<i class="fa fa-flask"></i> Scientific' : '<i class="fa fa-th"></i> Basic';
                 this.renderGrid();
             });
 
@@ -301,7 +318,7 @@ const NEW = {
                     this.history = [];
                     this.saveHistory();
                     this.renderHistory();
-                    APP.showToast('History cleared');
+                    if (typeof APP !== 'undefined') APP.showToast('History cleared');
                 }
             });
 
@@ -341,7 +358,8 @@ const NEW = {
                     if (exprEl) exprEl.textContent = this.expression;
                     return;
                 }
-                if (action === '.' && this.expression.split(/[\+\-\*\/\(\)]/).pop().includes('.')) return;                this.expression += action;
+                if (action === '.' && this.expression.split(/[\+\-\*\/\(\)]/).pop().includes('.')) return;
+                this.expression += action;
             }
             else if (['+', '-', '*', '/'].includes(action)) {
                 if (this.expression === '' && action !== '-') return;
@@ -390,7 +408,8 @@ const NEW = {
             else if (action === 'fact') {
                 if (!this.expression) return;
                 try {
-                    const val = this.evaluate(this.expression);                    this.expression = String(this.factorial(val));
+                    const val = this.evaluate(this.expression);
+                    this.expression = String(this.factorial(val));
                 } catch { }
             }
             else if (action === 'ans') {
@@ -428,6 +447,7 @@ const NEW = {
         evaluate(expr) {
             if (!expr || !expr.trim()) throw new Error('Empty expression');
 
+            // Auto-close unclosed parentheses
             let openCount = (expr.match(/\(/g) || []).length;
             let closeCount = (expr.match(/\)/g) || []).length;
             while (closeCount < openCount) {
@@ -435,18 +455,22 @@ const NEW = {
                 closeCount++;
             }
 
+            // Replace functions with degree-based helpers
             let safe = expr
                 .replace(/sin\(/g, '_sin(')
                 .replace(/cos\(/g, '_cos(')
                 .replace(/tan\(/g, '_tan(')
-                .replace(/sqrt\(/g, 'Math.sqrt(')                .replace(/log\(/g, 'Math.log10(')
+                .replace(/sqrt\(/g, 'Math.sqrt(')
+                .replace(/log\(/g, 'Math.log10(')
                 .replace(/ln\(/g, 'Math.log(')
                 .replace(/π/g, 'Math.PI');
 
+            // Security check - allow all letters (a-zA-Z)
             if (!/^[\d\+\-\*\/\(\)\.\,\s_a-zA-Z]*$/.test(safe)) {
                 throw new Error('Invalid characters');
             }
 
+            // Degree-based trig functions
             const _sin = (d) => Math.sin(d * Math.PI / 180);
             const _cos = (d) => Math.cos(d * Math.PI / 180);
             const _tan = (d) => Math.tan(d * Math.PI / 180);
@@ -485,10 +509,11 @@ const NEW = {
                 this.result = 'Error';
                 const resEl = document.getElementById('calc-result');
                 if (resEl) resEl.textContent = 'Error';
-                APP.showToast('Invalid expression');
+                if (typeof APP !== 'undefined') APP.showToast('Invalid expression');
                 setTimeout(() => {
                     this.expression = '';
-                    this.result = '0';                    this.updateDisplay();
+                    this.result = '0';
+                    this.updateDisplay();
                 }, 1200);
             }
         },
@@ -537,7 +562,8 @@ const NEW = {
 
         escapeHtml(str) {
             const div = document.createElement('div');
-            div.textContent = str;            return div.innerHTML;
+            div.textContent = str;
+            return div.innerHTML;
         }
     },
 
@@ -586,7 +612,8 @@ const NEW = {
                 defaultFrom: 'ppm',
                 defaultTo: 'mg/dm3'
             },
-            area: {                name: 'Area',
+            area: {
+                name: 'Area',
                 units: {
                     'mm2': { name: 'Square mm (mm²)', factor: 1e-6 },
                     'cm2': { name: 'Square cm (cm²)', factor: 1e-4 },
@@ -635,31 +662,34 @@ const NEW = {
             this.currentCategory = cat;
             const data = this.categories[cat];
             const fromSel = document.getElementById('conv-from-unit');
-            const toSel = document.getElementById('conv-to-unit');            fromSel.innerHTML = Object.entries(data.units).map(([k, v]) =>
+            const toSel = document.getElementById('conv-to-unit');
+            if (fromSel) fromSel.innerHTML = Object.entries(data.units).map(([k, v]) =>
                 `<option value="${k}">${v.name}</option>`).join('');
-            toSel.innerHTML = fromSel.innerHTML;
-            fromSel.value = data.defaultFrom;
-            toSel.value = data.defaultTo;
+            if (toSel) toSel.innerHTML = fromSel.innerHTML;
+            if (fromSel) fromSel.value = data.defaultFrom;
+            if (toSel) toSel.value = data.defaultTo;
             this.convert();
         },
 
         swapUnits() {
             const from = document.getElementById('conv-from-unit');
             const to = document.getElementById('conv-to-unit');
-            [from.value, to.value] = [to.value, from.value];
-            this.convert();
+            if (from && to) {
+                [from.value, to.value] = [to.value, from.value];
+                this.convert();
+            }
         },
 
         convert() {
             const data = this.categories[this.currentCategory];
-            const val = parseFloat(document.getElementById('conv-from-value').value);
-            const fromUnit = document.getElementById('conv-from-unit').value;
-            const toUnit = document.getElementById('conv-to-unit').value;
+            const val = parseFloat(document.getElementById('conv-from-value')?.value);
+            const fromUnit = document.getElementById('conv-from-unit')?.value;
+            const toUnit = document.getElementById('conv-to-unit')?.value;
             const resultEl = document.getElementById('conv-to-value');
             const formulaEl = document.getElementById('conv-formula-text');
 
             if (isNaN(val)) {
-                resultEl.value = '';
+                if (resultEl) resultEl.value = '';
                 return;
             }
 
@@ -674,19 +704,20 @@ const NEW = {
             } else {
                 formatted = parseFloat(result.toPrecision(10)).toString();
             }
-            resultEl.value = formatted;
+            if (resultEl) resultEl.value = formatted;
 
             const ratio = fromFactor / toFactor;
-            formulaEl.textContent = `1 ${fromUnit} = ${ratio} ${toUnit}`;
+            if (formulaEl) formulaEl.textContent = `1 ${fromUnit} = ${ratio} ${toUnit}`;
 
             this.renderTable(val, fromUnit);
         },
 
         renderTable(val, fromUnit) {
             const data = this.categories[this.currentCategory];
-            const tbody = document.getElementById('conv-table-body');            const unitHeader = document.getElementById('conv-table-unit');
+            const tbody = document.getElementById('conv-table-body');
+            const unitHeader = document.getElementById('conv-table-unit');
             if (!tbody) return;
-            unitHeader.textContent = data.name + ' Conversions';
+            if (unitHeader) unitHeader.textContent = data.name + ' Conversions';
 
             const values = [0.1, 1, 5, 10, 25, 50, 100, 500, 1000];
             tbody.innerHTML = values.map(v => {
@@ -729,16 +760,19 @@ const NEW = {
             const btn = document.getElementById('start-quiz-btn');
 
             if (this.isPremium) {
-                locked?.classList.add('hidden');
-                btn?.classList.remove('hidden');
+                if (locked) locked.classList.add('hidden');
+                if (btn) btn.classList.remove('hidden');
             } else {
-                locked?.classList.remove('hidden');
-                active?.classList.add('hidden');                btn?.addEventListener('click', (e) => {
-                    if (!this.isPremium) {
-                        e.preventDefault();
-                        location.href = 'premium.html';
-                    }
-                }, { once: false });
+                if (locked) locked.classList.remove('hidden');
+                if (active) active.classList.add('hidden');
+                if (btn) {
+                    btn.addEventListener('click', (e) => {
+                        if (!this.isPremium) {
+                            e.preventDefault();
+                            location.href = 'premium.html';
+                        }
+                    });
+                }
             }
         },
 
@@ -782,7 +816,8 @@ const NEW = {
             return questions;
         },
 
-        startQuiz() {            if (!this.isPremium) {
+        startQuiz() {
+            if (!this.isPremium) {
                 location.href = 'premium.html';
                 return;
             }
@@ -805,32 +840,42 @@ const NEW = {
                 const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
                 const m = String(Math.floor(elapsed / 60)).padStart(2, '0');
                 const s = String(elapsed % 60).padStart(2, '0');
-                document.getElementById('quiz-timer').textContent = `${m}:${s}`;
+                const timerEl = document.getElementById('quiz-timer');
+                if (timerEl) timerEl.textContent = `${m}:${s}`;
             }, 1000);
         },
 
         renderQuestion() {
             const q = this.questions[this.currentQ];
-            document.getElementById('quiz-question').textContent = q.question;
-            document.getElementById('quiz-current').textContent = this.currentQ + 1;
-            document.getElementById('quiz-score').textContent = this.score;
-            document.getElementById('quiz-progress-bar').style.width = `${((this.currentQ) / 10) * 100}%`;
+            const qEl = document.getElementById('quiz-question');
+            const currentEl = document.getElementById('quiz-current');
+            const scoreEl = document.getElementById('quiz-score');
+            const progressEl = document.getElementById('quiz-progress-bar');
+
+            if (qEl) qEl.textContent = q.question;
+            if (currentEl) currentEl.textContent = this.currentQ + 1;
+            if (scoreEl) scoreEl.textContent = this.score;
+            if (progressEl) progressEl.style.width = `${((this.currentQ) / 10) * 100}%`;
 
             const opts = document.getElementById('quiz-options');
-            opts.innerHTML = q.options.map((o, i) => `
-                <button class="quiz-option" data-index="${i}" data-value="${o}">
-                    <span class="quiz-option-letter">${String.fromCharCode(65 + i)}</span>
-                    <span class="quiz-option-text">${o}</span>
-                </button>
-            `).join('');
+            if (opts) {
+                opts.innerHTML = q.options.map((o, i) => `
+                    <button class="quiz-option" data-index="${i}" data-value="${o}">
+                        <span class="quiz-option-letter">${String.fromCharCode(65 + i)}</span>
+                        <span class="quiz-option-text">${o}</span>
+                    </button>
+                `).join('');
 
-            opts.querySelectorAll('.quiz-option').forEach(btn => {
-                btn.addEventListener('click', () => this.selectAnswer(btn));
-            });
+                opts.querySelectorAll('.quiz-option').forEach(btn => {
+                    btn.addEventListener('click', () => this.selectAnswer(btn));
+                });
+            }
 
-            document.getElementById('quiz-next').disabled = true;
+            const nextBtn = document.getElementById('quiz-next');
+            if (nextBtn) nextBtn.disabled = true;
             this.selectedAnswer = null;
         },
+
         selectAnswer(btn) {
             if (this.selectedAnswer) return;
             this.selectedAnswer = btn;
@@ -846,7 +891,8 @@ const NEW = {
             });
 
             if (isCorrect) this.score++;
-            document.getElementById('quiz-next').disabled = false;
+            const nextBtn = document.getElementById('quiz-next');
+            if (nextBtn) nextBtn.disabled = false;
         },
 
         nextQuestion() {
@@ -871,19 +917,27 @@ const NEW = {
             document.getElementById('quiz-active')?.classList.add('hidden');
             document.getElementById('quiz-result')?.classList.remove('hidden');
 
-            document.getElementById('result-score').textContent = `${this.score}/10`;
-            document.getElementById('result-percent').textContent = `${this.score * 10}%`;
-            document.getElementById('result-time').textContent = `${m}:${s}`;
+            const scoreEl = document.getElementById('result-score');
+            const percentEl = document.getElementById('result-percent');
+            const timeEl = document.getElementById('result-time');
+
+            if (scoreEl) scoreEl.textContent = `${this.score}/10`;
+            if (percentEl) percentEl.textContent = `${this.score * 10}%`;
+            if (timeEl) timeEl.textContent = `${m}:${s}`;
 
             let icon = '🏆', title = 'Excellent!';
             if (this.score < 5) { icon = '📚'; title = 'Keep Practicing!'; }
             else if (this.score < 8) { icon = '⭐'; title = 'Good Job!'; }
-            document.getElementById('quiz-result-icon').textContent = icon;
-            document.getElementById('quiz-result-title').textContent = title;
+
+            const iconEl = document.getElementById('quiz-result-icon');
+            const titleEl = document.getElementById('quiz-result-title');
+            if (iconEl) iconEl.textContent = icon;
+            if (titleEl) titleEl.textContent = title;
+
             const best = parseInt(localStorage.getItem('learny_quiz_best') || '0');
             if (this.score > best) {
                 localStorage.setItem('learny_quiz_best', this.score);
-                APP.showToast('🏆 New best score!');
+                if (typeof APP !== 'undefined') APP.showToast('🏆 New best score!');
             }
         }
     },
@@ -926,46 +980,52 @@ const NEW = {
                 });
             }
 
-            fileInput?.addEventListener('change', (e) => {
-                if (e.target.files.length) this.handleFile(e.target.files[0]);
-            });
-            removeBtn?.addEventListener('click', () => {
-                this.resetOCR();
-            });
+            if (fileInput) {
+                fileInput.addEventListener('change', (e) => {
+                    if (e.target.files.length) this.handleFile(e.target.files[0]);
+                });
+            }
 
-            extractBtn?.addEventListener('click', () => {
-                this.extractText();
-            });
+            if (removeBtn) removeBtn.addEventListener('click', () => this.resetOCR());
+            if (extractBtn) extractBtn.addEventListener('click', () => this.extractText());
 
-            copyBtn?.addEventListener('click', () => {
-                const text = document.getElementById('ocr-extracted-text')?.value || '';
-                if (text) {
-                    navigator.clipboard.writeText(text).then(() => {
-                        APP.showToast('Text copied to clipboard!');
-                    });
-                }
-            });
-
-            useTranslatorBtn?.addEventListener('click', () => {
-                const text = document.getElementById('ocr-extracted-text')?.value || '';
-                if (text) {
-                    const sourceText = document.getElementById('source-text');
-                    if (sourceText) {
-                        sourceText.value = text;
-                        document.getElementById('char-count').textContent = `${text.length} / 1000`;
-                        document.querySelector('.translator-layout')?.scrollIntoView({ behavior: 'smooth' });
-                        APP.showToast('Text added to translator!');
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    const text = document.getElementById('ocr-extracted-text')?.value || '';
+                    if (text) {
+                        navigator.clipboard.writeText(text).then(() => {
+                            if (typeof APP !== 'undefined') APP.showToast('Text copied to clipboard!');
+                        });
                     }
-                }
-            });
+                });
+            }
 
-            clearBtn?.addEventListener('click', () => {
-                const textarea = document.getElementById('ocr-extracted-text');
-                if (textarea) {
-                    textarea.value = '';
-                    document.getElementById('ocr-char-count').textContent = '0 characters';
-                }
-            });
+            if (useTranslatorBtn) {
+                useTranslatorBtn.addEventListener('click', () => {
+                    const text = document.getElementById('ocr-extracted-text')?.value || '';
+                    if (text) {
+                        const sourceText = document.getElementById('source-text');
+                        if (sourceText) {
+                            sourceText.value = text;
+                            const charCount = document.getElementById('char-count');
+                            if (charCount) charCount.textContent = `${text.length} / 1000`;
+                            document.querySelector('.translator-layout')?.scrollIntoView({ behavior: 'smooth' });
+                            if (typeof APP !== 'undefined') APP.showToast('Text added to translator!');
+                        }
+                    }
+                });
+            }
+
+            if (clearBtn) {
+                clearBtn.addEventListener('click', () => {
+                    const textarea = document.getElementById('ocr-extracted-text');
+                    if (textarea) {
+                        textarea.value = '';
+                        const charCount = document.getElementById('ocr-char-count');
+                        if (charCount) charCount.textContent = '0 characters';
+                    }
+                });
+            }
         },
 
         handleFile(file) {
@@ -973,12 +1033,13 @@ const NEW = {
             const isImage = file.type.startsWith('image/');
 
             if (!isPdf && !isImage) {
-                APP.showToast('Please upload an image or PDF file');
+                if (typeof APP !== 'undefined') APP.showToast('Please upload an image or PDF file');
                 return;
             }
 
             const maxSize = isPdf ? 10 * 1024 * 1024 : 5 * 1024 * 1024;
-            if (file.size > maxSize) {                APP.showToast(`${isPdf ? 'PDF' : 'Image'} size must be less than ${maxSize / (1024*1024)}MB`);
+            if (file.size > maxSize) {
+                if (typeof APP !== 'undefined') APP.showToast(`${isPdf ? 'PDF' : 'Image'} size must be less than ${maxSize / (1024*1024)}MB`);
                 return;
             }
 
@@ -1027,7 +1088,8 @@ const NEW = {
                 pdfInfo = document.createElement('div');
                 pdfInfo.id = 'ocr-pdf-info';
                 pdfInfo.className = 'ocr-pdf-info';
-                previewSection?.appendChild(pdfInfo);            }
+                previewSection?.appendChild(pdfInfo);
+            }
             
             pdfInfo.innerHTML = `
                 <div class="pdf-preview-icon">
@@ -1076,7 +1138,8 @@ const NEW = {
 
         async extractFromImage() {
             const lang = document.getElementById('ocr-lang')?.value || 'eng';
-            const progressBar = document.getElementById('ocr-progress-bar');            const progressText = document.getElementById('ocr-progress-text');
+            const progressBar = document.getElementById('ocr-progress-bar');
+            const progressText = document.getElementById('ocr-progress-text');
             const progressSection = document.getElementById('ocr-progress');
             const resultSection = document.getElementById('ocr-result');
             const extractedText = document.getElementById('ocr-extracted-text');
@@ -1084,7 +1147,7 @@ const NEW = {
             const extractBtn = document.getElementById('ocr-extract-btn');
 
             if (!this.currentImage) {
-                APP.showToast('Please select an image first');
+                if (typeof APP !== 'undefined') APP.showToast('Please select an image first');
                 return;
             }
 
@@ -1115,17 +1178,18 @@ const NEW = {
                 if (charCount) charCount.textContent = `${text.length} characters`;
                 if (resultSection) resultSection.classList.remove('hidden');
                 
-                APP.showToast('Text extracted successfully!');
+                if (typeof APP !== 'undefined') APP.showToast('Text extracted successfully!');
 
             } catch (error) {
                 console.error('OCR Error:', error);
-                APP.showToast('Failed to extract text. Try again.');
+                if (typeof APP !== 'undefined') APP.showToast('Failed to extract text. Try again.');
             } finally {
                 if (extractBtn) extractBtn.disabled = false;
                 setTimeout(() => {
                     if (progressSection) progressSection.classList.add('hidden');
                     if (progressBar) progressBar.style.width = '0%';
-                }, 1000);            }
+                }, 1000);
+            }
         },
 
         async extractFromPdf() {
@@ -1139,7 +1203,7 @@ const NEW = {
             const extractBtn = document.getElementById('ocr-extract-btn');
 
             if (!this.currentPdf) {
-                APP.showToast('Please select a PDF first');
+                if (typeof APP !== 'undefined') APP.showToast('Please select a PDF first');
                 return;
             }
 
@@ -1174,7 +1238,8 @@ const NEW = {
                     const canvasBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
 
                     const result = await Tesseract.recognize(
-                        canvasBlob,                        lang,
+                        canvasBlob,
+                        lang,
                         {
                             logger: (m) => {
                                 if (m.status === 'recognizing text') {
@@ -1193,11 +1258,11 @@ const NEW = {
                 if (charCount) charCount.textContent = `${allText.length} characters`;
                 if (resultSection) resultSection.classList.remove('hidden');
                 
-                APP.showToast(`Extracted text from ${totalPages} page${totalPages > 1 ? 's' : ''}!`);
+                if (typeof APP !== 'undefined') APP.showToast(`Extracted text from ${totalPages} page${totalPages > 1 ? 's' : ''}!`);
 
             } catch (error) {
                 console.error('PDF OCR Error:', error);
-                APP.showToast('Failed to extract text from PDF. Try again.');
+                if (typeof APP !== 'undefined') APP.showToast('Failed to extract text from PDF. Try again.');
             } finally {
                 if (extractBtn) extractBtn.disabled = false;
                 setTimeout(() => {
@@ -1223,7 +1288,8 @@ const NEW = {
             if (extractedText) extractedText.value = '';
             if (pdfInfo) pdfInfo.classList.add('hidden');
             
-            document.getElementById('ocr-progress')?.classList.add('hidden');            document.getElementById('ocr-result')?.classList.add('hidden');
+            document.getElementById('ocr-progress')?.classList.add('hidden');
+            document.getElementById('ocr-result')?.classList.add('hidden');
         }
     },
 
