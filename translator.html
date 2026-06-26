@@ -71,6 +71,10 @@
             <button class="btn btn-secondary btn-sm" id="trans-paste"><i class="fa fa-paste"></i> Paste</button>
             <button class="btn btn-secondary btn-sm" id="trans-speak"><i class="fa fa-volume-up"></i> Speak</button>
           </div>
+          <!-- ✅ Translate button moved here (below first language input) -->
+          <button class="btn btn-primary" id="trans-translate" style="width:100%;justify-content:center;margin-top:8px;">
+            <i class="fa fa-language"></i> Translate
+          </button>
         </div>
 
         <button class="translator-arrow" id="trans-swap" title="Swap languages"><i class="fa fa-exchange-alt"></i></button>
@@ -87,12 +91,9 @@
           </div>
         </div>
       </div>
-
-      <div style="text-align:center;margin-top:20px;">
-        <button class="btn btn-primary btn-lg" id="trans-translate"><i class="fa fa-language"></i> Translate</button>
-      </div>
     </div>
 
+    <!-- File Upload Section -->
     <div class="card mb-3">
       <div class="card-header">
         <div class="card-title"><i class="fa fa-file-upload"></i> Extract Text from File</div>
@@ -115,8 +116,28 @@
         <p style="margin-bottom:10px;"><i class="fa fa-spinner fa-spin"></i> <span id="file-progress-text">Processing...</span></p>
         <div class="progress-bar-container"><div class="progress-bar-fill" id="file-progress-bar" style="width:0%"></div></div>
       </div>
+
+      <!-- ✅ NEW: Extracted text display section -->
+      <div id="extracted-section" style="display:none;margin-top:20px;animation:fadeIn 0.3s ease;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i class="fa fa-check-circle" style="color:var(--success);font-size:18px;"></i>
+            <strong style="color:var(--text-main);">Extracted Text</strong>
+            <span id="extracted-source" style="font-size:11px;color:var(--text-muted);background:var(--bg-card-hover);padding:2px 8px;border-radius:10px;"></span>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-sm btn-secondary" id="extracted-copy"><i class="fa fa-copy"></i> Copy</button>
+            <button class="btn btn-sm btn-danger" id="extracted-clear"><i class="fa fa-times"></i></button>
+          </div>
+        </div>
+        <div id="extracted-text" style="background:var(--bg-dark);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;max-height:200px;overflow-y:auto;color:var(--text-main);font-size:14px;line-height:1.6;white-space:pre-wrap;word-wrap:break-word;"></div>
+        <button class="btn btn-primary" id="extracted-connect" style="width:100%;justify-content:center;margin-top:12px;">
+          <i class="fa fa-link"></i> Connect to Translator
+        </button>
+      </div>
     </div>
 
+    <!-- History -->
     <div class="card">
       <div class="card-header">
         <div class="card-title"><i class="fa fa-history"></i> Translation History</div>
@@ -138,6 +159,8 @@
   const T = {
     history: [],
     lastTranslation: null,
+    extractedText: '',
+    extractedSource: '',
     init() {
       this.loadHistory();
       this.bindEvents();
@@ -207,12 +230,28 @@
         }
       });
 
+      // ✅ Extracted text actions
+      btn('extracted-connect', () => this.connectExtracted());
+      btn('extracted-copy', () => {
+        if (this.extractedText) {
+          navigator.clipboard.writeText(this.extractedText).then(() => APP.showToast('Copied!'));
+        }
+      });
+      btn('extracted-clear', () => {
+        this.extractedText = '';
+        this.extractedSource = '';
+        const sec = document.getElementById('extracted-section');
+        if (sec) sec.style.display = 'none';
+      });
+
+      // Image upload
       const imgZone = document.getElementById('img-upload-zone');
       const imgInput = document.getElementById('img-upload');
       if (imgZone && imgInput) {
         imgZone.addEventListener('click', () => imgInput.click());
         imgInput.addEventListener('change', (e) => { if (e.target.files[0]) this.handleImage(e.target.files[0]); });
       }
+      // PDF upload
       const pdfZone = document.getElementById('pdf-upload-zone');
       const pdfInput = document.getElementById('pdf-upload');
       if (pdfZone && pdfInput) {
@@ -307,19 +346,50 @@
     escapeHtml(s) {
       return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     },
+    // ✅ Show extracted text in the new section
+    showExtracted(text, source) {
+      this.extractedText = text;
+      this.extractedSource = source;
+      const sec = document.getElementById('extracted-section');
+      const textEl = document.getElementById('extracted-text');
+      const srcEl = document.getElementById('extracted-source');
+      if (sec) sec.style.display = 'block';
+      if (textEl) textEl.textContent = text;
+      if (srcEl) srcEl.textContent = source;
+      // Scroll to extracted section
+      if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    },
+    // ✅ Connect extracted text to translator input
+    connectExtracted() {
+      if (!this.extractedText) return;
+      const inp = document.getElementById('trans-input');
+      const cc = document.getElementById('char-count');
+      if (inp) {
+        inp.value = this.extractedText;
+        if (cc) cc.textContent = this.extractedText.length;
+        APP.showToast('Text connected to translator ✓');
+        // Scroll to translator
+        inp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        inp.focus();
+      }
+    },
     async handleImage(file) {
       if (!file) return;
       if (!window.Tesseract) return APP.showToast('OCR library still loading...');
       this.showProgress('Extracting text from image...');
       try {
         const result = await Tesseract.recognize(file, 'eng');
-        const text = result.data.text;
-        const inp = document.getElementById('trans-input');
-        const cc = document.getElementById('char-count');
-        if (inp) inp.value = text;
-        if (cc) cc.textContent = text.length;
-        APP.showToast('Text extracted! ✓');
-      } catch (e) { APP.showToast('OCR failed'); }
+        const text = result.data.text.trim();
+        if (!text) {
+          APP.showToast('No text found in image');
+          this.hideProgress();
+          return;
+        }
+        this.showExtracted(text, 'Image: ' + file.name);
+        APP.showToast('✅ Text extracted successfully!');
+      } catch (e) {
+        APP.showToast('OCR failed');
+      }
       this.hideProgress();
     },
     async handlePDF(file) {
@@ -337,12 +407,17 @@
           fullText += content.items.map(it => it.str).join(' ') + '\n';
           this.updateProgress((i / pdf.numPages) * 100);
         }
-        const inp = document.getElementById('trans-input');
-        const cc = document.getElementById('char-count');
-        if (inp) inp.value = fullText.trim();
-        if (cc) cc.textContent = fullText.length;
-        APP.showToast('PDF text extracted! ✓');
-      } catch (e) { APP.showToast('PDF extraction failed'); }
+        const text = fullText.trim();
+        if (!text) {
+          APP.showToast('No text found in PDF');
+          this.hideProgress();
+          return;
+        }
+        this.showExtracted(text, 'PDF: ' + file.name);
+        APP.showToast('✅ PDF text extracted successfully!');
+      } catch (e) {
+        APP.showToast('PDF extraction failed');
+      }
       this.hideProgress();
     },
     showProgress(msg) {
