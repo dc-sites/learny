@@ -69,9 +69,17 @@
             <select id="conv-to-unit" class="form-control"></select>
           </div>
         </div>
+
+        <!-- ✅ NEW: Convert button -->
+        <div style="text-align:center;margin:16px 0;">
+          <button class="btn btn-primary btn-lg" id="conv-convert" style="min-width:200px;">
+            <i class="fa fa-exchange-alt"></i> Convert
+          </button>
+        </div>
+
         <div class="converter-formula" id="conv-formula">
           <i class="fa fa-info-circle"></i>
-          <span id="conv-formula-text">Select units to see formula</span>
+          <span id="conv-formula-text">Click Convert to see formula</span>
         </div>
       </div>
     </div>
@@ -191,7 +199,7 @@
     currentCat: 'length',
     quiz: { questions: [], current: 0, score: 0, answered: false },
     init() {
-      this.renderTabs(); this.renderUnits(); this.bindEvents(); this.convert(); this.renderReference();
+      this.renderTabs(); this.renderUnits(); this.bindEvents(); this.renderReference();
     },
     renderTabs() {
       const tabs = document.getElementById('conv-tabs');
@@ -202,7 +210,12 @@
       ).join('');
       tabs.querySelectorAll('.conv-tab').forEach(t => {
         t.addEventListener('click', () => {
-          this.currentCat = t.dataset.cat; this.renderTabs(); this.renderUnits(); this.convert(); this.renderReference();
+          this.currentCat = t.dataset.cat; this.renderTabs(); this.renderUnits(); this.renderReference();
+          // Clear result when category changes
+          const resultEl = document.getElementById('conv-to-val');
+          const formulaEl = document.getElementById('conv-formula-text');
+          if (resultEl) resultEl.value = '';
+          if (formulaEl) formulaEl.textContent = 'Click Convert to see formula';
         });
       });
     },
@@ -217,18 +230,25 @@
       fromSel.value = keys[0]; toSel.value = keys.length > 1 ? keys[1] : keys[0];
     },
     bindEvents() {
+      // ✅ Only convert on button click (not on input change)
+      const convertBtn = document.getElementById('conv-convert');
+      if (convertBtn) convertBtn.addEventListener('click', () => this.convert());
+
+      // Allow Enter key to trigger convert
       const fromVal = document.getElementById('conv-from-val');
-      const fromUnit = document.getElementById('conv-from-unit');
-      const toUnit = document.getElementById('conv-to-unit');
+      if (fromVal) fromVal.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') this.convert();
+      });
+
       const swap = document.getElementById('conv-swap');
-      if (fromVal) fromVal.addEventListener('input', () => this.convert());
-      if (fromUnit) fromUnit.addEventListener('change', () => this.convert());
-      if (toUnit) toUnit.addEventListener('change', () => this.convert());
       if (swap) swap.addEventListener('click', () => {
         const f = document.getElementById('conv-from-unit');
         const t = document.getElementById('conv-to-unit');
-        const tmp = f.value; f.value = t.value; t.value = tmp; this.convert();
+        const tmp = f.value; f.value = t.value; t.value = tmp;
+        // Auto-convert on swap for better UX
+        this.convert();
       });
+
       const btn = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('click', fn); };
       btn('quiz-start', () => this.startQuiz());
       btn('quiz-start-main', () => this.startQuiz());
@@ -246,7 +266,11 @@
       if (!fromValEl || !fromUnitEl || !toUnitEl || !resultEl) return;
       const val = parseFloat(fromValEl.value);
       const from = fromUnitEl.value, to = toUnitEl.value;
-      if (isNaN(val)) { resultEl.value = ''; return; }
+      if (isNaN(val)) {
+        resultEl.value = '';
+        if (formulaEl) formulaEl.textContent = 'Please enter a valid number';
+        return;
+      }
       let result, formula;
       if (cat.special && this.currentCat === 'temperature') {
         const r = this.convertTemp(val, from, to); result = r.value; formula = r.formula;
@@ -254,7 +278,7 @@
         const fromFactor = cat.units[from].factor;
         const toFactor = cat.units[to].factor;
         result = (val * fromFactor) / toFactor;
-        formula = `1 ${from} = ${(fromFactor / toFactor).toPrecision(6)} ${to}`;
+        formula = `${val} ${from} = ${this.formatNumber(result)} ${to}  |  1 ${from} = ${(fromFactor / toFactor).toPrecision(6)} ${to}`;
       }
       resultEl.value = this.formatNumber(result);
       if (formulaEl) formulaEl.textContent = formula;
@@ -265,9 +289,9 @@
       else if (from === 'F') c = (val - 32) * 5/9;
       else c = val - 273.15;
       let r, f;
-      if (to === 'C') { r = c; f = from === 'F' ? `${val}°F → ${c.toFixed(2)}°C` : from === 'K' ? `${val}K → ${c.toFixed(2)}°C` : 'Same unit'; }
-      else if (to === 'F') { r = c * 9/5 + 32; f = `°C → (°C × 9/5) + 32`; }
-      else { r = c + 273.15; f = `°C → °C + 273.15`; }
+      if (to === 'C') { r = c; f = from === 'F' ? `${val}°F = ${c.toFixed(2)}°C  |  Formula: (°F − 32) × 5/9` : from === 'K' ? `${val}K = ${c.toFixed(2)}°C  |  Formula: K − 273.15` : 'Same unit'; }
+      else if (to === 'F') { r = c * 9/5 + 32; f = `${val}${from === 'C' ? '°C' : 'K'} = ${r.toFixed(2)}°F  |  Formula: (°C × 9/5) + 32`; }
+      else { r = c + 273.15; f = `${val}${from === 'C' ? '°C' : '°F'} = ${r.toFixed(2)}K  |  Formula: °C + 273.15`; }
       return { value: r, formula: f };
     },
     formatNumber(n) {
