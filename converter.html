@@ -56,21 +56,14 @@
       </div>
       <div class="converter-tabs" id="conv-tabs"></div>
       <div class="converter-body">
-        <!-- ✅ FIXED: Convert button positioned below first input section -->
-        <div class="converter-layout-new">
-          <div class="converter-from-col">
-            <div class="converter-input-group">
-              <label>From</label>
-              <input type="number" id="conv-from-val" class="form-control" placeholder="Enter value" value="1">
-              <select id="conv-from-unit" class="form-control"></select>
-            </div>
-            <button class="btn btn-primary" id="conv-convert" style="width:100%;justify-content:center;margin-top:10px;">
-              <i class="fa fa-exchange-alt"></i> Convert
-            </button>
+        <!-- ✅ Original From/To layout with swap button -->
+        <div class="converter-row">
+          <div class="converter-input-group">
+            <label>From</label>
+            <input type="number" id="conv-from-val" class="form-control" placeholder="Enter value" value="1">
+            <select id="conv-from-unit" class="form-control"></select>
           </div>
-
           <button class="converter-swap" id="conv-swap" title="Swap"><i class="fa fa-exchange-alt"></i></button>
-
           <div class="converter-input-group">
             <label>To</label>
             <input type="text" id="conv-to-val" class="form-control" readonly placeholder="Result">
@@ -78,7 +71,14 @@
           </div>
         </div>
 
-        <div class="converter-formula" id="conv-formula" style="margin-top:16px;">
+        <!-- ✅ Convert button below the row -->
+        <div style="text-align:center;margin:16px 0;">
+          <button class="btn btn-primary btn-lg" id="conv-convert" style="min-width:200px;">
+            <i class="fa fa-exchange-alt"></i> Convert
+          </button>
+        </div>
+
+        <div class="converter-formula" id="conv-formula">
           <i class="fa fa-info-circle"></i>
           <span id="conv-formula-text">Click Convert to see formula</span>
         </div>
