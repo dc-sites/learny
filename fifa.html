@@ -11,7 +11,7 @@
 </head>
 <body>
 <div class="app-container">
-  <!-- SIDEBAR (same as Learny) -->
+  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logo">L</div>
@@ -95,7 +95,7 @@
       </div>
     </section>
 
-    <!-- LIVE POLL -->
+    <!-- LIVE POLL (Only 2 Finalist Teams) -->
     <section class="fifa-section">
       <div class="section-header">
         <h3 class="section-title"><i class="fa fa-poll"></i> Live Fan Poll</h3>
@@ -110,7 +110,7 @@
       <div class="poll-footer">
         <div class="poll-stats">
           <span><i class="fa fa-users"></i> <strong id="totalVotes">0</strong> total votes</span>
-          <span><i class="fa fa-clock"></i> Updated live</span>
+          <span><i class="fa fa-clock"></i> Updated live via Firebase</span>
         </div>
         <button class="btn btn-secondary" id="resetVoteBtn"><i class="fa fa-redo"></i> Change Vote</button>
       </div>
@@ -148,42 +148,9 @@
       </div>
     </section>
 
-    <!-- PREDICT SCORE -->
+    <!-- KEY PLAYERS (Only from Finalist Teams) -->
     <section class="fifa-section">
-      <h3 class="section-title"><i class="fa fa-bullseye"></i> Predict The Final Score</h3>
-      <div class="predict-container">
-        <div class="predict-team">
-          <div class="predict-flag">🏳️</div>
-          <input type="text" id="teamA" placeholder="Team A" maxlength="20">
-          <div class="score-input">
-            <button class="score-btn" onclick="FIFA.adjustScore('a', -1)">−</button>
-            <span id="scoreA">0</span>
-            <button class="score-btn" onclick="FIFA.adjustScore('a', 1)">+</button>
-          </div>
-        </div>
-        <div class="predict-vs">VS</div>
-        <div class="predict-team">
-          <div class="predict-flag">🏳️</div>
-          <input type="text" id="teamB" placeholder="Team B" maxlength="20">
-          <div class="score-input">
-            <button class="score-btn" onclick="FIFA.adjustScore('b', -1)">−</button>
-            <span id="scoreB">0</span>
-            <button class="score-btn" onclick="FIFA.adjustScore('b', 1)">+</button>
-          </div>
-        </div>
-      </div>
-      <button class="btn btn-primary btn-lg predict-submit" onclick="FIFA.submitPrediction()">
-        <i class="fa fa-paper-plane"></i> Submit Prediction
-      </button>
-      <div class="predictions-list" id="predictionsList">
-        <h4><i class="fa fa-history"></i> Fan Predictions</h4>
-        <div id="predictionsContent"></div>
-      </div>
-    </section>
-
-    <!-- KEY PLAYERS -->
-    <section class="fifa-section">
-      <h3 class="section-title"><i class="fa fa-star"></i> Players To Watch</h3>
+      <h3 class="section-title"><i class="fa fa-star"></i> Final Match Stars</h3>
       <div class="players-grid" id="playersGrid">
         <!-- Populated by JS -->
       </div>
@@ -223,17 +190,17 @@
         <div class="chant-card">
           <div class="chant-emoji">🎵</div>
           <p class="chant-text">"Olé, Olé, Olé, Olé!"</p>
-          <button class="chant-play" onclick="FIFA.playChant('ole')"><i class="fa fa-play"></i></button>
+          <button class="chant-play" onclick="window.FIFA.playChant('ole')"><i class="fa fa-play"></i></button>
         </div>
         <div class="chant-card">
           <div class="chant-emoji">🥁</div>
           <p class="chant-text">"We Are The Champions!"</p>
-          <button class="chant-play" onclick="FIFA.playChant('champions')"><i class="fa fa-play"></i></button>
+          <button class="chant-play" onclick="window.FIFA.playChant('champions')"><i class="fa fa-play"></i></button>
         </div>
         <div class="chant-card">
           <div class="chant-emoji">📣</div>
           <p class="chant-text">"Vuvuzela Sound!"</p>
-          <button class="chant-play" onclick="FIFA.playChant('vuvuzela')"><i class="fa fa-play"></i></button>
+          <button class="chant-play" onclick="window.FIFA.playChant('vuvuzela')"><i class="fa fa-play"></i></button>
         </div>
       </div>
     </section>
@@ -242,10 +209,10 @@
     <section class="fifa-section">
       <h3 class="section-title"><i class="fa fa-share-alt"></i> Share Your Excitement</h3>
       <div class="share-buttons">
-        <button class="share-btn whatsapp" onclick="FIFA.share('whatsapp')"><i class="fa fa-whatsapp"></i> WhatsApp</button>
-        <button class="share-btn twitter" onclick="FIFA.share('twitter')"><i class="fa fa-twitter"></i> Twitter</button>
-        <button class="share-btn facebook" onclick="FIFA.share('facebook')"><i class="fa fa-facebook"></i> Facebook</button>
-        <button class="share-btn copy" onclick="FIFA.share('copy')"><i class="fa fa-copy"></i> Copy Link</button>
+        <button class="share-btn whatsapp" onclick="window.FIFA.share('whatsapp')"><i class="fa fa-whatsapp"></i> WhatsApp</button>
+        <button class="share-btn twitter" onclick="window.FIFA.share('twitter')"><i class="fa fa-twitter"></i> Twitter</button>
+        <button class="share-btn facebook" onclick="window.FIFA.share('facebook')"><i class="fa fa-facebook"></i> Facebook</button>
+        <button class="share-btn copy" onclick="window.FIFA.share('copy')"><i class="fa fa-copy"></i> Copy Link</button>
       </div>
     </section>
 
@@ -258,8 +225,8 @@
 
 <div class="notification" id="notification-toast"><i class="fa fa-check-circle"></i><span>Success!</span></div>
 <canvas id="confetti-canvas" class="confetti"></canvas>
-
-<script src="fifa.js"></script>
-  <script src="script.js"></script>
+<script src="script.js"></script>
+<!-- Load JS as a Module for Modern Firebase SDK -->
+<script type="module" src="fifa.js"></script>
 </body>
 </html>
