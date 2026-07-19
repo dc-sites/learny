@@ -1,5 +1,5 @@
 /* ========================================
-FIFA 2026 FINAL - FIRESTORE LIVE MODULE
+FIFA 2026 FINAL - FIRESTORE LIVE MODU
 ======================================== */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
