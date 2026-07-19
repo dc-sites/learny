@@ -11,7 +11,6 @@
 </head>
 <body>
 <div class="app-container">
-  
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logo">L</div>
@@ -40,17 +39,14 @@
 
   <div class="overlay"></div>
 
-  <!-- MAIN CONTENT -->
   <main class="main-content fifa-main">
     <div class="page-header">
-       <button class="hamburger"><i class="fa fa-bars"></i></button>
-      <h1 class="page-title"><i class="fa fa-trophy"></i> FIFA 2026 Final</h1>
+      <h1 class="page-title"><i class="fa fa-trophy"></i> FIFA World Cup 2026 Final</h1>
       <div class="header-actions">
-        <button class="theme-toggle"><i class="fa fa-moon"></i></button>
+        <button class="theme-toggle" id="fifa-theme-toggle"><i class="fa fa-moon"></i></button>
       </div>
     </div>
 
-    <!-- HERO SECTION -->
     <section class="fifa-hero">
       <div class="hero-bg"></div>
       <div class="hero-content">
@@ -62,85 +58,53 @@
           <div class="meta-item"><i class="fa fa-map-marker-alt"></i> MetLife Stadium, New Jersey</div>
           <div class="meta-item"><i class="fa fa-users"></i> 82,500 Fans</div>
         </div>
-        <div class="hero-countdown" id="heroCountdown">
+        <div class="hero-countdown">
           <div class="cd-box"><span id="cd-days">00</span><small>Days</small></div>
           <div class="cd-box"><span id="cd-hours">00</span><small>Hours</small></div>
           <div class="cd-box"><span id="cd-mins">00</span><small>Minutes</small></div>
           <div class="cd-box"><span id="cd-secs">00</span><small>Seconds</small></div>
         </div>
       </div>
-      <div class="hero-pitch">
-        <div class="pitch-ball"></div>
-      </div>
     </section>
 
-    <!-- HOST NATIONS -->
     <section class="fifa-section">
       <h3 class="section-title"><i class="fa fa-globe-americas"></i> Host Nations</h3>
       <div class="hosts-grid">
-        <div class="host-card usa">
-          <div class="host-flag">🇺🇸</div>
-          <h4>United States</h4>
-          <p>11 Cities • 11 Venues</p>
-        </div>
-        <div class="host-card canada">
-          <div class="host-flag">🇨🇦</div>
-          <h4>Canada</h4>
-          <p>2 Cities • 2 Venues</p>
-        </div>
-        <div class="host-card mexico">
-          <div class="host-flag">🇲🇽</div>
-          <h4>Mexico</h4>
-          <p>3 Cities • 3 Venues</p>
-        </div>
+        <div class="host-card usa"><div class="host-flag">🇺🇸</div><h4>United States</h4><p>11 Cities • 11 Venues</p></div>
+        <div class="host-card canada"><div class="host-flag">🇨🇦</div><h4>Canada</h4><p>2 Cities • 2 Venues</p></div>
+        <div class="host-card mexico"><div class="host-flag">🇲🇽</div><h4>Mexico</h4><p>3 Cities • 3 Venues</p></div>
       </div>
     </section>
 
-    <!-- LIVE POLL (Only 2 Finalist Teams) -->
     <section class="fifa-section">
       <div class="section-header">
         <h3 class="section-title"><i class="fa fa-poll"></i> Live Fan Poll</h3>
         <span class="live-indicator"><span class="live-dot"></span> LIVE</span>
       </div>
       <p class="poll-subtitle">Who will lift the trophy at MetLife Stadium?</p>
-      
-      <div class="poll-container" id="pollContainer">
-        <!-- Teams populated by JS -->
-      </div>
-      
+      <div class="poll-container" id="pollContainer"></div>
       <div class="poll-footer">
         <div class="poll-stats">
           <span><i class="fa fa-users"></i> <strong id="totalVotes">0</strong> total votes</span>
-          <span><i class="fa fa-clock"></i> Updated live via Firebase</span>
+          <span><i class="fa fa-clock"></i> Updated live</span>
         </div>
         <button class="btn btn-secondary" id="resetVoteBtn"><i class="fa fa-redo"></i> Change Vote</button>
       </div>
     </section>
 
-    <!-- STADIUM VIEW -->
     <section class="fifa-section">
       <h3 class="section-title"><i class="fa fa-building"></i> Stadium View - MetLife Stadium</h3>
-      <div class="stadium-view" id="stadiumView">
-        <div class="stadium-sky">
-          <div class="stadium-light left"></div>
-          <div class="stadium-light right"></div>
-        </div>
-        <div class="stadium-stands top"></div>
-        <div class="stadium-stands left"></div>
-        <div class="stadium-stands right"></div>
+      <div class="stadium-view">
+        <div class="stadium-sky"><div class="stadium-light left"></div><div class="stadium-light right"></div></div>
+        <div class="stadium-stands top"></div><div class="stadium-stands left"></div><div class="stadium-stands right"></div>
         <div class="stadium-pitch">
-          <div class="pitch-center-circle"></div>
-          <div class="pitch-center-line"></div>
-          <div class="pitch-box left"></div>
-          <div class="pitch-box right"></div>
-          <div class="pitch-goal left"></div>
-          <div class="pitch-goal right"></div>
+          <div class="pitch-center-circle"></div><div class="pitch-center-line"></div>
+          <div class="pitch-box left"></div><div class="pitch-box right"></div>
+          <div class="pitch-goal left"></div><div class="pitch-goal right"></div>
           <div class="pitch-ball-animated"></div>
         </div>
         <div class="stadium-stands bottom"></div>
-        <div class="stadium-crowd">
-          <div class="crowd-wave"></div>
-        </div>
+        <div class="stadium-crowd"><div class="crowd-wave"></div></div>
       </div>
       <div class="stadium-info">
         <div class="info-item"><i class="fa fa-chair"></i> <span>Capacity: <strong>82,500</strong></span></div>
@@ -149,71 +113,18 @@
       </div>
     </section>
 
-    <!-- KEY PLAYERS (Only from Finalist Teams) -->
     <section class="fifa-section">
       <h3 class="section-title"><i class="fa fa-star"></i> Final Match Stars</h3>
-      <div class="players-grid" id="playersGrid">
-        <!-- Populated by JS -->
-      </div>
+      <div class="players-grid" id="playersGrid"></div>
     </section>
 
-    <!-- MATCH FACTS -->
     <section class="fifa-section">
       <h3 class="section-title"><i class="fa fa-info-circle"></i> Final Match Facts</h3>
       <div class="facts-grid">
-        <div class="fact-card">
-          <div class="fact-icon"><i class="fa fa-futbol"></i></div>
-          <div class="fact-value">48</div>
-          <div class="fact-label">Teams (First Time!)</div>
-        </div>
-        <div class="fact-card">
-          <div class="fact-icon"><i class="fa fa-gamepad"></i></div>
-          <div class="fact-value">104</div>
-          <div class="fact-label">Total Matches</div>
-        </div>
-        <div class="fact-card">
-          <div class="fact-icon"><i class="fa fa-globe"></i></div>
-          <div class="fact-value">16</div>
-          <div class="fact-label">Host Cities</div>
-        </div>
-        <div class="fact-card">
-          <div class="fact-icon"><i class="fa fa-tv"></i></div>
-          <div class="fact-value">5B+</div>
-          <div class="fact-label">Expected Viewers</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAN CHANTS -->
-    <section class="fifa-section">
-      <h3 class="section-title"><i class="fa fa-volume-up"></i> Fan Chants</h3>
-      <div class="chants-container">
-        <div class="chant-card">
-          <div class="chant-emoji">🎵</div>
-          <p class="chant-text">"Olé, Olé, Olé, Olé!"</p>
-          <button class="chant-play" onclick="window.FIFA.playChant('ole')"><i class="fa fa-play"></i></button>
-        </div>
-        <div class="chant-card">
-          <div class="chant-emoji">🥁</div>
-          <p class="chant-text">"We Are The Champions!"</p>
-          <button class="chant-play" onclick="window.FIFA.playChant('champions')"><i class="fa fa-play"></i></button>
-        </div>
-        <div class="chant-card">
-          <div class="chant-emoji">📣</div>
-          <p class="chant-text">"Vuvuzela Sound!"</p>
-          <button class="chant-play" onclick="window.FIFA.playChant('vuvuzela')"><i class="fa fa-play"></i></button>
-        </div>
-      </div>
-    </section>
-
-    <!-- SHARE -->
-    <section class="fifa-section">
-      <h3 class="section-title"><i class="fa fa-share-alt"></i> Share Your Excitement</h3>
-      <div class="share-buttons">
-        <button class="share-btn whatsapp" onclick="window.FIFA.share('whatsapp')"><i class="fa fa-whatsapp"></i> WhatsApp</button>
-        <button class="share-btn twitter" onclick="window.FIFA.share('twitter')"><i class="fa fa-twitter"></i> Twitter</button>
-        <button class="share-btn facebook" onclick="window.FIFA.share('facebook')"><i class="fa fa-facebook"></i> Facebook</button>
-        <button class="share-btn copy" onclick="window.FIFA.share('copy')"><i class="fa fa-copy"></i> Copy Link</button>
+        <div class="fact-card"><div class="fact-icon"><i class="fa fa-futbol"></i></div><div class="fact-value">48</div><div class="fact-label">Teams (First Time!)</div></div>
+        <div class="fact-card"><div class="fact-icon"><i class="fa fa-gamepad"></i></div><div class="fact-value">104</div><div class="fact-label">Total Matches</div></div>
+        <div class="fact-card"><div class="fact-icon"><i class="fa fa-globe"></i></div><div class="fact-value">16</div><div class="fact-label">Host Cities</div></div>
+        <div class="fact-card"><div class="fact-icon"><i class="fa fa-tv"></i></div><div class="fact-value">5B+</div><div class="fact-label">Expected Viewers</div></div>
       </div>
     </section>
 
@@ -226,8 +137,10 @@
 
 <div class="notification" id="notification-toast"><i class="fa fa-check-circle"></i><span>Success!</span></div>
 <canvas id="confetti-canvas" class="confetti"></canvas>
+
+<!-- 1. Load main app logic FIRST so APP object exists globally -->
 <script src="script.js"></script>
-<!-- Load JS as a Module for Modern Firebase SDK -->
+<!-- 2. Load FIFA module SECOND -->
 <script type="module" src="fifa.js"></script>
 </body>
 </html>
