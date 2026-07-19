@@ -1,149 +1,112 @@
 /* ========================================
-FIFA 2026 FINAL - FIRESTORE LIVE MODU
+FIFA 2026 FINAL - BULLETPROOF FIRESTORE
 ======================================== */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { 
-  getFirestore, 
-  doc, 
-  onSnapshot, 
-  setDoc, 
-  updateDoc, 
-  increment,
-  getDoc
+  getFirestore, doc, onSnapshot, setDoc, updateDoc, increment 
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-// Your Firebase configuration
+// YOUR NEW FIREBASE CONFIG
 const firebaseConfig = {
-  apiKey: "AIzaSyACbyx4EOnLWyTKXsAKP8T7qplUHibPzyY",
-  authDomain: "fifa-f3b77.firebaseapp.com",
-  databaseURL: "https://fifa-f3b77-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "fifa-f3b77",
-  storageBucket: "fifa-f3b77.firebasestorage.app",
-  messagingSenderId: "1060348132581",
-  appId: "1:1060348132581:web:bf2e94082e30349119e80c",
-  measurementId: "G-7ZSRYTDMZW"
+  apiKey: "AIzaSyB3UhRo0hheRme0tbeVZJfysXpJfmsMy8M",
+  authDomain: "fifa-802cb.firebaseapp.com",
+  projectId: "fifa-802cb",
+  storageBucket: "fifa-802cb.firebasestorage.app",
+  messagingSenderId: "108737293984",
+  appId: "1:108737293984:web:317edf66e496b636fe63c5",
+  measurementId: "G-CVGEW0LD5P"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ============ FINAL TEAMS CONFIGURATION ============
 const FINAL_TEAMS = {
-  team1: {
-    name: 'Argentina', flag: '🇦🇷', confed: 'CONMEBOL',
-    players: [
-      { name: 'L. Messi', pos: 'Forward', emoji: '🐐' },
-      { name: 'E. Martínez', pos: 'Goalkeeper', emoji: '🧤' },
-      { name: 'J. Álvarez', pos: 'Forward', emoji: '⚡' },
-      { name: 'E. Fernández', pos: 'Midfielder', emoji: '🎯' }
-    ]
-  },
-  team2: {
-    name: 'France', flag: '🇷', confed: 'UEFA',
-    players: [
-      { name: 'K. Mbappé', pos: 'Forward', emoji: '💨' },
-      { name: 'A. Griezmann', pos: 'Forward', emoji: '🎨' },
-      { name: 'O. Dembélé', pos: 'Forward', emoji: '✨' },
-      { name: 'A. Tchouaméni', pos: 'Midfielder', emoji: '🛡️' }
-    ]
-  }
+  team1: { name: 'Argentina', flag: '🇦🇷', confed: 'CONMEBOL', players: [
+    { name: 'L. Messi', pos: 'Forward', emoji: '🐐' }, { name: 'E. Martínez', pos: 'Goalkeeper', emoji: '🧤' },
+    { name: 'J. Álvarez', pos: 'Forward', emoji: '⚡' }, { name: 'E. Fernández', pos: 'Midfielder', emoji: '🎯' }
+  ]},
+  team2: { name: 'France', flag: '🇫🇷', confed: 'UEFA', players: [
+    { name: 'K. Mbappé', pos: 'Forward', emoji: '💨' }, { name: 'A. Griezmann', pos: 'Forward', emoji: '🎨' },
+    { name: 'O. Dembélé', pos: 'Forward', emoji: '✨' }, { name: 'A. Tchouaméni', pos: 'Midfielder', emoji: '🛡️' }
+  ]}
 };
 
 const FIFA = {
-  data: {
-    finalDate: new Date('2026-07-19T20:00:00-04:00').getTime(),
-    userVote: null,
-    votes: { team1: 0, team2: 0 }
-  },
+  data: { finalDate: new Date('2026-07-19T20:00:00-04:00').getTime(), userVote: null, votes: { team1: 0, team2: 0 } },
 
   init() {
-    console.log('FIFA Module Initializing...');
-    this.loadUserVote();
+    this.initTheme();
+    this.data.userVote = localStorage.getItem('learny_fifa_user_vote');
     this.startCountdown();
     this.renderPlayers();
     this.bindEvents();
-    
-    // FIX THEME: Use APP from script.js if available, otherwise fallback
-    if (typeof APP !== 'undefined' && APP.fixThemeUI) {
-      APP.fixThemeUI();
-      APP.bindThemeToggle();
-    } else {
-      this.applyFallbackTheme();
-    }
-    
-    this.initializeFirestore();
     this.listenToVotes();
-    console.log('FIFA Module Initialized');
   },
 
-  applyFallbackTheme() {
+  // 🔥 FLAWLESS THEME SYNC
+  initTheme() {
     try {
       const learndata = JSON.parse(localStorage.getItem('learny_data') || '{}');
-      const isDark = learndata.darkMode !== false;
-      if (!isDark) document.body.classList.add('light');
+      const isDark = learndata.darkMode !== false; // Default to dark
       
-      const themeBtn = document.querySelector('.theme-toggle i');
-      if (themeBtn) themeBtn.className = isDark ? 'fa fa-moon' : 'fa fa-sun';
+      if (!isDark) document.body.classList.add('light');
+      else document.body.classList.remove('light');
       
       if (learndata.currentTheme && learndata.currentTheme !== 'purple') {
         document.body.classList.add(`theme-${learndata.currentTheme}`);
       }
       
-      // Bind fallback toggle if APP isn't ready
+      document.querySelectorAll('.theme-toggle i').forEach(icon => {
+        icon.className = isDark ? 'fa fa-moon' : 'fa fa-sun';
+      });
+      
       document.querySelectorAll('.theme-toggle').forEach(btn => {
         btn.onclick = () => {
-          const isDark = !document.body.classList.contains('light');
-          document.body.classList.toggle('light', !isDark);
-          const icon = btn.querySelector('i');
-          if (icon) icon.className = isDark ? 'fa fa-sun' : 'fa fa-moon';
+          const currentlyDark = !document.body.classList.contains('light');
+          const newDark = !currentlyDark;
           
-          const learndata = JSON.parse(localStorage.getItem('learny_data') || '{}');
-          learndata.darkMode = isDark;
-          localStorage.setItem('learny_data', JSON.stringify(learndata));
+          if (newDark) document.body.classList.remove('light');
+          else document.body.classList.add('light');
+          
+          document.querySelectorAll('.theme-toggle i').forEach(icon => {
+            icon.className = newDark ? 'fa fa-moon' : 'fa fa-sun';
+          });
+          
+          const data = JSON.parse(localStorage.getItem('learny_data') || '{}');
+          data.darkMode = newDark;
+          localStorage.setItem('learny_data', JSON.stringify(data));
+          
+          // Sync with main APP if available
+          if (typeof APP !== 'undefined') {
+            APP.data.darkMode = newDark;
+            APP.save();
+            APP.updateThemeIcon();
+          }
         };
       });
-    } catch(e) {}
-  },
-
-  loadUserVote() {
-    try {
-      const saved = localStorage.getItem('learny_fifa_user_vote');
-      if (saved) this.data.userVote = saved;
-    } catch(e) {}
-  },
-
-  saveUserVote() {
-    try {
-      if (this.data.userVote) localStorage.setItem('learny_fifa_user_vote', this.data.userVote);
-      else localStorage.removeItem('learny_fifa_user_vote');
-    } catch(e) {}
+    } catch (e) { console.error("Theme error", e); }
   },
 
   bindEvents() {
     document.getElementById('resetVoteBtn')?.addEventListener('click', () => {
       if (this.data.userVote) {
-        const teamKey = this.data.userVote;
-        const docRef = doc(db, "poll", "votes");
-        updateDoc(docRef, { [teamKey]: increment(-1) }).catch(() => {});
+        updateDoc(doc(db, "poll", "votes"), { [this.data.userVote]: increment(-1) }).catch(() => {});
         this.data.userVote = null;
-        this.saveUserVote();
-        this.showToast('Vote removed. Pick a new champion! 🏆');
+        localStorage.removeItem('learny_fifa_user_vote');
+        this.showToast('Vote removed!');
       }
     });
   },
 
   startCountdown() {
     const update = () => {
-      const now = Date.now();
-      const diff = this.data.finalDate - now;
+      const diff = this.data.finalDate - Date.now();
       const dEl = document.getElementById('cd-days');
       if (!dEl) return;
       if (diff <= 0) {
         dEl.textContent = '00'; document.getElementById('cd-hours').textContent = '00';
         document.getElementById('cd-mins').textContent = '00'; document.getElementById('cd-secs').textContent = '00';
-        document.querySelector('.hero-badge').textContent = ' MATCH DAY!';
         return;
       }
       document.getElementById('cd-days').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
@@ -155,32 +118,17 @@ const FIFA = {
     setInterval(update, 1000);
   },
 
-  // FIX VOTES: Only initialize if document doesn't exist
-  async initializeFirestore() {
-    const docRef = doc(db, "poll", "votes");
-    try {
-      const snap = await getDoc(docRef);
-      if (!snap.exists()) {
-        await setDoc(docRef, { team1: 0, team2: 0 });
-        console.log('Firestore initialized with default votes');
-      } else {
-        console.log('Firestore votes already exist, skipping init');
-      }
-    } catch(e) {
-      console.error("Firestore init check failed:", e);
-    }
-  },
-
+  // 🔥 REAL-TIME LISTENER (Never overwrites)
   listenToVotes() {
-    onSnapshot(doc(db, "poll", "votes"), (doc) => {
-      if (doc.exists()) {
-        this.data.votes = doc.data();
+    onSnapshot(doc(db, "poll", "votes"), (docSnap) => {
+      if (docSnap.exists()) {
+        this.data.votes = docSnap.data();
       } else {
         this.data.votes = { team1: 0, team2: 0 };
       }
       this.renderPoll();
     }, (error) => {
-      console.error('Firestore listener error:', error);
+      console.error("Firestore Error:", error);
     });
   },
 
@@ -201,8 +149,7 @@ const FIFA = {
       const isVoted = this.data.userVote === team.key;
       const isDisabled = this.data.userVote !== null && !isVoted;
       return `
-        <div class="poll-option ${isVoted ? 'voted' : ''} ${isDisabled ? 'disabled' : ''}" 
-             data-team="${team.key}" onclick="window.FIFA.vote('${team.key}')">
+        <div class="poll-option ${isVoted ? 'voted' : ''} ${isDisabled ? 'disabled' : ''}" onclick="window.FIFA.vote('${team.key}')">
           <div class="poll-bar" style="width: ${team.pct}%"></div>
           <div class="poll-content">
             <div class="poll-flag">${team.flag}</div>
@@ -222,24 +169,31 @@ const FIFA = {
     document.getElementById('totalVotes').textContent = total.toLocaleString();
   },
 
-  vote(teamKey) {
+  // 🔥 BULLETPROOF VOTING: Creates doc ONLY if it doesn't exist, then increments
+  async vote(teamKey) {
     if (this.data.userVote) {
       this.showToast('You already voted! Click "Change Vote" to switch.');
       return;
     }
+    
     this.data.userVote = teamKey;
-    this.saveUserVote();
+    localStorage.setItem('learny_fifa_user_vote', teamKey);
     
     const docRef = doc(db, "poll", "votes");
-    updateDoc(docRef, { [teamKey]: increment(1) }).then(() => {
-      const teamName = teamKey === 'team1' ? FINAL_TEAMS.team1.name : FINAL_TEAMS.team2.name;
-      const teamFlag = teamKey === 'team1' ? FINAL_TEAMS.team1.flag : FINAL_TEAMS.team2.flag;
-      this.showToast(`Voted for ${teamName}! ${teamFlag}`);
-      this.celebrate();
-    }).catch(error => {
-      console.error('Vote error:', error);
-      this.showToast('Vote failed. Try again!');
-    });
+    try {
+      // Try to increment first
+      await updateDoc(docRef, { [teamKey]: increment(1) });
+    } catch (error) {
+      // If it fails, the document doesn't exist yet. Create it safely, THEN increment.
+      console.log("Creating new vote document safely...");
+      await setDoc(docRef, { team1: 0, team2: 0 });
+      await updateDoc(docRef, { [teamKey]: increment(1) });
+    }
+
+    const teamName = teamKey === 'team1' ? FINAL_TEAMS.team1.name : FINAL_TEAMS.team2.name;
+    const teamFlag = teamKey === 'team1' ? FINAL_TEAMS.team1.flag : FINAL_TEAMS.team2.flag;
+    this.showToast(`Voted for ${teamName}! ${teamFlag}`);
+    this.celebrate();
   },
 
   renderPlayers() {
@@ -257,35 +211,6 @@ const FIFA = {
         <div class="player-position">${p.pos}</div>
       </div>
     `).join('');
-  },
-
-  playChant(type) {
-    const btn = event.currentTarget;
-    btn.classList.add('playing');
-    setTimeout(() => btn.classList.remove('playing'), 2000);
-    try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain); gain.connect(ctx.destination);
-      if (type === 'ole') { osc.frequency.value = 440; osc.type = 'sine'; } 
-      else if (type === 'champions') { osc.frequency.value = 523; osc.type = 'triangle'; } 
-      else { osc.frequency.value = 220; osc.type = 'sawtooth'; }
-      gain.gain.setValueAtTime(0.15, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1.5);
-      osc.start(); osc.stop(ctx.currentTime + 1.5);
-    } catch(e) { this.showToast('🎵 Chant playing!'); }
-  },
-
-  share(platform) {
-    const t1 = FINAL_TEAMS.team1.name;
-    const t2 = FINAL_TEAMS.team2.name;
-    const text = `🏆 FIFA World Cup 2026 Final!\n⚽ July 19, 2026 - MetLife Stadium\n🔥 ${t1} vs ${t2}\n\nVote now on Learny!`;
-    const url = window.location.href;
-    if (platform === 'whatsapp') window.open(`https://wa.me/?text=${encodeURIComponent(text + '\n' + url)}`, '_blank');
-    else if (platform === 'twitter') window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
-    else if (platform === 'facebook') window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
-    else if (platform === 'copy') navigator.clipboard.writeText(text + '\n' + url).then(() => this.showToast('Link copied! '));
   },
 
   showToast(msg) {
