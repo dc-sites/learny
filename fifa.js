@@ -50,7 +50,7 @@ const FINAL_TEAMS = {
 const FIFA = {
   data: { 
     // Match time: July 19, 2026 at 12:30 AM (00:30)
-    finalDate: new Date('2026-07-19T15:30:00-04:00').getTime(),
+    finalDate: new Date('2026-07-20T00:30:00+05:30').getTime(),
     userVote: null, 
     votes: { team1: 0, team2: 0 } 
   },
