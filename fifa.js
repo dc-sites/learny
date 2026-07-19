@@ -1,81 +1,99 @@
 /* ========================================
-FIFA 2026 FINAL - INTERACTIVE MODULE
+FIFA 2026 FINAL - FIREBASE LIVE MODULE
 ======================================== */
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+// Your exact Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyACbyx4EOnLWyTKXsAKP8T7qplUHibPzyY",
+  authDomain: "fifa-f3b77.firebaseapp.com",
+  databaseURL: "https://fifa-f3b77-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "fifa-f3b77",
+  storageBucket: "fifa-f3b77.firebasestorage.app",
+  messagingSenderId: "1060348132581",
+  appId: "1:1060348132581:web:bf2e94082e30349119e80c",
+  measurementId: "G-7ZSRYTDMZW"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// ============ FINAL TEAMS CONFIGURATION ============
+// Update these names/flags when the actual 2026 finalists are known
+const FINAL_TEAMS = {
+  team1: {
+    name: 'Argentina',
+    flag: '🇦🇷',
+    confed: 'CONMEBOL',
+    players: [
+      { name: 'L. Messi', pos: 'Forward', emoji: '🐐' },
+      { name: 'E. Martínez', pos: 'Goalkeeper', emoji: '🧤' },
+      { name: 'J. Álvarez', pos: 'Forward', emoji: '⚡' },
+      { name: 'E. Fernández', pos: 'Midfielder', emoji: '🎯' }
+    ]
+  },
+  team2: {
+    name: 'France',
+    flag: '🇫🇷',
+    confed: 'UEFA',
+    players: [
+      { name: 'K. Mbappé', pos: 'Forward', emoji: '💨' },
+      { name: 'A. Griezmann', pos: 'Forward', emoji: '🎨' },
+      { name: 'O. Dembélé', pos: 'Forward', emoji: '✨' },
+      { name: 'A. Tchouaméni', pos: 'Midfielder', emoji: '🛡️' }
+    ]
+  }
+};
 
 const FIFA = {
   data: {
-    finalDate: new Date('2026-07-19T20:00:00-04:00').getTime(), // MetLife, 8PM ET
-    teams: [
-      { name: 'Argentina', flag: '🇦🇷', confed: 'CONMEBOL', votes: 1842 },
-      { name: 'France', flag: '🇫🇷', confed: 'UEFA', votes: 1567 },
-      { name: 'Brazil', flag: '🇧🇷', confed: 'CONMEBOL', votes: 1423 },
-      { name: 'England', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', confed: 'UEFA', votes: 1189 },
-      { name: 'Spain', flag: '🇪🇸', confed: 'UEFA', votes: 987 },
-      { name: 'Germany', flag: '🇩🇪', confed: 'UEFA', votes: 876 },
-      { name: 'USA', flag: '🇺🇸', confed: 'CONCACAF', votes: 754 },
-      { name: 'Portugal', flag: '🇵🇹', confed: 'UEFA', votes: 698 }
-    ],
-    players: [
-      { name: 'L. Messi', country: 'Argentina', pos: 'Forward', emoji: '🐐' },
-      { name: 'K. Mbappé', country: 'France', pos: 'Forward', emoji: '⚡' },
-      { name: 'Vinícius Jr', country: 'Brazil', pos: 'Forward', emoji: '💨' },
-      { name: 'J. Bellingham', country: 'England', pos: 'Midfielder', emoji: '🎯' },
-      { name: 'Rodri', country: 'Spain', pos: 'Midfielder', emoji: '🛡️' },
-      { name: 'Jamal Musiala', country: 'Germany', pos: 'Midfielder', emoji: '✨' },
-      { name: 'C. Pulisic', country: 'USA', pos: 'Forward', emoji: '🇺🇸' },
-      { name: 'B. Fernandes', country: 'Portugal', pos: 'Midfielder', emoji: '🎨' }
-    ],
+    finalDate: new Date('2026-07-19T20:00:00-04:00').getTime(),
     userVote: null,
-    scoreA: 0,
-    scoreB: 0,
-    predictions: []
+    votes: { team1: 0, team2: 0 }
   },
 
   init() {
-    this.loadState();
+    this.loadUserVote();
     this.startCountdown();
-    this.renderPoll();
     this.renderPlayers();
-    this.renderPredictions();
     this.bindEvents();
-    this.simulateLiveVotes();
+    this.listenToVotes();
   },
 
-  loadState() {
+  loadUserVote() {
     try {
-      const saved = localStorage.getItem('learny_fifa_data');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed.teams) this.data.teams = parsed.teams;
-        if (parsed.predictions) this.data.predictions = parsed.predictions;
-        if (parsed.userVote !== undefined) this.data.userVote = parsed.userVote;
-      }
+      const saved = localStorage.getItem('learny_fifa_user_vote');
+      if (saved) this.data.userVote = saved;
     } catch(e) { console.warn('Load error', e); }
   },
 
-  saveState() {
+  saveUserVote() {
     try {
-      localStorage.setItem('learny_fifa_data', JSON.stringify({
-        teams: this.data.teams,
-        predictions: this.data.predictions,
-        userVote: this.data.userVote
-      }));
+      if (this.data.userVote) {
+        localStorage.setItem('learny_fifa_user_vote', this.data.userVote);
+      } else {
+        localStorage.removeItem('learny_fifa_user_vote');
+      }
     } catch(e) { console.warn('Save error', e); }
   },
 
   bindEvents() {
     document.getElementById('resetVoteBtn')?.addEventListener('click', () => {
-      if (this.data.userVote !== null) {
-        this.data.teams[this.data.userVote].votes = Math.max(0, this.data.teams[this.data.userVote].votes - 1);
+      if (this.data.userVote) {
+        const teamKey = this.data.userVote;
+        runTransaction(ref(db, `votes/${teamKey}`), current => {
+          return (current || 0) - 1;
+        });
         this.data.userVote = null;
-        this.saveState();
-        this.renderPoll();
+        this.saveUserVote();
         this.showToast('Vote removed. Pick a new champion! 🏆');
       }
     });
   },
 
-  // COUNTDOWN
   startCountdown() {
     const update = () => {
       const now = Date.now();
@@ -105,18 +123,33 @@ const FIFA = {
     setInterval(update, 1000);
   },
 
-  // POLL
+  listenToVotes() {
+    onValue(ref(db, 'votes'), snapshot => {
+      this.data.votes = snapshot.val() || { team1: 0, team2: 0 };
+      this.renderPoll();
+    });
+  },
+
   renderPoll() {
     const container = document.getElementById('pollContainer');
     if (!container) return;
-    const total = this.data.teams.reduce((s, t) => s + t.votes, 0);
-    container.innerHTML = this.data.teams.map((team, i) => {
-      const pct = total > 0 ? ((team.votes / total) * 100) : 0;
-      const isVoted = this.data.userVote === i;
+    
+    const total = this.data.votes.team1 + this.data.votes.team2;
+    const pct1 = total > 0 ? ((this.data.votes.team1 / total) * 100) : 0;
+    const pct2 = total > 0 ? ((this.data.votes.team2 / total) * 100) : 0;
+    
+    const teams = [
+      { ...FINAL_TEAMS.team1, key: 'team1', pct: pct1, votes: this.data.votes.team1 },
+      { ...FINAL_TEAMS.team2, key: 'team2', pct: pct2, votes: this.data.votes.team2 }
+    ];
+    
+    container.innerHTML = teams.map(team => {
+      const isVoted = this.data.userVote === team.key;
+      const isDisabled = this.data.userVote !== null && !isVoted;
       return `
-        <div class="poll-option ${isVoted ? 'voted' : ''} ${this.data.userVote !== null && !isVoted ? 'disabled' : ''}" 
-             data-index="${i}" onclick="FIFA.vote(${i})">
-          <div class="poll-bar" style="width: ${pct}%"></div>
+        <div class="poll-option ${isVoted ? 'voted' : ''} ${isDisabled ? 'disabled' : ''}" 
+             data-team="${team.key}" onclick="window.FIFA.vote('${team.key}')">
+          <div class="poll-bar" style="width: ${team.pct}%"></div>
           <div class="poll-content">
             <div class="poll-flag">${team.flag}</div>
             <div class="poll-info">
@@ -124,43 +157,46 @@ const FIFA = {
               <div class="poll-confed">${team.confed}</div>
             </div>
             <div>
-              <div class="poll-percent">${pct.toFixed(1)}%</div>
+              <div class="poll-percent">${team.pct.toFixed(1)}%</div>
               <div class="poll-votes">${team.votes.toLocaleString()} votes</div>
             </div>
             <div class="poll-check"><i class="fa fa-check"></i></div>
           </div>
         </div>`;
     }).join('');
+    
     document.getElementById('totalVotes').textContent = total.toLocaleString();
   },
 
-  vote(index) {
-    if (this.data.userVote !== null) {
+  vote(teamKey) {
+    if (this.data.userVote) {
       this.showToast('You already voted! Click "Change Vote" to switch.');
       return;
     }
-    this.data.userVote = index;
-    this.data.teams[index].votes++;
-    this.saveState();
-    this.renderPoll();
-    this.showToast(`Voted for ${this.data.teams[index].name}! ${this.data.teams[index].flag}`);
+    
+    this.data.userVote = teamKey;
+    this.saveUserVote();
+    
+    runTransaction(ref(db, `votes/${teamKey}`), current => {
+      return (current || 0) + 1;
+    });
+    
+    const teamName = teamKey === 'team1' ? FINAL_TEAMS.team1.name : FINAL_TEAMS.team2.name;
+    const teamFlag = teamKey === 'team1' ? FINAL_TEAMS.team1.flag : FINAL_TEAMS.team2.flag;
+    this.showToast(`Voted for ${teamName}! ${teamFlag}`);
     this.celebrate();
   },
 
-  simulateLiveVotes() {
-    setInterval(() => {
-      const randomTeam = Math.floor(Math.random() * this.data.teams.length);
-      this.data.teams[randomTeam].votes += Math.floor(Math.random() * 3) + 1;
-      this.saveState();
-      this.renderPoll();
-    }, 5000);
-  },
-
-  // PLAYERS
   renderPlayers() {
     const grid = document.getElementById('playersGrid');
     if (!grid) return;
-    grid.innerHTML = this.data.players.map(p => `
+    
+    const allPlayers = [
+      ...FINAL_TEAMS.team1.players.map(p => ({ ...p, country: FINAL_TEAMS.team1.name })),
+      ...FINAL_TEAMS.team2.players.map(p => ({ ...p, country: FINAL_TEAMS.team2.name }))
+    ];
+    
+    grid.innerHTML = allPlayers.map(p => `
       <div class="player-card">
         <div class="player-avatar">${p.emoji}</div>
         <div class="player-name">${p.name}</div>
@@ -170,70 +206,11 @@ const FIFA = {
     `).join('');
   },
 
-  // PREDICT SCORE
-  adjustScore(team, delta) {
-    if (team === 'a') {
-      this.data.scoreA = Math.max(0, Math.min(15, this.data.scoreA + delta));
-      document.getElementById('scoreA').textContent = this.data.scoreA;
-    } else {
-      this.data.scoreB = Math.max(0, Math.min(15, this.data.scoreB + delta));
-      document.getElementById('scoreB').textContent = this.data.scoreB;
-    }
-  },
-
-  submitPrediction() {
-    const teamA = document.getElementById('teamA').value.trim() || 'Team A';
-    const teamB = document.getElementById('teamB').value.trim() || 'Team B';
-    if (this.data.scoreA === 0 && this.data.scoreB === 0) {
-      this.showToast('Please set a score first! ⚽');
-      return;
-    }
-    const prediction = {
-      id: Date.now(),
-      teamA, teamB,
-      scoreA: this.data.scoreA,
-      scoreB: this.data.scoreB,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
-    this.data.predictions.unshift(prediction);
-    if (this.data.predictions.length > 10) this.data.predictions = this.data.predictions.slice(0, 10);
-    this.saveState();
-    this.renderPredictions();
-    this.showToast(`Prediction saved: ${teamA} ${this.data.scoreA}-${this.data.scoreB} ${teamB} 🎯`);
-    this.celebrate();
-    document.getElementById('teamA').value = '';
-    document.getElementById('teamB').value = '';
-    this.data.scoreA = 0; this.data.scoreB = 0;
-    document.getElementById('scoreA').textContent = '0';
-    document.getElementById('scoreB').textContent = '0';
-  },
-
-  renderPredictions() {
-    const content = document.getElementById('predictionsContent');
-    if (!content) return;
-    if (this.data.predictions.length === 0) {
-      content.innerHTML = '<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:16px;">No predictions yet. Be the first! 🎯</p>';
-      return;
-    }
-    content.innerHTML = this.data.predictions.map(p => `
-      <div class="prediction-item">
-        <div>
-          <strong>${p.teamA}</strong> 
-          <span class="prediction-score">${p.scoreA} - ${p.scoreB}</span> 
-          <strong>${p.teamB}</strong>
-        </div>
-        <div class="prediction-time"><i class="fa fa-clock"></i> ${p.time}</div>
-      </div>
-    `).join('');
-  },
-
-  // CHANTS
   playChant(type) {
     const btn = event.currentTarget;
     btn.classList.add('playing');
     setTimeout(() => btn.classList.remove('playing'), 2000);
     
-    // Web Audio API - simple tones
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
       const osc = ctx.createOscillator();
@@ -241,14 +218,11 @@ const FIFA = {
       osc.connect(gain); gain.connect(ctx.destination);
       
       if (type === 'ole') {
-        osc.frequency.value = 440;
-        osc.type = 'sine';
+        osc.frequency.value = 440; osc.type = 'sine';
       } else if (type === 'champions') {
-        osc.frequency.value = 523;
-        osc.type = 'triangle';
+        osc.frequency.value = 523; osc.type = 'triangle';
       } else {
-        osc.frequency.value = 220;
-        osc.type = 'sawtooth';
+        osc.frequency.value = 220; osc.type = 'sawtooth';
       }
       gain.gain.setValueAtTime(0.15, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1.5);
@@ -259,9 +233,10 @@ const FIFA = {
     }
   },
 
-  // SHARE
   share(platform) {
-    const text = `🏆 FIFA World Cup 2026 Final!\n⚽ July 19, 2026 - MetLife Stadium\n🔥 Who will be crowned champions?\n\nVote now on Learny!`;
+    const t1 = FINAL_TEAMS.team1.name;
+    const t2 = FINAL_TEAMS.team2.name;
+    const text = `🏆 FIFA World Cup 2026 Final!\n⚽ July 19, 2026 - MetLife Stadium\n🔥 ${t1} vs ${t2}\n\nVote now on Learny!`;
     const url = window.location.href;
     
     if (platform === 'whatsapp') {
@@ -277,7 +252,6 @@ const FIFA = {
     }
   },
 
-  // UTILITIES
   showToast(msg) {
     const el = document.getElementById('notification-toast');
     if (el) {
@@ -321,10 +295,13 @@ const FIFA = {
   }
 };
 
+// Expose to window so HTML onclick handlers can access it
+window.FIFA = FIFA;
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => FIFA.init());
 
-// Sidebar toggle (reuse Learny logic)
+// Sidebar toggle logic
 document.addEventListener('DOMContentLoaded', () => {
   const hamburger = document.querySelector('.hamburger');
   const sidebar = document.querySelector('.sidebar');
