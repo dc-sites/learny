@@ -1036,3 +1036,14 @@ FIFA 2026 FINAL - LEARNY SPECIAL PAGE
   .fact-value { font-size: 26px; }
   .score-input span { font-size: 28px; }
 }
+/* ========================================
+FIX LIGHT MODE BACKGROUND
+======================================== */
+body.light .fifa-main {
+  background: #f8fafc !important;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%) !important;
+}
+
+body.light .fifa-hero {
+  background: linear-gradient(135deg, #1e3a8a 0%, #6c2bd9 50%, #10b981 100%) !important;
+}
