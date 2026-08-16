@@ -1,88 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://richinfo.co/richpartners/in-page/js/richads-ob.js?pubid=1020337&siteid=404711" async></script>
+    <meta name="clckd" content="8978df315411cc82831627d50d35c412" />
+    <meta name="kadam-verification" content="kadam654ec2778146015825f8d9b0bd717f53" />
+    <meta name="6a97888e-site-verification" content="e8a69ad212a551e606c0e2d64e7bdd9a">
+    <meta name="8f1e60b326362382d8e9055421a9f6dffe2478be" content="8f1e60b326362382d8e9055421a9f6dffe2478be" />
+    <script src="https://pl29825315.effectivecpmnetwork.com/e1/97/36/e1973631618ee1e0e3c1f353338d0d9a.js"></script>
+    <meta name="monetag" content="be19ad887e3b3858e8c0d35eeb156309">
     <meta charset="UTF-8">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9375144994562854" crossorigin="anonymous"></script>
+    <meta name="theme-color" content="#6c2bd9">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" href="./icon-192.png" type="image/png">
+    <link rel="apple-touch-icon" href="./icon-512.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Learny - Pro Virtual Study Room</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Study Room Specific Styles & Custom Zoom Layout */
-        .tab-buttons {
+        * { -webkit-tap-highlight-color: transparent; outline: none; }
+        button, .btn, a, .nav-item a, .theme-toggle, .room-tab-btn {
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -webkit-touch-callout: none !important;
+            touch-action: manipulation !important;
+            cursor: pointer !important;
+        }
+        input, textarea, select { user-select: text !important; -webkit-user-select: text !important; touch-action: auto !important; }
+
+        .overlay { z-index: 998; cursor: pointer; }
+        .sidebar { z-index: 999; }
+
+        .hidden { display: none !important; }
+
+        /* Room Tab Controls */
+        .room-tabs {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
             border-bottom: 1px solid var(--border);
             padding-bottom: 10px;
         }
-        .tab-btn {
+        .room-tab-btn {
             flex: 1;
-            padding: 10px 16px;
+            padding: 12px;
+            text-align: center;
             background: var(--bg-dark);
             border: 1px solid var(--border);
-            color: var(--text-muted);
             border-radius: var(--radius-sm);
+            color: var(--text-muted);
             font-weight: 600;
-            cursor: pointer;
+            font-size: 14px;
             transition: all var(--transition);
         }
-        .tab-btn.active {
+        .room-tab-btn.active {
             background: var(--primary);
-            color: #ffffff;
+            color: #fff;
             border-color: var(--primary);
-        }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        /* Circle Progress Timer Styling */
-        .circle-timer-wrapper {
-            position: relative;
-            width: 180px;
-            height: 180px;
-            margin: 20px auto;
-        }
-        .circle-timer-svg {
-            transform: rotate(-90deg);
-            width: 100%;
-            height: 100%;
-        }
-        .circle-timer-bg {
-            fill: none;
-            stroke: var(--bg-dark);
-            stroke-width: 8;
-        }
-        .circle-timer-progress {
-            fill: none;
-            stroke: var(--primary);
-            stroke-width: 8;
-            stroke-dasharray: 440;
-            stroke-dashoffset: 0;
-            stroke-linecap: round;
-            transition: stroke-dashoffset 1s linear;
-        }
-        .circle-timer-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-        }
-        .circle-timer-text .timer {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--text-main);
-            font-family: monospace;
-            margin: 0;
+            box-shadow: 0 4px 12px rgba(108, 43, 217, 0.3);
         }
 
-        /* Zoom App Style Video Grid Layout */
+        /* Profile Header Box */
+        .user-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-dark);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+        .profile-avatar-img {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 10px rgba(108, 43, 217, 0.2);
+        }
+
+        /* Meeting Grid Layout (Zoom Style) */
+        .meeting-container {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 992px) {
+            .meeting-container { grid-template-columns: 1fr; }
+        }
+
+        .video-grid-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
         #video-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 12px;
             width: 100%;
-            min-height: 250px;
-            max-height: 500px;
+            min-height: 350px;
+            max-height: 550px;
             background: var(--bg-dark);
             border-radius: var(--radius);
             padding: 12px;
@@ -91,10 +112,10 @@
         }
         .video-card {
             position: relative;
-            background: #000000;
+            background: #000;
             border-radius: var(--radius-sm);
             overflow: hidden;
-            height: 180px;
+            height: 200px;
             border: 1px solid var(--border);
             display: flex;
             align-items: center;
@@ -105,51 +126,92 @@
             height: 100%;
             object-fit: cover;
         }
-        .avatar-placeholder {
-            position: absolute;
+        .video-avatar-fallback {
             width: 80px;
             height: 80px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--primary);
-            display: none;
-            background: var(--bg-card);
-        }
-        .video-card.cam-off .avatar-placeholder {
-            display: block;
-        }
-        .video-card.cam-off video {
-            display: none;
+            border: 3px solid var(--primary);
+            box-shadow: 0 0 15px rgba(108, 43, 217, 0.4);
         }
         .video-label {
             position: absolute;
             bottom: 8px;
             left: 8px;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(15, 23, 42, 0.85);
             padding: 4px 10px;
             border-radius: 6px;
             font-size: 0.75rem;
-            color: #ffffff;
+            color: #fff;
             font-weight: 600;
+            backdrop-filter: blur(4px);
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        /* Responsive Controls Bar */
-        .zoom-controls {
+        /* Circular Progress Timer */
+        .timer-circular-container {
             display: flex;
-            gap: 10px;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
-            flex-wrap: wrap;
-            margin: 15px 0;
-            background: var(--bg-card);
+            padding: 20px;
+            background: var(--bg-dark);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .circle-svg {
+            transform: rotate(-90deg);
+            width: 180px;
+            height: 180px;
+        }
+        .circle-bg {
+            fill: none;
+            stroke: var(--border);
+            stroke-width: 10;
+        }
+        .circle-progress {
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 10;
+            stroke-dasharray: 440;
+            stroke-dashoffset: 0;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear, stroke 0.3s ease;
+        }
+        .timer-center-text {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .timer-display-val {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            font-family: monospace;
+        }
+
+        /* Zoom Meeting Toolbar */
+        .meeting-controls-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-dark);
             padding: 12px;
             border-radius: var(--radius);
             border: 1px solid var(--border);
+            flex-wrap: wrap;
         }
+
+        /* Sidebar Panels for Meeting */
         .chat-box {
-            height: 180px;
+            height: 220px;
             overflow-y: auto;
             background: var(--bg-dark);
             padding: 12px;
@@ -159,37 +221,48 @@
         }
         .chat-msg {
             margin-bottom: 8px;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             line-height: 1.4;
             color: var(--text-main);
         }
         .user-tag {
             background: var(--bg-dark);
-            padding: 10px 14px;
+            padding: 10px 12px;
             border-radius: var(--radius-sm);
             margin-bottom: 8px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border: 1px solid var(--border);
         }
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
+
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
             border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.8rem;
+            font-weight: 700;
+            font-size: 0.75rem;
             background: var(--primary);
             color: #fff;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
-        .badge.BREAK { background: var(--success); }
-        .badge.WAITING { background: var(--warning); color: #000; }
-        .hidden { display: none !important; }
+        .badge-status.BREAK { background: var(--success); }
+        .badge-status.WAITING { background: var(--warning); color: #000; }
+
+        .share-box {
+            background: var(--bg-dark);
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
-
     <div class="overlay"></div>
 
     <div class="app-container">
@@ -200,15 +273,30 @@
                 <span class="sidebar-title">Learny</span>
             </div>
             <ul class="nav-list">
-                <li class="nav-item"><a href="index.html"><i class="fa fa-tachometer"></i> Dashboard</a></li>
+                <li class="nav-item"><a href="index.html"><i class="fa fa-tachometer-alt"></i> Dashboard</a></li>
                 <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
-                <li class="nav-item active"><a href="studyroom.html"><i class="fa fa-video"></i> Virtual Study Room</a></li>
                 <li class="nav-item"><a href="bot.html"><i class="fa fa-brain"></i> LearnyAI</a></li>
+                <li class="nav-item active"><a href="studyroom.html"><i class="fa fa-video"></i> Study Room</a></li>
+                <li class="nav-item"><a href="games.html"><i class="fa fa-gamepad"></i> Games</a></li>
                 <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
                 <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+                <li class="nav-item"><a href="translator.html"><i class="fa fa-language"></i> Translator</a></li>
+                <li class="nav-item"><a href="calculator.html"><i class="fa fa-calculator"></i> Calculator</a></li>
+                <li class="nav-item"><a href="converter.html"><i class="fa fa-exchange-alt"></i> Converter</a></li>
+                <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+                <li class="nav-item"><a href="tuition.html"><i class="fa fa-chalkboard-teacher"></i> Tuition</a></li>
+                <li class="nav-item"><a href="motivation.html"><i class="fa fa-lightbulb"></i> Motivation</a></li>
+                <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
                 <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-hourglass-half"></i> Pomodoro</a></li>
+                <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
+                <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
+                <li class="nav-item"><a href="countdown.html"><i class="fa fa-calendar-alt"></i> Countdown</a></li>
+                <li class="nav-item"><a href="referral.html"><i class="fa fa-gift"></i> Referral</a></li>
                 <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
                 <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+                <li class="nav-item"><a href="install.html"><i class="fa fa-download"></i> Install App</a></li>
+                <li class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></li>
+                <li class="nav-item premium-nav-item"><a href="premium.html" class="premium-link"><i class="fa fa-gem" style="color: var(--warning);"></i> Get Premium</a></li>
             </ul>
             <div class="sidebar-welcome">
                 <div class="divider"></div>
@@ -220,753 +308,817 @@
         <main class="main-content">
             <header class="page-header">
                 <button class="hamburger" aria-label="Toggle Menu"><i class="fa fa-bars"></i></button>
-                <h1 class="page-title"><i class="fa fa-video"></i> Virtual Study Room</h1>
+                <h1 class="page-title"><i class="fa fa-users"></i> Virtual Study Room</h1>
                 <div class="header-actions">
                     <button class="theme-toggle" aria-label="Toggle Theme"><i class="fa fa-moon"></i></button>
+                    <button class="notif-btn" aria-label="Notifications"><i class="fa fa-bell"></i></button>
                 </div>
             </header>
 
-            <div class="container" style="max-width: 900px; margin: 0 auto;">
-                
-                <!-- SETUP SECTION -->
-                <div id="setup-section" class="card">
-                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-                        <img id="setup-user-avatar" src="https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);" alt="User Avatar">
-                        <div>
-                            <h3 id="setup-user-display-name" style="margin: 0; color: var(--text-main);">User</h3>
-                            <small style="color: var(--text-muted);">Loaded from profile.html</small>
-                        </div>
-                    </div>
+            <div id="offer-ad-container"></div>
 
-                    <div class="tab-buttons">
-                        <button class="tab-btn active" onclick="switchSetupTab('create')"><i class="fa fa-plus-circle"></i> Create Room</button>
-                        <button class="tab-btn" onclick="switchSetupTab('join')"><i class="fa fa-sign-in-alt"></i> Join Room</button>
-                    </div>
-
-                    <!-- Tab: Create Room -->
-                    <div id="tab-create" class="tab-content active">
-                        <div class="form-group mb-3">
-                            <label>Room Name</label>
-                            <input type="text" id="new-room-name" class="form-control" placeholder="e.g. Math Study Group" />
-                        </div>
-                        
-                        <div class="grid-equal mb-3">
-                            <div class="form-group">
-                                <label>Max Capacity</label>
-                                <select id="max-students" class="form-control">
-                                    <option value="1">1 Student</option>
-                                    <option value="2">2 Students</option>
-                                    <option value="3">3 Students</option>
-                                    <option value="4" selected>4 Students</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Focus Time (m)</label>
-                                <input type="number" id="focus-mins" class="form-control" value="25" min="1" />
-                            </div>
-                            <div class="form-group">
-                                <label>Break Time (m)</label>
-                                <input type="number" id="break-mins" class="form-control" value="5" min="1" />
-                            </div>
-                        </div>
-                        <button id="btn-create" class="btn btn-primary" style="width: 100%;"><i class="fa fa-rocket"></i> Create Room</button>
-                    </div>
-
-                    <!-- Tab: Join Room -->
-                    <div id="tab-join" class="tab-content">
-                        <div class="form-group mb-3">
-                            <label>Room ID</label>
-                            <input type="text" id="join-room-id" class="form-control" placeholder="Enter Room ID code..." />
-                        </div>
-                        <button id="btn-join" class="btn btn-primary" style="width: 100%;"><i class="fa fa-arrow-right"></i> Join Room</button>
+            <!-- SETUP SECTION (Tabs: Create or Join) -->
+            <div id="setup-section" class="card">
+                <!-- User Profile Info Auto Loaded -->
+                <div class="user-profile-header">
+                    <img id="user-avatar-preview" src="https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png" alt="Avatar" class="profile-avatar-img">
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.8rem; color: var(--text-muted); display: block;">Your Name (Loaded from Profile)</label>
+                        <input type="text" id="user-name" class="form-control" style="font-weight: 600; margin-top: 4px;" placeholder="Enter your name..." />
                     </div>
                 </div>
 
-                <!-- ROOM SECTION -->
-                <div id="room-section" class="card hidden">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
-                        <div>
-                            <h2 id="display-room-title" style="margin: 0; color: var(--text-main);">Study Room</h2>
-                            <span id="room-id-tag" style="color: var(--primary); font-weight: bold; font-family: monospace; font-size: 0.9rem;"></span>
+                <!-- Tabs -->
+                <div class="room-tabs">
+                    <button id="tab-btn-create" class="room-tab-btn active"><i class="fa fa-plus-circle"></i> Create Room</button>
+                    <button id="tab-btn-join" class="room-tab-btn"><i class="fa fa-sign-in-alt"></i> Join Room</button>
+                </div>
+
+                <!-- Tab 1: Create Room Form -->
+                <div id="tab-content-create">
+                    <div class="form-group mb-3">
+                        <label><i class="fa fa-door-open"></i> Room Name</label>
+                        <input type="text" id="new-room-name" class="form-control" placeholder="e.g., Physics Focus Group" />
+                    </div>
+                    <div class="grid-2 mb-3">
+                        <div class="form-group">
+                            <label><i class="fa fa-users"></i> Max Capacity</label>
+                            <select id="max-students" class="form-control">
+                                <option value="1">1 Student</option>
+                                <option value="2">2 Students</option>
+                                <option value="3">3 Students</option>
+                                <option value="4" selected>4 Students</option>
+                            </select>
                         </div>
-                        <div style="display: flex; gap: 10px;">
-                            <button id="btn-end-meeting" class="btn btn-danger hidden" style="font-size: 0.85rem;"><i class="fa fa-power-off"></i> End Meeting for All</button>
-                            <button id="btn-leave" class="btn btn-danger" style="font-size: 0.85rem;"><i class="fa fa-door-open"></i> Leave Room</button>
+                        <div class="form-group">
+                            <label><i class="fa fa-brain"></i> Focus Duration (m)</label>
+                            <input type="number" id="focus-mins" class="form-control" value="25" min="1" />
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label><i class="fa fa-coffee"></i> Break Duration (m)</label>
+                        <input type="number" id="break-mins" class="form-control" value="5" min="1" />
+                    </div>
+                    <button id="btn-create" class="btn btn-primary" style="width: 100%;"><i class="fa fa-rocket"></i> Create Study Room</button>
+                </div>
+
+                <!-- Tab 2: Join Room Form -->
+                <div id="tab-content-join" class="hidden">
+                    <div class="form-group mb-3">
+                        <label><i class="fa fa-key"></i> Room ID</label>
+                        <input type="text" id="join-room-id" class="form-control" placeholder="e.g., room-x8a2" />
+                    </div>
+                    <button id="btn-join" class="btn btn-primary" style="width: 100%;"><i class="fa fa-sign-in-alt"></i> Join Room</button>
+                </div>
+            </div>
+
+            <!-- ROOM MEETING SECTION (Zoom Style) -->
+            <div id="room-section" class="card hidden">
+                <!-- Header Controls -->
+                <div class="flex" style="justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <h2 id="display-room-title" style="margin: 0; font-size: 1.4rem;"><i class="fa fa-video"></i> Study Room</h2>
+                        <span id="room-id-tag" style="color: var(--primary-light); font-weight: bold; font-family: monospace; font-size: 0.9rem;"></span>
+                    </div>
+                    <div class="flex" style="gap: 8px;">
+                        <button id="btn-host-end-all" class="btn btn-danger hidden" style="padding: 8px 14px; font-size: 0.85rem;"><i class="fa fa-power-off"></i> End Meeting For All</button>
+                        <button id="btn-leave" class="btn btn-secondary" style="padding: 8px 14px; font-size: 0.85rem;"><i class="fa fa-sign-out-alt"></i> Leave Room</button>
+                    </div>
+                </div>
+
+                <!-- Share Link Box -->
+                <div class="share-box flex" style="align-items: center; justify-content: space-between;">
+                    <div style="font-size: 0.85rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 10px;">
+                        <i class="fa fa-link"></i> Invite Link: <span id="share-link-text" style="color: var(--text-main); font-weight: 600;"></span>
+                    </div>
+                    <button id="btn-copy" class="btn btn-sm btn-secondary"><i class="fa fa-copy"></i> Copy Link</button>
+                </div>
+
+                <!-- Zoom Layout Main Area -->
+                <div class="meeting-container">
+                    <!-- Left Column: Video Grid & Controls -->
+                    <div class="video-grid-wrapper">
+                        <div id="video-grid"></div>
+
+                        <!-- Zoom Toolbar Controls -->
+                        <div class="meeting-controls-bar">
+                            <button id="btn-toggle-mic" class="btn btn-secondary" style="font-size: 0.85rem;"><i class="fa fa-microphone"></i> Mic: ON</button>
+                            <button id="btn-toggle-cam" class="btn btn-secondary" style="font-size: 0.85rem;"><i class="fa fa-video"></i> Cam: ON</button>
+                            <button id="btn-toggle-tick" class="btn btn-secondary" style="font-size: 0.85rem;"><i class="fa fa-volume-up"></i> Tick: OFF</button>
                         </div>
                     </div>
 
-                    <div style="background: var(--bg-dark); padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
-                        <div style="font-size: 0.85rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 10px;">
-                            <i class="fa fa-link"></i> Link: <span id="share-link-text" style="color: var(--text-main);"></span>
+                    <!-- Right Column: Circular Progress Timer, Host Panel & Chat -->
+                    <div>
+                        <!-- Circular Progress Timer -->
+                        <div class="timer-circular-container">
+                            <span id="phase-badge" class="badge-status WAITING"><i class="fa fa-hourglass-start"></i> LOBBY - WAITING</span>
+                            <div style="position: relative; display: flex; align-items: center; justify-content: center; margin: 15px 0;">
+                                <svg class="circle-svg" viewBox="0 0 160 160">
+                                    <circle class="circle-bg" cx="80" cy="80" r="70" />
+                                    <circle id="timer-progress-ring" class="circle-progress" cx="80" cy="80" r="70" />
+                                </svg>
+                                <div class="timer-center-text">
+                                    <div id="timer-display" class="timer-display-val">25:00</div>
+                                </div>
+                            </div>
+                            <p id="chat-status-msg" style="color: var(--text-muted); font-size: 0.8rem; margin: 0;">
+                                <i class="fa fa-info-circle"></i> Waiting for participants to join...
+                            </p>
                         </div>
-                        <button id="btn-copy" class="btn btn-sm btn-secondary" style="white-space: nowrap;"><i class="fa fa-copy"></i> Copy Link</button>
-                    </div>
 
-                    <!-- Zoom Style Video Grid -->
-                    <div id="video-grid"></div>
-
-                    <!-- Zoom Style Controls -->
-                    <div class="zoom-controls">
-                        <button id="btn-toggle-mic" class="btn btn-secondary" style="font-size: 0.85rem;"><i class="fa fa-microphone"></i> Mic: ON</button>
-                        <button id="btn-toggle-cam" class="btn btn-secondary" style="font-size: 0.85rem;"><i class="fa fa-video"></i> Cam: ON</button>
-                        <button id="btn-toggle-tick" class="btn btn-secondary" style="font-size: 0.85rem;"><i class="fa fa-volume-up"></i> Sound: OFF</button>
-                    </div>
-
-                    <!-- Circle Progress Timer -->
-                    <div style="text-align: center; padding: 15px; background: var(--bg-dark); border-radius: var(--radius-sm); border: 1px solid var(--border); margin: 15px 0;">
-                        <span id="phase-badge" class="badge WAITING">WAITING FOR HOST TO START</span>
-                        
-                        <div class="circle-timer-wrapper">
-                            <svg class="circle-timer-svg" viewBox="0 0 160 160">
-                                <circle class="circle-timer-bg" cx="80" cy="80" r="70"></circle>
-                                <circle id="circle-progress" class="circle-timer-progress" cx="80" cy="80" r="70"></circle>
-                            </svg>
-                            <div class="circle-timer-text">
-                                <div id="timer-display" class="timer">25:00</div>
+                        <!-- Host Panel Controls -->
+                        <div id="host-panel" class="card mb-3 hidden" style="padding: 14px; background: var(--bg-dark);">
+                            <h4 style="margin: 0 0 10px; font-size: 0.9rem; color: var(--primary-light);"><i class="fa fa-user-shield"></i> Host Controls</h4>
+                            <div class="flex" style="gap: 8px; flex-wrap: wrap;">
+                                <button id="btn-start-session" class="btn btn-sm btn-success" style="flex: 1;"><i class="fa fa-play"></i> Start Session</button>
+                                <button id="btn-toggle-mute-chat" class="btn btn-sm btn-secondary" style="flex: 1;"><i class="fa fa-comment-slash"></i> Mute Chat: OFF</button>
                             </div>
                         </div>
 
-                        <div id="host-panel" class="hidden" style="margin-top: 10px;">
-                            <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-                                <button id="btn-start-session" class="btn btn-success" style="font-size: 0.9rem;"><i class="fa fa-play"></i> Start Session</button>
-                                <button id="btn-toggle-mute-chat" class="btn btn-secondary" style="font-size: 0.85rem;"><i class="fa fa-comment-slash"></i> Mute Chat: OFF</button>
-                            </div>
-                        </div>
-
-                        <p id="chat-status-msg" style="color: var(--text-muted); font-size: 0.85rem; margin-top: 15px;">
-                            <i class="fa fa-hourglass-start"></i> Waiting for participants to join...
-                        </p>
-                    </div>
-
-                    <div class="grid-equal">
-                        <div>
-                            <h3 style="color: var(--text-main);"><i class="fa fa-comments"></i> Room Chat</h3>
+                        <!-- Chat & Participant Tabs/Lists -->
+                        <div class="card" style="padding: 14px;">
+                            <h4 style="margin: 0 0 10px; font-size: 0.9rem;"><i class="fa fa-comments"></i> Room Chat</h4>
                             <div id="chat-box" class="chat-box"></div>
-                            <div style="display: flex; gap: 8px;">
+                            <div class="flex mb-3">
                                 <input type="text" id="chat-input" class="form-control" placeholder="Break mode chat..." style="flex: 1;" disabled />
                                 <button id="send-btn" class="btn btn-primary" disabled><i class="fa fa-paper-plane"></i></button>
                             </div>
-                        </div>
 
-                        <div>
-                            <h3 style="color: var(--text-main);"><i class="fa fa-users"></i> Students (<span id="user-count">0</span>/<span id="max-count">4</span>)</h3>
+                            <h4 style="margin: 15px 0 10px; font-size: 0.9rem;"><i class="fa fa-user-graduate"></i> Students (<span id="user-count">0</span>/<span id="max-count">4</span>)</h4>
                             <div id="user-list"></div>
                         </div>
                     </div>
                 </div>
-
             </div>
 
-            <!-- Footer -->
-            <footer class="site-footer" style="margin-top: 40px;">
+            <div id="banner-ad-container-1"></div>
+
+            <footer class="site-footer">
                 <p>Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰</p>
+                <p style="margin-top: 8px; font-size: 12px;">
+                    <a href="about.html">About Us</a> • 
+                    <a href="privacy.html">Privacy Policy</a> • 
+                    <a href="contact.html">Contact Us</a>
+                </p>
             </footer>
         </main>
     </div>
 
+    <div id="notification-toast" class="notification"><i class="fa fa-info-circle"></i><span>Notification message</span></div>
+
+    <!-- Firebase JS Compatibility and Global App Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="ads.js"></script>
     <script src="script.js"></script>
 
+    <!-- WebRTC & Firebase Realtime Room Logic -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { 
-            getDatabase, ref, set, update, remove, onValue, onChildAdded, push, onDisconnect, get 
-        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+      import { 
+        getDatabase, ref, set, update, remove, onValue, onChildAdded, push, onDisconnect, get 
+      } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCgPaCkohoVx6rXHAbQhk80R3EvncVkxx4",
-            authDomain: "rooms-7a301.firebaseapp.com",
-            databaseURL: "https://rooms-7a301-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "rooms-7a301",
-            storageBucket: "rooms-7a301.firebasestorage.app",
-            messagingSenderId: "588297268013",
-            appId: "1:588297268013:web:51de1add5257a368f781a4"
-        };
+      const firebaseConfig = {
+        apiKey: "AIzaSyCgPaCkohoVx6rXHAbQhk80R3EvncVkxx4",
+        authDomain: "rooms-7a301.firebaseapp.com",
+        databaseURL: "https://rooms-7a301-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "rooms-7a301",
+        storageBucket: "rooms-7a301.firebasestorage.app",
+        messagingSenderId: "588297268013",
+        appId: "1:588297268013:web:51de1add5257a368f781a4"
+      };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
 
-        // Retrieve User Name & Avatar from profile data stored in localStorage
-        let learnyProfile = {};
+      let currentRoomId = localStorage.getItem("learny_room_id") || "";
+      let userName = localStorage.getItem("learny_user_name") || "";
+      let userAvatar = "https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png";
+
+      // Load Profile Data from APP state or localStorage
+      if (typeof APP !== 'undefined' && APP.data && APP.data.profile) {
+        if (APP.data.profile.name) userName = APP.data.profile.name;
+        if (APP.data.profile.avatar) userAvatar = APP.data.profile.avatar;
+      } else {
+        const storedProfile = localStorage.getItem("learny_profile");
+        if (storedProfile) {
+          try {
+            const parsed = JSON.parse(storedProfile);
+            if (parsed.name) userName = parsed.name;
+            if (parsed.avatar) userAvatar = parsed.avatar;
+          } catch(e){}
+        }
+      }
+
+      let userId = localStorage.getItem("learny_user_id");
+      if (!userId) {
+        userId = "usr_" + Math.random().toString(36).substr(2, 6);
+        localStorage.setItem("learny_user_id", userId);
+      }
+
+      let isHost = false;
+      let timerInterval = null;
+      let tickSoundEnabled = false;
+      let chatMutedByHost = false;
+      let audioCtx = null;
+      let totalSessionSecs = 1500;
+
+      let localStream = null;
+      const peerConnections = {};
+      const iceCandidatesQueue = {};
+      const remoteUserAvatars = {};
+
+      const iceServers = {
+        iceServers: [
+          { urls: "stun:stun.l.google.com:19302" },
+          { urls: "stun:stun1.l.google.com:19302" },
+          { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" },
+          { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" }
+        ]
+      };
+
+      // Tab Switcher Setup
+      document.getElementById("tab-btn-create").addEventListener("click", () => {
+        document.getElementById("tab-btn-create").classList.add("active");
+        document.getElementById("tab-btn-join").classList.remove("active");
+        document.getElementById("tab-content-create").classList.remove("hidden");
+        document.getElementById("tab-content-join").classList.add("hidden");
+      });
+
+      document.getElementById("tab-btn-join").addEventListener("click", () => {
+        document.getElementById("tab-btn-join").classList.add("active");
+        document.getElementById("tab-btn-create").classList.remove("active");
+        document.getElementById("tab-content-join").classList.remove("hidden");
+        document.getElementById("tab-content-create").classList.add("hidden");
+      });
+
+      async function startLocalMedia() {
         try {
-            learnyProfile = JSON.parse(localStorage.getItem("learny_profile")) || {};
-        } catch(e) {}
+          localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        } catch (err) {
+          console.warn("Camera/Mic access declined or unavailable:", err);
+          localStream = new MediaStream();
+        }
+        addVideoCard(userId, userName, localStream, true, userAvatar);
+      }
 
-        let userName = learnyProfile.name || localStorage.getItem("learny_user_name") || "Student";
-        let userAvatar = learnyProfile.avatar || "https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png";
+      function addVideoCard(id, label, stream, isMuted = false, avatarUrl = userAvatar) {
+        let card = document.getElementById(`vcard-${id}`);
+        if (!card) {
+          card = document.createElement("div");
+          card.id = `vcard-${id}`;
+          card.className = "video-card";
+          
+          const videoEl = document.createElement("video");
+          videoEl.id = `vvid-${id}`;
+          videoEl.autoplay = true;
+          videoEl.playsInline = true;
+          videoEl.muted = isMuted;
 
-        let currentRoomId = localStorage.getItem("learny_room_id") || "";
-        let userId = localStorage.getItem("learny_user_id");
-        if (!userId) {
-            userId = "usr_" + Math.random().toString(36).substr(2, 6);
-            localStorage.setItem("learny_user_id", userId);
+          const avatarFallback = document.createElement("img");
+          avatarFallback.id = `vavatar-${id}`;
+          avatarFallback.className = "video-avatar-fallback hidden";
+          avatarFallback.src = avatarUrl || userAvatar;
+
+          const labelEl = document.createElement("div");
+          labelEl.className = "video-label";
+          labelEl.id = `vlabel-${id}`;
+          labelEl.innerHTML = `<i class="fa fa-user"></i> ${isMuted ? `${label} (You)` : label}`;
+          
+          card.appendChild(videoEl);
+          card.appendChild(avatarFallback);
+          card.appendChild(labelEl);
+          document.getElementById("video-grid").appendChild(card);
         }
 
-        let isHost = false;
-        let timerInterval = null;
-        let tickSoundEnabled = false;
-        let chatMutedByHost = false;
-        let audioCtx = null;
-        let totalPhaseDurationSecs = 0;
+        const videoElem = document.getElementById(`vvid-${id}`);
+        if (videoElem) {
+          if (videoElem.srcObject !== stream) {
+            videoElem.srcObject = stream;
+          }
+          videoElem.play().catch(e => {
+            if (!isMuted) {
+              videoElem.muted = true;
+              videoElem.play().catch(err => console.error(err));
+            }
+          });
+        }
+        updateCameraDisplayState(id);
+      }
 
-        let localStream = null;
-        const peerConnections = {};
-        const iceCandidatesQueue = {};
+      function updateCameraDisplayState(id) {
+        const videoElem = document.getElementById(`vvid-${id}`);
+        const avatarElem = document.getElementById(`vavatar-${id}`);
+        if (!videoElem || !avatarElem) return;
 
-        const iceServers = {
-            iceServers: [
-                { urls: "stun:stun.l.google.com:19302" },
-                { urls: "stun:stun1.l.google.com:19302" },
-                { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" },
-                { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" }
-            ]
+        let hasActiveVideo = false;
+        if (id === userId) {
+          const videoTrack = localStream ? localStream.getVideoTracks()[0] : null;
+          hasActiveVideo = videoTrack && videoTrack.enabled && videoTrack.readyState === 'live';
+        } else {
+          const stream = videoElem.srcObject;
+          const videoTrack = stream ? stream.getVideoTracks()[0] : null;
+          hasActiveVideo = videoTrack && videoTrack.enabled && videoTrack.readyState === 'live';
+        }
+
+        if (hasActiveVideo) {
+          videoElem.classList.remove("hidden");
+          avatarElem.classList.add("hidden");
+        } else {
+          videoElem.classList.add("hidden");
+          avatarElem.classList.remove("hidden");
+        }
+      }
+
+      function removeVideoCard(id) {
+        const card = document.getElementById(`vcard-${id}`);
+        if (card) card.remove();
+        if (peerConnections[id]) {
+          peerConnections[id].close();
+          delete peerConnections[id];
+          delete iceCandidatesQueue[id];
+        }
+      }
+
+      function createPeerConnection(remoteUserId, remoteUserName, isInitiator) {
+        if (peerConnections[remoteUserId]) return peerConnections[remoteUserId];
+
+        const pc = new RTCPeerConnection(iceServers);
+        peerConnections[remoteUserId] = pc;
+        iceCandidatesQueue[remoteUserId] = [];
+
+        if (localStream) {
+          localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+        }
+
+        pc.ontrack = (event) => {
+          const remoteStream = event.streams[0] || new MediaStream([event.track]);
+          const remoteAv = remoteUserAvatars[remoteUserId] || userAvatar;
+          addVideoCard(remoteUserId, remoteUserName, remoteStream, false, remoteAv);
         };
 
-        // UI Setup Tabs Switcher
-        window.switchSetupTab = function(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            if (tabName === 'create') {
-                document.querySelectorAll('.tab-btn')[0].classList.add('active');
-                document.getElementById('tab-create').classList.add('active');
+        pc.onicecandidate = (event) => {
+          if (event.candidate) {
+            push(ref(db, `rooms/${currentRoomId}/signal/${remoteUserId}/${userId}/candidates`), event.candidate.toJSON());
+          }
+        };
+
+        if (isInitiator) {
+          pc.createOffer({ offerToReceiveVideo: true, offerToReceiveAudio: true })
+            .then(offer => pc.setLocalDescription(offer))
+            .then(() => {
+              set(ref(db, `rooms/${currentRoomId}/signal/${remoteUserId}/${userId}/offer`), {
+                type: pc.localDescription.type,
+                sdp: pc.localDescription.sdp,
+                senderName: userName
+              });
+            }).catch(e => console.error("Offer Error:", e));
+        }
+
+        return pc;
+      }
+
+      function processBufferedCandidates(remoteUserId) {
+        const pc = peerConnections[remoteUserId];
+        const queue = iceCandidatesQueue[remoteUserId];
+        if (pc && queue && pc.remoteDescription) {
+          while (queue.length > 0) {
+            const cand = queue.shift();
+            pc.addIceCandidate(new RTCIceCandidate(cand)).catch(e => console.error(e));
+          }
+        }
+      }
+
+      function listenForWebRTCSignals() {
+        const signalRef = ref(db, `rooms/${currentRoomId}/signal/${userId}`);
+        
+        onChildAdded(signalRef, (snapshot) => {
+          const senderId = snapshot.key;
+          const dataRef = ref(db, `rooms/${currentRoomId}/signal/${userId}/${senderId}`);
+
+          onValue(dataRef, (dataSnap) => {
+            const data = dataSnap.val();
+            if (!data) return;
+
+            if (data.offer) {
+              const pc = createPeerConnection(senderId, data.offer.senderName || "Student", false);
+              if (pc.signalingState === "stable" || pc.signalingState === "have-remote-offer") {
+                pc.setRemoteDescription(new RTCSessionDescription(data.offer))
+                  .then(() => {
+                    processBufferedCandidates(senderId);
+                    return pc.createAnswer();
+                  })
+                  .then(answer => pc.setLocalDescription(answer))
+                  .then(() => {
+                    set(ref(db, `rooms/${currentRoomId}/signal/${senderId}/${userId}/answer`), {
+                      type: pc.localDescription.type,
+                      sdp: pc.localDescription.sdp
+                    });
+                  }).catch(e => console.error("Answer Error:", e));
+              }
+            }
+
+            if (data.answer && peerConnections[senderId]) {
+              const pc = peerConnections[senderId];
+              if (pc.signalingState === "have-local-offer") {
+                pc.setRemoteDescription(new RTCSessionDescription(data.answer))
+                  .then(() => processBufferedCandidates(senderId))
+                  .catch(e => console.error("Remote Desc Error:", e));
+              }
+            }
+          });
+
+          onChildAdded(ref(db, `rooms/${currentRoomId}/signal/${userId}/${senderId}/candidates`), (candSnap) => {
+            const cand = candSnap.val();
+            const pc = peerConnections[senderId];
+            if (cand) {
+              if (pc && pc.remoteDescription) {
+                pc.addIceCandidate(new RTCIceCandidate(cand)).catch(e => console.error(e));
+              } else {
+                if (!iceCandidatesQueue[senderId]) iceCandidatesQueue[senderId] = [];
+                iceCandidatesQueue[senderId].push(cand);
+              }
+            }
+          });
+        });
+      }
+
+      function playTickSound() {
+        if (!tickSoundEnabled) return;
+        try {
+          if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          if (audioCtx.state === 'suspended') audioCtx.resume();
+          
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+          
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.05);
+        } catch (e) { console.error(e); }
+      }
+
+      function validateUserName() {
+        const input = document.getElementById("user-name").value.trim();
+        if (!input) {
+          alert("Please enter your name before creating or joining a room!");
+          return null;
+        }
+        userName = input;
+        localStorage.setItem("learny_user_name", userName);
+        return userName;
+      }
+
+      function generateRoomId(name) {
+        const code = Math.random().toString(36).substring(2, 6);
+        const prefix = (name || "room").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 4);
+        return `${prefix}-${code}`;
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        if (userName) document.getElementById("user-name").value = userName;
+        if (userAvatar) document.getElementById("user-avatar-preview").src = userAvatar;
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomIdFromUrl = urlParams.get("room");
+        if (roomIdFromUrl) {
+          document.getElementById("join-room-id").value = roomIdFromUrl;
+          document.getElementById("tab-btn-join").click();
+        }
+
+        if (currentRoomId && userName) {
+          get(ref(db, `rooms/${currentRoomId}`)).then((snapshot) => {
+            if (snapshot.exists()) {
+              const data = snapshot.val();
+              isHost = (data.hostId === userId);
+              enterRoom(currentRoomId);
             } else {
-                document.querySelectorAll('.tab-btn')[1].classList.add('active');
-                document.getElementById('tab-join').classList.add('active');
+              localStorage.removeItem("learny_room_id");
             }
-        };
+          });
+        }
+      });
 
-        async function startLocalMedia() {
-            try {
-                localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            } catch (err) {
-                console.warn("Camera/Mic access declined or unavailable:", err);
-                localStream = new MediaStream();
-            }
-            addVideoCard(userId, userName, userAvatar, localStream, true);
+      document.getElementById("btn-create").addEventListener("click", () => {
+        if (!validateUserName()) return;
+
+        const roomName = document.getElementById("new-room-name").value || "Study Room";
+        const maxStudents = parseInt(document.getElementById("max-students").value) || 4;
+        const focusMins = parseInt(document.getElementById("focus-mins").value) || 25;
+        const breakMins = parseInt(document.getElementById("break-mins").value) || 5;
+
+        currentRoomId = generateRoomId(roomName);
+        isHost = true;
+
+        localStorage.setItem("learny_room_id", currentRoomId);
+        enterRoom(currentRoomId);
+
+        set(ref(db, "rooms/" + currentRoomId), {
+          roomName,
+          maxStudents,
+          focusMins,
+          breakMins,
+          hostId: userId,
+          status: "WAITING",
+          endTime: 0,
+          chatMuted: false
+        });
+      });
+
+      document.getElementById("btn-join").addEventListener("click", () => {
+        if (!validateUserName()) return;
+
+        const roomId = document.getElementById("join-room-id").value.trim();
+        if (!roomId) return;
+
+        get(ref(db, `rooms/${roomId}`)).then((snapshot) => {
+          if (!snapshot.exists()) {
+            alert("Room not found!");
+            return;
+          }
+          const data = snapshot.val();
+          const currentUsersCount = data.users ? Object.keys(data.users).length : 0;
+
+          if (currentUsersCount >= data.maxStudents && !data.users[userId]) {
+            alert(`Room is full! (Max Limit: ${data.maxStudents} students)`);
+            return;
+          }
+
+          currentRoomId = roomId;
+          isHost = (data.hostId === userId);
+          localStorage.setItem("learny_room_id", currentRoomId);
+          enterRoom(currentRoomId);
+        });
+      });
+
+      document.getElementById("btn-leave").addEventListener("click", leaveRoom);
+
+      function leaveRoom() {
+        if (localStream) {
+          localStream.getTracks().forEach(t => t.stop());
+        }
+        if (currentRoomId && userId) {
+          remove(ref(db, `rooms/${currentRoomId}/users/${userId}`));
+          remove(ref(db, `rooms/${currentRoomId}/signal/${userId}`));
+        }
+        localStorage.removeItem("learny_room_id");
+        location.reload();
+      }
+
+      // Host can end meeting for all participants
+      document.getElementById("btn-host-end-all").addEventListener("click", () => {
+        if (confirm("Are you sure you want to end this meeting for all participants?")) {
+          remove(ref(db, `rooms/${currentRoomId}`));
+        }
+      });
+
+      async function enterRoom(roomId) {
+        document.getElementById("setup-section").classList.add("hidden");
+        document.getElementById("room-section").classList.remove("hidden");
+        document.getElementById("room-id-tag").innerText = `#${roomId}`;
+
+        const fullShareUrl = `${window.location.origin}${window.location.pathname}?room=${roomId}`;
+        document.getElementById("share-link-text").innerText = fullShareUrl;
+
+        await startLocalMedia();
+        listenForWebRTCSignals();
+
+        const userRef = ref(db, `rooms/${roomId}/users/${userId}`);
+        set(userRef, { name: userName, avatar: userAvatar, isHost });
+        onDisconnect(userRef).remove();
+        onDisconnect(ref(db, `rooms/${roomId}/signal/${userId}`)).remove();
+
+        if (isHost) {
+          document.getElementById("host-panel").classList.remove("hidden");
+          document.getElementById("btn-host-end-all").classList.remove("hidden");
         }
 
-        function addVideoCard(id, label, avatarUrl, stream, isMuted = false) {
-            let card = document.getElementById(`vcard-${id}`);
-            if (!card) {
-                card = document.createElement("div");
-                card.id = `vcard-${id}`;
-                card.className = "video-card";
-                
-                const videoEl = document.createElement("video");
-                videoEl.id = `vvid-${id}`;
-                videoEl.autoplay = true;
-                videoEl.playsInline = true;
-                videoEl.muted = isMuted;
+        onValue(ref(db, `rooms/${roomId}`), (snapshot) => {
+          const data = snapshot.val();
+          if (!data) {
+            alert("Room has been closed by host.");
+            leaveRoom();
+            return;
+          }
 
-                const avatarEl = document.createElement("img");
-                avatarEl.id = `vavatar-${id}`;
-                avatarEl.className = "avatar-placeholder";
-                avatarEl.src = avatarUrl || "https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png";
+          if (data.users && !data.users[userId]) {
+            alert("You have been removed from the room by the Host.");
+            leaveRoom();
+            return;
+          }
 
-                const labelEl = document.createElement("div");
-                labelEl.className = "video-label";
-                labelEl.id = `vlabel-${id}`;
-                labelEl.innerHTML = `<i class="fa fa-user"></i> ${isMuted ? `${label} (You)` : label}`;
+          document.getElementById("display-room-title").innerText = data.roomName;
+          document.getElementById("max-count").innerText = data.maxStudents;
+          chatMutedByHost = !!data.chatMuted;
 
-                card.appendChild(videoEl);
-                card.appendChild(avatarEl);
-                card.appendChild(labelEl);
-                document.getElementById("video-grid").appendChild(card);
-            }
+          const muteBtn = document.getElementById("btn-toggle-mute-chat");
+          muteBtn.innerHTML = `<i class="fa fa-comment-slash"></i> Mute Chat: ${chatMutedByHost ? 'ON' : 'OFF'}`;
+          muteBtn.className = chatMutedByHost ? "btn btn-sm btn-danger" : "btn btn-sm btn-secondary";
 
-            const videoElem = document.getElementById(`vvid-${id}`);
-            if (videoElem) {
-                if (videoElem.srcObject !== stream) {
-                    videoElem.srcObject = stream;
-                }
-                videoElem.play().catch(e => {
-                    if (!isMuted) {
-                        videoElem.muted = true;
-                        videoElem.play().catch(err => console.error(err));
-                    }
-                });
-            }
-        }
+          if (isHost && data.status === "WAITING") {
+            document.getElementById("btn-start-session").classList.remove("hidden");
+          } else {
+            document.getElementById("btn-start-session").classList.add("hidden");
+          }
 
-        function removeVideoCard(id) {
-            const card = document.getElementById(`vcard-${id}`);
-            if (card) card.remove();
-            if (peerConnections[id]) {
-                peerConnections[id].close();
-                delete peerConnections[id];
-                delete iceCandidatesQueue[id];
-            }
-        }
-
-        function createPeerConnection(remoteUserId, remoteUserName, isInitiator) {
-            if (peerConnections[remoteUserId]) return peerConnections[remoteUserId];
-
-            const pc = new RTCPeerConnection(iceServers);
-            peerConnections[remoteUserId] = pc;
-            iceCandidatesQueue[remoteUserId] = [];
-
-            if (localStream) {
-                localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-            }
-
-            pc.ontrack = (event) => {
-                const remoteStream = event.streams[0] || new MediaStream([event.track]);
-                get(ref(db, `rooms/${currentRoomId}/users/${remoteUserId}`)).then((snap) => {
-                    const u = snap.val() || {};
-                    addVideoCard(remoteUserId, u.name || remoteUserName, u.avatar, remoteStream, false);
-                });
-            };
-
-            pc.onicecandidate = (event) => {
-                if (event.candidate) {
-                    push(ref(db, `rooms/${currentRoomId}/signal/${remoteUserId}/${userId}/candidates`), event.candidate.toJSON());
-                }
-            };
-
-            if (isInitiator) {
-                pc.createOffer({ offerToReceiveVideo: true, offerToReceiveAudio: true })
-                    .then(offer => pc.setLocalDescription(offer))
-                    .then(() => {
-                        set(ref(db, `rooms/${currentRoomId}/signal/${remoteUserId}/${userId}/offer`), {
-                            type: pc.localDescription.type,
-                            sdp: pc.localDescription.sdp,
-                            senderName: userName
-                        });
-                    }).catch(e => console.error("Offer Error:", e));
-            }
-
-            return pc;
-        }
-
-        function processBufferedCandidates(remoteUserId) {
-            const pc = peerConnections[remoteUserId];
-            const queue = iceCandidatesQueue[remoteUserId];
-            if (pc && queue && pc.remoteDescription) {
-                while (queue.length > 0) {
-                    const cand = queue.shift();
-                    pc.addIceCandidate(new RTCIceCandidate(cand)).catch(e => console.error(e));
-                }
-            }
-        }
-
-        function listenForWebRTCSignals() {
-            const signalRef = ref(db, `rooms/${currentRoomId}/signal/${userId}`);
-            
-            onChildAdded(signalRef, (snapshot) => {
-                const senderId = snapshot.key;
-                const dataRef = ref(db, `rooms/${currentRoomId}/signal/${userId}/${senderId}`);
-
-                onValue(dataRef, (dataSnap) => {
-                    const data = dataSnap.val();
-                    if (!data) return;
-
-                    if (data.offer) {
-                        const pc = createPeerConnection(senderId, data.offer.senderName || "Student", false);
-                        if (pc.signalingState === "stable" || pc.signalingState === "have-remote-offer") {
-                            pc.setRemoteDescription(new RTCSessionDescription(data.offer))
-                                .then(() => {
-                                    processBufferedCandidates(senderId);
-                                    return pc.createAnswer();
-                                })
-                                .then(answer => pc.setLocalDescription(answer))
-                                .then(() => {
-                                    set(ref(db, `rooms/${currentRoomId}/signal/${senderId}/${userId}/answer`), {
-                                        type: pc.localDescription.type,
-                                        sdp: pc.localDescription.sdp
-                                    });
-                                }).catch(e => console.error("Answer Error:", e));
-                        }
-                    }
-
-                    if (data.answer && peerConnections[senderId]) {
-                        const pc = peerConnections[senderId];
-                        if (pc.signalingState === "have-local-offer") {
-                            pc.setRemoteDescription(new RTCSessionDescription(data.answer))
-                                .then(() => processBufferedCandidates(senderId))
-                                .catch(e => console.error("Remote Desc Error:", e));
-                        }
-                    }
-                });
-
-                onChildAdded(ref(db, `rooms/${currentRoomId}/signal/${userId}/${senderId}/candidates`), (candSnap) => {
-                    const cand = candSnap.val();
-                    const pc = peerConnections[senderId];
-                    if (cand) {
-                        if (pc && pc.remoteDescription) {
-                            pc.addIceCandidate(new RTCIceCandidate(cand)).catch(e => console.error(e));
-                        } else {
-                            if (!iceCandidatesQueue[senderId]) iceCandidatesQueue[senderId] = [];
-                            iceCandidatesQueue[senderId].push(cand);
-                        }
-                    }
-                });
-            });
-        }
-
-        function playTickSound() {
-            if (!tickSoundEnabled) return;
-            try {
-                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
-                
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.05);
-            } catch (e) { console.error(e); }
-        }
-
-        function generateRoomId(name) {
-            const code = Math.random().toString(36).substring(2, 6);
-            const prefix = (name || "room").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 4);
-            return `${prefix}-${code}`;
-        }
-
-        window.addEventListener("DOMContentLoaded", () => {
-            document.getElementById("setup-user-display-name").innerText = userName;
-            document.getElementById("setup-user-avatar").src = userAvatar;
-            
-            const urlParams = new URLSearchParams(window.location.search);
-            const roomIdFromUrl = urlParams.get("room");
-            if (roomIdFromUrl) {
-                document.getElementById("join-room-id").value = roomIdFromUrl;
-                switchSetupTab('join');
-            }
-
-            if (currentRoomId) {
-                get(ref(db, `rooms/${currentRoomId}`)).then((snapshot) => {
-                    if (snapshot.exists()) {
-                        const data = snapshot.val();
-                        isHost = (data.hostId === userId);
-                        enterRoom(currentRoomId);
-                    } else {
-                        localStorage.removeItem("learny_room_id");
-                    }
-                });
-            }
+          updatePhase(data.status, data.endTime, data.focusMins, data.breakMins);
         });
 
-        document.getElementById("btn-create").addEventListener("click", () => {
-            const roomName = document.getElementById("new-room-name").value || "Study Room";
-            const maxStudents = parseInt(document.getElementById("max-students").value) || 4;
-            const focusMins = parseInt(document.getElementById("focus-mins").value) || 25;
-            const breakMins = parseInt(document.getElementById("break-mins").value) || 5;
+        onValue(ref(db, `rooms/${roomId}/users`), (snapshot) => {
+          const users = snapshot.val() || {};
+          const userEntries = Object.entries(users);
+          document.getElementById("user-count").innerText = userEntries.length;
 
-            currentRoomId = generateRoomId(roomName);
-            isHost = true;
+          userEntries.forEach(([remoteId, u]) => {
+            remoteUserAvatars[remoteId] = u.avatar || userAvatar;
+            const fallbackImg = document.getElementById(`vavatar-${remoteId}`);
+            if (fallbackImg) fallbackImg.src = u.avatar || userAvatar;
 
-            localStorage.setItem("learny_room_id", currentRoomId);
-            enterRoom(currentRoomId);
+            if (remoteId !== userId && !peerConnections[remoteId]) {
+              const isInitiator = userId < remoteId;
+              createPeerConnection(remoteId, u.name, isInitiator);
+            }
+          });
 
-            set(ref(db, "rooms/" + currentRoomId), {
-                roomName,
-                maxStudents,
-                focusMins,
-                breakMins,
-                hostId: userId,
-                status: "WAITING",
-                endTime: 0,
-                chatMuted: false
-            });
+          Object.keys(peerConnections).forEach(pId => {
+            if (!users[pId]) removeVideoCard(pId);
+          });
+
+          const userList = document.getElementById("user-list");
+          userList.innerHTML = userEntries
+            .map(([id, u]) => `
+              <div class="user-tag">
+                <span style="display: flex; align-items: center; gap: 8px;">
+                    <img src="${u.avatar || userAvatar}" style="width:24px; height:24px; border-radius:50%; object-fit:cover;">
+                    <b>${u.name}</b> ${u.isHost ? '<b style="color:var(--warning); font-size:0.75rem;">HOST</b>' : ''}
+                </span>
+                ${isHost && id !== userId ? `<button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 0.75rem;" onclick="window.kickUser('${id}')"><i class="fa fa-user-minus"></i> Remove</button>` : ''}
+              </div>
+            `).join("");
         });
 
-        document.getElementById("btn-join").addEventListener("click", () => {
-            const roomId = document.getElementById("join-room-id").value.trim();
-            if (!roomId) return;
-
-            get(ref(db, `rooms/${roomId}`)).then((snapshot) => {
-                if (!snapshot.exists()) {
-                    alert("Room not found!");
-                    return;
-                }
-                const data = snapshot.val();
-                const currentUsersCount = data.users ? Object.keys(data.users).length : 0;
-
-                if (currentUsersCount >= data.maxStudents && !data.users[userId]) {
-                    alert(`Room is full! (Max Limit: ${data.maxStudents} students)`);
-                    return;
-                }
-
-                currentRoomId = roomId;
-                isHost = (data.hostId === userId);
-                localStorage.setItem("learny_room_id", currentRoomId);
-                enterRoom(currentRoomId);
-            });
+        onChildAdded(ref(db, `rooms/${roomId}/messages`), (snapshot) => {
+          const msg = snapshot.val();
+          const box = document.getElementById("chat-box");
+          box.innerHTML += `<div class="chat-msg"><strong>${msg.sender}:</strong> ${msg.text}</div>`;
+          box.scrollTop = box.scrollHeight;
         });
+      }
 
-        document.getElementById("btn-leave").addEventListener("click", leaveRoom);
+      document.getElementById("btn-toggle-mic").addEventListener("click", () => {
+        if (!localStream) return;
+        const audioTrack = localStream.getAudioTracks()[0];
+        if (audioTrack) {
+          audioTrack.enabled = !audioTrack.enabled;
+          const btn = document.getElementById("btn-toggle-mic");
+          btn.innerHTML = `<i class="fa ${audioTrack.enabled ? 'fa-microphone' : 'fa-microphone-slash'}"></i> Mic: ${audioTrack.enabled ? 'ON' : 'OFF'}`;
+          btn.className = audioTrack.enabled ? "btn btn-secondary" : "btn btn-danger";
+        }
+      });
 
-        function leaveRoom() {
-            if (localStream) {
-                localStream.getTracks().forEach(t => t.stop());
-            }
-            if (currentRoomId && userId) {
-                remove(ref(db, `rooms/${currentRoomId}/users/${userId}`));
-                remove(ref(db, `rooms/${currentRoomId}/signal/${userId}`));
-            }
-            localStorage.removeItem("learny_room_id");
-            location.reload();
+      document.getElementById("btn-toggle-cam").addEventListener("click", () => {
+        if (!localStream) return;
+        const videoTrack = localStream.getVideoTracks()[0];
+        if (videoTrack) {
+          videoTrack.enabled = !videoTrack.enabled;
+          const btn = document.getElementById("btn-toggle-cam");
+          btn.innerHTML = `<i class="fa ${videoTrack.enabled ? 'fa-video' : 'fa-video-slash'}"></i> Cam: ${videoTrack.enabled ? 'ON' : 'OFF'}`;
+          btn.className = videoTrack.enabled ? "btn btn-secondary" : "btn btn-danger";
+          updateCameraDisplayState(userId);
+        }
+      });
+
+      window.kickUser = function(targetUserId) {
+        if (confirm("Remove this student from the room?")) {
+          remove(ref(db, `rooms/${currentRoomId}/users/${targetUserId}`));
+        }
+      };
+
+      document.getElementById("btn-toggle-tick").addEventListener("click", () => {
+        tickSoundEnabled = !tickSoundEnabled;
+        const btn = document.getElementById("btn-toggle-tick");
+        btn.innerHTML = `<i class="fa ${tickSoundEnabled ? 'fa-volume-up' : 'fa-volume-mute'}"></i> Tick: ${tickSoundEnabled ? 'ON' : 'OFF'}`;
+        btn.className = tickSoundEnabled ? "btn btn-success" : "btn btn-secondary";
+      });
+
+      document.getElementById("btn-toggle-mute-chat").addEventListener("click", () => {
+        update(ref(db, `rooms/${currentRoomId}`), {
+          chatMuted: !chatMutedByHost
+        });
+      });
+
+      document.getElementById("btn-start-session").addEventListener("click", () => {
+        get(ref(db, `rooms/${currentRoomId}`)).then((snapshot) => {
+          const data = snapshot.val();
+          const endTime = Date.now() + data.focusMins * 60 * 1000;
+
+          update(ref(db, `rooms/${currentRoomId}`), {
+            status: "FOCUS",
+            endTime
+          });
+        });
+      });
+
+      document.getElementById("btn-copy").addEventListener("click", () => {
+        const linkText = document.getElementById("share-link-text").innerText;
+        navigator.clipboard.writeText(linkText).then(() => {
+          const btn = document.getElementById("btn-copy");
+          btn.innerHTML = "<i class='fa fa-check'></i> Copied!";
+          setTimeout(() => btn.innerHTML = "<i class='fa fa-copy'></i> Copy Link", 2000);
+        });
+      });
+
+      function updatePhase(status, endTime, focusMins, breakMins) {
+        const badge = document.getElementById("phase-badge");
+        const chatInput = document.getElementById("chat-input");
+        const sendBtn = document.getElementById("send-btn");
+        const statusMsg = document.getElementById("chat-status-msg");
+        const progressRing = document.getElementById("timer-progress-ring");
+
+        if (status === "WAITING") {
+          badge.innerHTML = '<i class="fa fa-hourglass-start"></i> LOBBY - WAITING FOR HOST';
+          badge.className = "badge-status WAITING";
+          statusMsg.innerHTML = isHost ? '<i class="fa fa-info-circle"></i> Click "Start Session" when ready.' : '<i class="fa fa-info-circle"></i> Waiting for host to start session...';
+          chatInput.disabled = true;
+          sendBtn.disabled = true;
+          document.getElementById("timer-display").innerText = `${String(focusMins).padStart(2, '0')}:00`;
+          if (progressRing) progressRing.style.strokeDashoffset = "0";
+          return;
         }
 
-        // Host capability to terminate meeting for all
-        document.getElementById("btn-end-meeting").addEventListener("click", () => {
-            if (confirm("End meeting for all participants?")) {
-                remove(ref(db, `rooms/${currentRoomId}`));
-            }
-        });
+        badge.innerHTML = status === "FOCUS" ? '<i class="fa fa-brain"></i> FOCUS MODE' : '<i class="fa fa-coffee"></i> BREAK TIME';
+        badge.className = `badge-status ${status}`;
 
-        async function enterRoom(roomId) {
-            document.getElementById("setup-section").classList.add("hidden");
-            document.getElementById("room-section").classList.remove("hidden");
-            document.getElementById("room-id-tag").innerText = roomId;
+        const isFocus = status === "FOCUS";
+        const canChat = !isFocus && !chatMutedByHost;
 
-            const fullShareUrl = `${window.location.origin}${window.location.pathname}?room=${roomId}`;
-            document.getElementById("share-link-text").innerText = fullShareUrl;
+        chatInput.disabled = !canChat;
+        sendBtn.disabled = !canChat;
 
-            await startLocalMedia();
-            listenForWebRTCSignals();
-
-            const userRef = ref(db, `rooms/${roomId}/users/${userId}`);
-            set(userRef, { name: userName, avatar: userAvatar, isHost });
-            onDisconnect(userRef).remove();
-            onDisconnect(ref(db, `rooms/${roomId}/signal/${userId}`)).remove();
-
-            if (isHost) {
-                document.getElementById("host-panel").classList.remove("hidden");
-                document.getElementById("btn-end-meeting").classList.remove("hidden");
-            }
-
-            onValue(ref(db, `rooms/${roomId}`), (snapshot) => {
-                const data = snapshot.val();
-                if (!data) {
-                    alert("Room has been closed by host.");
-                    leaveRoom();
-                    return;
-                }
-
-                if (data.users && !data.users[userId]) {
-                    alert("You have been removed from the room by the Host.");
-                    leaveRoom();
-                    return;
-                }
-
-                document.getElementById("display-room-title").innerText = data.roomName;
-                document.getElementById("max-count").innerText = data.maxStudents;
-                chatMutedByHost = !!data.chatMuted;
-
-                const muteBtn = document.getElementById("btn-toggle-mute-chat");
-                muteBtn.innerHTML = `<i class="fa fa-comment-slash"></i> Mute Chat: ${chatMutedByHost ? 'ON' : 'OFF'}`;
-                muteBtn.className = chatMutedByHost ? "btn btn-danger" : "btn btn-secondary";
-
-                if (isHost && data.status === "WAITING") {
-                    document.getElementById("btn-start-session").classList.remove("hidden");
-                } else {
-                    document.getElementById("btn-start-session").classList.add("hidden");
-                }
-
-                updatePhase(data.status, data.endTime, data.focusMins, data.breakMins);
-            });
-
-            onValue(ref(db, `rooms/${roomId}/users`), (snapshot) => {
-                const users = snapshot.val() || {};
-                const userEntries = Object.entries(users);
-                document.getElementById("user-count").innerText = userEntries.length;
-
-                userEntries.forEach(([remoteId, u]) => {
-                    if (remoteId !== userId && !peerConnections[remoteId]) {
-                        const isInitiator = userId < remoteId;
-                        createPeerConnection(remoteId, u.name, isInitiator);
-                    }
-                    const avatarImg = document.getElementById(`vavatar-${remoteId}`);
-                    if (avatarImg && u.avatar) avatarImg.src = u.avatar;
-                });
-
-                Object.keys(peerConnections).forEach(pId => {
-                    if (!users[pId]) removeVideoCard(pId);
-                });
-
-                const userList = document.getElementById("user-list");
-                userList.innerHTML = userEntries
-                    .map(([id, u]) => `
-                        <div class="user-tag">
-                            <span style="display:flex; align-items:center; gap:8px;">
-                                <img src="${u.avatar || 'https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png'}" style="width:24px; height:24px; border-radius:50%; object-fit:cover;" />
-                                <b>${u.name}</b> ${u.isHost ? '<span style="color:var(--warning); font-size:0.75rem; font-weight:bold;">HOST</span>' : ''}
-                            </span>
-                            ${isHost && id !== userId ? `<button class="btn btn-danger" style="padding:2px 8px; font-size:0.75rem;" onclick="window.kickUser('${id}')"><i class="fa fa-user-times"></i> Kick</button>` : ''}
-                        </div>
-                    `).join("");
-            });
-
-            onChildAdded(ref(db, `rooms/${roomId}/messages`), (snapshot) => {
-                const msg = snapshot.val();
-                const box = document.getElementById("chat-box");
-                box.innerHTML += `<div class="chat-msg"><strong>${msg.sender}:</strong> ${msg.text}</div>`;
-                box.scrollTop = box.scrollHeight;
-            });
+        if (isFocus) {
+          statusMsg.innerHTML = '<i class="fa fa-lock"></i> Chat is locked during Focus mode.';
+        } else if (chatMutedByHost) {
+          statusMsg.innerHTML = '<i class="fa fa-ban"></i> Chat has been restricted by Host.';
+        } else {
+          statusMsg.innerHTML = '<i class="fa fa-comments"></i> Break time! Chat is open.';
         }
 
-        document.getElementById("btn-toggle-mic").addEventListener("click", () => {
-            if (!localStream) return;
-            const audioTrack = localStream.getAudioTracks()[0];
-            if (audioTrack) {
-                audioTrack.enabled = !audioTrack.enabled;
-                const btn = document.getElementById("btn-toggle-mic");
-                btn.innerHTML = `<i class="fa fa-microphone${audioTrack.enabled ? '' : '-slash'}"></i> Mic: ${audioTrack.enabled ? 'ON' : 'OFF'}`;
-                btn.className = audioTrack.enabled ? "btn btn-secondary" : "btn btn-danger";
-            }
+        totalSessionSecs = (isFocus ? focusMins : breakMins) * 60;
+
+        if (timerInterval) clearInterval(timerInterval);
+
+        timerInterval = setInterval(() => {
+          const remainingSecs = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+          
+          playTickSound();
+
+          if (remainingSecs === 0 && isHost) {
+            clearInterval(timerInterval);
+            toggleRoomPhase(status, focusMins, breakMins);
+          }
+
+          const mins = String(Math.floor(remainingSecs / 60)).padStart(2, '0');
+          const secs = String(remainingSecs % 60).padStart(2, '0');
+          document.getElementById("timer-display").innerText = `${mins}:${secs}`;
+
+          // Circular Ring Update
+          if (progressRing && totalSessionSecs > 0) {
+            const circumference = 440;
+            const offset = circumference - (remainingSecs / totalSessionSecs) * circumference;
+            progressRing.style.strokeDashoffset = offset;
+            progressRing.style.stroke = isFocus ? "var(--primary)" : "var(--success)";
+          }
+        }, 1000);
+      }
+
+      function toggleRoomPhase(currentStatus, focusMins, breakMins) {
+        const nextStatus = currentStatus === "FOCUS" ? "BREAK" : "FOCUS";
+        const nextDuration = nextStatus === "FOCUS" ? focusMins : breakMins;
+        
+        update(ref(db, `rooms/${currentRoomId}`), {
+          status: nextStatus,
+          endTime: Date.now() + nextDuration * 60 * 1000
         });
+      }
 
-        document.getElementById("btn-toggle-cam").addEventListener("click", () => {
-            if (!localStream) return;
-            const videoTrack = localStream.getVideoTracks()[0];
-            const myCard = document.getElementById(`vcard-${userId}`);
-            if (videoTrack) {
-                videoTrack.enabled = !videoTrack.enabled;
-                const btn = document.getElementById("btn-toggle-cam");
-                btn.innerHTML = `<i class="fa fa-video${videoTrack.enabled ? '' : '-slash'}"></i> Cam: ${videoTrack.enabled ? 'ON' : 'OFF'}`;
-                btn.className = videoTrack.enabled ? "btn btn-secondary" : "btn btn-danger";
-
-                if (myCard) {
-                    if (!videoTrack.enabled) {
-                        myCard.classList.add("cam-off");
-                    } else {
-                        myCard.classList.remove("cam-off");
-                    }
-                }
-            }
-        });
-
-        window.kickUser = function(targetUserId) {
-            if (confirm("Remove this student from the room?")) {
-                remove(ref(db, `rooms/${currentRoomId}/users/${targetUserId}`));
-            }
-        };
-
-        document.getElementById("btn-toggle-tick").addEventListener("click", () => {
-            tickSoundEnabled = !tickSoundEnabled;
-            const btn = document.getElementById("btn-toggle-tick");
-            btn.innerHTML = `<i class="fa fa-volume-${tickSoundEnabled ? 'up' : 'mute'}"></i> Sound: ${tickSoundEnabled ? 'ON' : 'OFF'}`;
-            btn.className = tickSoundEnabled ? "btn btn-success" : "btn btn-secondary";
-        });
-
-        document.getElementById("btn-toggle-mute-chat").addEventListener("click", () => {
-            update(ref(db, `rooms/${currentRoomId}`), {
-                chatMuted: !chatMutedByHost
-            });
-        });
-
-        document.getElementById("btn-start-session").addEventListener("click", () => {
-            get(ref(db, `rooms/${currentRoomId}`)).then((snapshot) => {
-                const data = snapshot.val();
-                const endTime = Date.now() + data.focusMins * 60 * 1000;
-
-                update(ref(db, `rooms/${currentRoomId}`), {
-                    status: "FOCUS",
-                    endTime
-                });
-            });
-        });
-
-        document.getElementById("btn-copy").addEventListener("click", () => {
-            const linkText = document.getElementById("share-link-text").innerText;
-            navigator.clipboard.writeText(linkText).then(() => {
-                const btn = document.getElementById("btn-copy");
-                btn.innerHTML = `<i class="fa fa-check"></i> Copied!`;
-                setTimeout(() => btn.innerHTML = `<i class="fa fa-copy"></i> Copy Link`, 2000);
-            });
-        });
-
-        function setCircleProgress(remainingSecs) {
-            const circle = document.getElementById("circle-progress");
-            if (!circle || totalPhaseDurationSecs <= 0) return;
-            const strokeDasharray = 440; // 2 * PI * r = 2 * 3.14159 * 70 ≈ 440
-            const offset = strokeDasharray - (remainingSecs / totalPhaseDurationSecs) * strokeDasharray;
-            circle.style.strokeDashoffset = Math.max(0, offset);
+      document.getElementById("send-btn").addEventListener("click", sendMessage);
+      function sendMessage() {
+        const input = document.getElementById("chat-input");
+        if (input.value.trim() && !chatMutedByHost) {
+          push(ref(db, `rooms/${currentRoomId}/messages`), {
+            sender: userName,
+            text: input.value
+          });
+          input.value = "";
         }
-
-        function updatePhase(status, endTime, focusMins, breakMins) {
-            const badge = document.getElementById("phase-badge");
-            const chatInput = document.getElementById("chat-input");
-            const sendBtn = document.getElementById("send-btn");
-            const statusMsg = document.getElementById("chat-status-msg");
-
-            if (status === "WAITING") {
-                badge.innerText = "LOBBY - WAITING FOR HOST";
-                badge.className = "badge WAITING";
-                statusMsg.innerHTML = isHost ? "<i class='fa fa-info-circle'></i> Click 'Start Session' when ready." : "<i class='fa fa-clock'></i> Waiting for host to start session...";
-                chatInput.disabled = true;
-                sendBtn.disabled = true;
-                document.getElementById("timer-display").innerText = `${String(focusMins).padStart(2, '0')}:00`;
-                setCircleProgress(100);
-                return;
-            }
-
-            badge.innerText = status === "FOCUS" ? "FOCUS MODE" : "BREAK TIME";
-            badge.className = `badge ${status}`;
-
-            totalPhaseDurationSecs = (status === "FOCUS" ? focusMins : breakMins) * 60;
-
-            const isFocus = status === "FOCUS";
-            const canChat = !isFocus && !chatMutedByHost;
-
-            chatInput.disabled = !canChat;
-            sendBtn.disabled = !canChat;
-
-            if (isFocus) {
-                statusMsg.innerHTML = "<i class='fa fa-lock'></i> Chat is locked during Focus mode.";
-            } else if (chatMutedByHost) {
-                statusMsg.innerHTML = "<i class='fa fa-ban'></i> Chat has been restricted by the Host.";
-            } else {
-                statusMsg.innerHTML = "<i class='fa fa-unlock'></i> Break time! Chat is open.";
-            }
-
-            if (timerInterval) clearInterval(timerInterval);
-
-            timerInterval = setInterval(() => {
-                const remainingSecs = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
-                
-                playTickSound();
-                setCircleProgress(remainingSecs);
-
-                if (remainingSecs === 0 && isHost) {
-                    clearInterval(timerInterval);
-                    toggleRoomPhase(status, focusMins, breakMins);
-                }
-
-                const mins = String(Math.floor(remainingSecs / 60)).padStart(2, '0');
-                const secs = String(remainingSecs % 60).padStart(2, '0');
-                document.getElementById("timer-display").innerText = `${mins}:${secs}`;
-            }, 1000);
-        }
-
-        function toggleRoomPhase(currentStatus, focusMins, breakMins) {
-            const nextStatus = currentStatus === "FOCUS" ? "BREAK" : "FOCUS";
-            const nextDuration = nextStatus === "FOCUS" ? focusMins : breakMins;
-            
-            update(ref(db, `rooms/${currentRoomId}`), {
-                status: nextStatus,
-                endTime: Date.now() + nextDuration * 60 * 1000
-            });
-        }
-
-        document.getElementById("send-btn").addEventListener("click", sendMessage);
-        function sendMessage() {
-            const input = document.getElementById("chat-input");
-            if (input.value.trim() && !chatMutedByHost) {
-                push(ref(db, `rooms/${currentRoomId}/messages`), {
-                    sender: userName,
-                    text: input.value
-                });
-                input.value = "";
-            }
-        }
+      }
     </script>
 </body>
 </html>
