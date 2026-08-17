@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Learny - Community Chat</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { -webkit-tap-highlight-color: transparent; }
+
+        /* Embedded Custom WhatsApp-style Layout Adjustments */
+        .chat-app-wrapper {
+            display: flex;
+            height: calc(100vh - 140px);
+            min-height: 520px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 20px;
+        }
+
+        /* Sidebar Styles */
+        .chat-sidebar {
+            width: 320px;
+            background: var(--bg-dark);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .chat-user-banner {
+            padding: 14px 16px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-avatar-lg {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+            background: var(--bg-dark);
+        }
+
+        .chat-user-info { flex: 1; min-width: 0; }
+        .chat-user-info .my-name { font-weight: 700; font-size: 14px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .chat-user-info .my-id { font-size: 11px; color: var(--primary-light); font-weight: 600; margin-top: 2px; }
+
+        .chat-tabs {
+            display: flex;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .chat-tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .chat-tab-btn.active {
+            color: var(--primary-light);
+            border-bottom-color: var(--primary);
+            background: rgba(108, 43, 217, 0.08);
+        }
+
+        .chat-badge {
+            background: var(--danger);
+            color: #fff;
+            font-size: 10px;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-weight: 700;
+        }
+
+        .chat-tab-panel { flex: 1; overflow-y: auto; display: none; }
+        .chat-tab-panel.active { display: block; }
+
+        /* Contact Item */
+        .chat-contact-item {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s ease;
+        }
+        .chat-contact-item:hover { background: var(--bg-card-hover); }
+        .chat-contact-item.active { background: rgba(108, 43, 217, 0.15); border-left: 4px solid var(--primary); }
+
+        .contact-details { flex: 1; min-width: 0; }
+        .contact-details .name { font-weight: 600; font-size: 14px; color: var(--text-main); }
+        .contact-details .sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+        .btn-remove-contact {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-remove-contact:hover { color: var(--danger); background: rgba(239, 68, 68, 0.15); }
+
+        /* Requests Tab Styling */
+        .add-box { padding: 16px; border-bottom: 1px solid var(--border); }
+        .add-box label { display: block; font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
+        .add-input-group { display: flex; gap: 8px; }
+        .add-input-group input {
+            flex: 1;
+            padding: 8px 12px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-main);
+            font-size: 13px;
+            outline: none;
+        }
+        .add-input-group input:focus { border-color: var(--primary); }
+
+        .req-section-title { padding: 12px 16px 4px; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+
+        .request-item {
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Main Chat Window (WhatsApp Style) */
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-card);
+            position: relative;
+        }
+
+        .chat-header {
+            padding: 12px 20px;
+            background: var(--bg-dark);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header-user { display: flex; align-items: center; gap: 12px; }
+        .btn-back-sidebar { display: none; background: none; border: none; color: var(--text-main); font-size: 18px; margin-right: 8px; cursor: pointer; }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-color: var(--bg-main);
+            background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
+            background-size: 16px 16px;
+        }
+
+        .msg-bubble {
+            max-width: 65%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 13.5px;
+            line-height: 1.4;
+            position: relative;
+            word-break: break-word;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .msg-bubble.sent {
+            align-self: flex-end;
+            background: var(--primary);
+            color: #fff;
+            border-bottom-right-radius: 2px;
+        }
+
+        .msg-bubble.received {
+            align-self: flex-start;
+            background: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 2px;
+        }
+
+        .msg-time {
+            font-size: 10px;
+            margin-top: 4px;
+            opacity: 0.7;
+            text-align: right;
+        }
+
+        .chat-input-bar {
+            padding: 12px 16px;
+            background: var(--bg-dark);
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .chat-input-bar input {
+            flex: 1;
+            padding: 10px 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .chat-input-bar input:focus { border-color: var(--primary); }
+
+        .btn-send {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-send:hover:not(:disabled) { background: var(--primary-light); }
+        .btn-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .chat-empty-state {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            padding: 20px;
+            text-align: center;
+        }
+        .chat-empty-state i { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
+
+        /* Responsive Mobile Handling */
+        @media (max-width: 768px) {
+            .chat-app-wrapper { height: calc(100vh - 120px); min-height: 450px; }
+            .chat-sidebar { width: 100%; position: absolute; top:0; bottom:0; left:0; z-index: 10; }
+            .chat-sidebar.hidden-mobile { display: none; }
+            .btn-back-sidebar { display: inline-block; }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+
+    <div class="app-container">
+        <!-- SIDEBAR (Standard Website Navigation) -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">L</div>
+                <span class="sidebar-title">Learny</span>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="index.html"><i class="fa fa-tachometer"></i> Dashboard</a></li>
+                <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+                <li class="nav-item active"><a href="chat.html"><i class="fa fa-comments"></i> Chat</a></li>
+                <li class="nav-item"><a href="bot.html"><i class="fa fa-brain"></i> LearnyAI</a></li>
+                <li class="nav-item"><a href="games.html"><i class="fa fa-gamepad"></i> Games</a></li>
+                <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
+                <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+                <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+                <li class="nav-item"><a href="tuition.html"><i class="fa fa-chalkboard-teacher"></i> Tuition</a></li>
+                <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+                <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+            </ul>
+            <div class="sidebar-welcome">
+                <div class="divider"></div>
+                <p id="sidebar-username">Welcome, User!</p>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="main-content">
+            <header class="page-header">
+                <button class="hamburger" aria-label="Toggle Menu"><i class="fa fa-bars"></i></button>
+                <h1 class="page-title"><i class="fa fa-comments"></i> Community Chat</h1>
+                <div class="header-actions">
+                    <button class="theme-toggle" aria-label="Toggle Theme"><i class="fa fa-moon"></i></button>
+                    <button class="notif-btn" aria-label="Notifications"><i class="fa fa-bell"></i></button>
+                </div>
+            </header>
+
+            <!-- CHAT APP WRAPPER -->
+            <div class="chat-app-wrapper">
+                <!-- Chat Left Sidebar -->
+                <div class="chat-sidebar" id="chatSidebar">
+                    <!-- Current User Header Info -->
+                    <div class="chat-user-banner">
+                        <img id="myAvatar" class="chat-avatar-lg" src="https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png" alt="Avatar">
+                        <div class="chat-user-info">
+                            <div class="my-name" id="myUsername">Connecting...</div>
+                            <div class="my-id" id="myChatId">Chat ID: ---</div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Tabs -->
+                    <div class="chat-tabs">
+                        <button class="chat-tab-btn active" id="tabBtnChats">
+                            <i class="fa fa-comment-alt"></i> Chats
+                        </button>
+                        <button class="chat-tab-btn" id="tabBtnDiscover">
+                            <i class="fa fa-user-plus"></i> Find / Requests
+                            <span class="chat-badge" id="reqBadge" style="display:none;">0</span>
+                        </button>
+                    </div>
+
+                    <!-- Tab 1: Active Conversations -->
+                    <div class="chat-tab-panel active" id="tabChats">
+                        <div id="chatsList"></div>
+                    </div>
+
+                    <!-- Tab 2: Requests & Connections -->
+                    <div class="chat-tab-panel" id="tabDiscover">
+                        <div class="add-box">
+                            <label>Connect with Student</label>
+                            <div class="add-input-group">
+                                <input type="text" id="targetChatId" placeholder="Enter ID (e.g. LRN-1102)">
+                                <button class="btn btn-primary btn-sm" id="sendReqBtn">Send</button>
+                            </div>
+                        </div>
+
+                        <div class="req-section-title">Incoming Requests</div>
+                        <div id="incomingRequestsList"></div>
+
+                        <div class="req-section-title">Sent Requests</div>
+                        <div id="sentRequestsList"></div>
+                    </div>
+                </div>
+
+                <!-- Chat Main Window -->
+                <div class="chat-main">
+                    <div class="chat-header">
+                        <div class="chat-header-user">
+                            <button class="btn-back-sidebar" id="btnBackSidebar" aria-label="Back"><i class="fa fa-arrow-left"></i></button>
+                            <img id="activeChatAvatar" class="chat-avatar-lg" src="https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png" style="width:36px; height:36px; display:none;" alt="Friend Avatar">
+                            <div class="title" id="chatHeaderTitle" style="font-weight: 600; font-size: 15px;">Select a contact to start chatting</div>
+                        </div>
+                        <button id="removeFriendBtn" class="btn btn-sm btn-secondary" style="display:none; color: var(--danger);" title="Remove Connection">
+                            <i class="fa fa-user-minus"></i> Unfriend
+                        </button>
+                    </div>
+
+                    <!-- Empty State View -->
+                    <div class="chat-empty-state" id="emptyState">
+                        <i class="fa fa-comments"></i>
+                        <p>Select an existing contact or enter a Chat ID under Find / Requests to start messaging.</p>
+                    </div>
+
+                    <!-- Messages Container -->
+                    <div class="chat-messages" id="messagesBox" style="display: none;"></div>
+
+                    <!-- Input Bar -->
+                    <div class="chat-input-bar">
+                        <input type="text" id="messageInput" placeholder="Type a message..." disabled>
+                        <button class="btn-send" id="sendMsgBtn" disabled aria-label="Send Message"><i class="fa fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SITE FOOTER -->
+            <footer class="site-footer">
+                <p>Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰</p>
+                <p style="margin-top: 8px; font-size: 12px;">
+                    <a href="about.html">About Us</a> • 
+                    <a href="privacy.html">Privacy Policy</a> • 
+                    <a href="contact.html">Contact Us</a>
+                </p>
+            </footer>
+        </main>
+    </div>
+
+    <div id="notification-toast" class="notification"><i class="fa fa-info-circle"></i><span>Notification</span></div>
+
+    <!-- Main JS Application Logic -->
+    <script src="script.js"></script>
+
+    <!-- Firebase Realtime Chat Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { 
+            getFirestore, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc, 
+            collection, query, where, orderBy, onSnapshot, getDocs, serverTimestamp 
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBguApS0wRuiarK1djIg0eltnAv-1E5DJI",
+            authDomain: "lrnchat-2b76f.firebaseapp.com",
+            projectId: "lrnchat-2b76f",
+            storageBucket: "lrnchat-2b76f.firebasestorage.app",
+            messagingSenderId: "931919499161",
+            appId: "1:931919499161:web:33f96dde96a3400d06cd08"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let currentUserData = null;
+        let activeChatUserId = null;
+        let activeRequestId = null;
+        let activeChatUnsubscribe = null;
+
+        // Sync avatar from local Learny APP profile data
+        function getProfileAvatar() {
+            if (typeof APP !== 'undefined' && APP.data && APP.data.profile && APP.data.profile.avatar) {
+                return APP.data.profile.avatar;
+            }
+            return localStorage.getItem('learny_avatar') || "https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png";
+        }
+
+        function getProfileName() {
+            if (typeof APP !== 'undefined' && APP.data && APP.data.profile && APP.data.profile.name) {
+                return APP.data.profile.name;
+            }
+            return "Student";
+        }
+
+        // Tab Switching Mechanics
+        const tabBtnChats = document.getElementById('tabBtnChats');
+        const tabBtnDiscover = document.getElementById('tabBtnDiscover');
+        const tabChats = document.getElementById('tabChats');
+        const tabDiscover = document.getElementById('tabDiscover');
+
+        tabBtnChats.addEventListener('click', () => {
+            tabBtnChats.classList.add('active');
+            tabBtnDiscover.classList.remove('active');
+            tabChats.classList.add('active');
+            tabDiscover.classList.remove('active');
+        });
+
+        tabBtnDiscover.addEventListener('click', () => {
+            tabBtnDiscover.classList.add('active');
+            tabBtnChats.classList.remove('active');
+            tabDiscover.classList.add('active');
+            tabChats.classList.remove('active');
+        });
+
+        // Mobile View Navigation Logic
+        const btnBackSidebar = document.getElementById('btnBackSidebar');
+        btnBackSidebar.addEventListener('click', () => {
+            document.getElementById('chatSidebar').classList.remove('hidden-mobile');
+        });
+
+        // Firebase Auth Init
+        signInAnonymously(auth).catch(console.error);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                const userRef = doc(db, 'users', user.uid);
+                const userSnap = await getDoc(userRef);
+
+                const avatarUrl = getProfileAvatar();
+                const localName = getProfileName();
+
+                if (!userSnap.exists()) {
+                    const randomId = 'LRN-' + Math.floor(1000 + Math.random() * 9000);
+                    currentUserData = {
+                        username: localName,
+                        chatId: randomId,
+                        avatar: avatarUrl
+                    };
+                    await setDoc(userRef, currentUserData);
+                } else {
+                    currentUserData = userSnap.data();
+                    // Keep avatar and username synced with Learny Profile
+                    await updateDoc(userRef, { username: localName, avatar: avatarUrl });
+                    currentUserData.username = localName;
+                    currentUserData.avatar = avatarUrl;
+                }
+
+                document.getElementById('myUsername').innerText = currentUserData.username;
+                document.getElementById('myChatId').innerText = `Chat ID: ${currentUserData.chatId}`;
+                document.getElementById('myAvatar').src = currentUserData.avatar;
+
+                listenToRequestsAndContacts();
+            }
+        });
+
+        // Send Friend Request
+        document.getElementById('sendReqBtn').addEventListener('click', sendConnectionRequest);
+        async function sendConnectionRequest() {
+            const targetId = document.getElementById('targetChatId').value.trim();
+            if (!targetId || targetId === currentUserData.chatId) return;
+
+            const q = query(collection(db, 'users'), where('chatId', '==', targetId));
+            const querySnap = await getDocs(q);
+
+            if (querySnap.empty) {
+                if(typeof APP !== 'undefined') APP.showToast('Chat ID not found!');
+                else alert('Chat ID not found!');
+                return;
+            }
+
+            const targetUserDoc = querySnap.docs[0];
+            const receiverId = targetUserDoc.id;
+
+            await addDoc(collection(db, 'requests'), {
+                senderId: currentUser.uid,
+                senderChatId: currentUserData.chatId,
+                senderName: currentUserData.username,
+                senderAvatar: currentUserData.avatar,
+                receiverId: receiverId,
+                receiverChatId: targetId,
+                status: 'pending',
+                createdAt: serverTimestamp()
+            });
+
+            if(typeof APP !== 'undefined') APP.showToast('Request Sent!');
+            else alert('Request Sent!');
+            document.getElementById('targetChatId').value = '';
+        }
+
+        // Realtime Sidebar Syncing
+        function listenToRequestsAndContacts() {
+            const qSent = query(collection(db, 'requests'), where('senderId', '==', currentUser.uid));
+            const qReceived = query(collection(db, 'requests'), where('receiverId', '==', currentUser.uid));
+
+            let requestsMap = new Map();
+
+            const render = async () => {
+                const chatsContainer = document.getElementById('chatsList');
+                const incomingContainer = document.getElementById('incomingRequestsList');
+                const sentContainer = document.getElementById('sentRequestsList');
+
+                chatsContainer.innerHTML = '';
+                incomingContainer.innerHTML = '';
+                sentContainer.innerHTML = '';
+
+                let pendingIncomingCount = 0;
+
+                for (const [reqId, req] of requestsMap.entries()) {
+                    // Active Connections (Tab 1)
+                    if (req.status === 'accepted') {
+                        const isSender = req.senderId === currentUser.uid;
+                        const otherUserId = isSender ? req.receiverId : req.senderId;
+                        const otherChatId = isSender ? req.receiverChatId : req.senderChatId;
+
+                        // Fetch updated target user profile info
+                        let otherUserData = { username: 'Student Connection', avatar: 'https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png' };
+                        try {
+                            const uSnap = await getDoc(doc(db, 'users', otherUserId));
+                            if (uSnap.exists()) otherUserData = uSnap.data();
+                        } catch (e) {}
+
+                        const item = document.createElement('div');
+                        item.className = `chat-contact-item ${activeChatUserId === otherUserId ? 'active' : ''}`;
+                        item.innerHTML = `
+                            <img class="chat-avatar-lg" style="width:38px; height:38px;" src="${otherUserData.avatar || 'https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png'}" alt="Avatar">
+                            <div class="contact-details">
+                                <div class="name">${otherUserData.username || 'Student Connection'}</div>
+                                <div class="sub">${otherChatId}</div>
+                            </div>`;
+                        item.onclick = () => openChat(otherUserId, otherChatId, otherUserData.username, otherUserData.avatar, reqId);
+                        chatsContainer.appendChild(item);
+                    }
+
+                    // Pending Incoming Requests (Tab 2)
+                    if (req.status === 'pending' && req.receiverId === currentUser.uid) {
+                        pendingIncomingCount++;
+                        const item = document.createElement('div');
+                        item.className = 'request-item';
+                        item.innerHTML = `
+                            <div>
+                                <div style="font-weight:600; font-size:13px;">${req.senderChatId}</div>
+                                <div style="font-size:11px; color:var(--text-muted);">${req.senderName || 'Student'} wants to connect</div>
+                            </div>
+                            <button class="btn btn-sm btn-primary" id="acc-${reqId}">Accept</button>`;
+                        incomingContainer.appendChild(item);
+
+                        setTimeout(() => {
+                            const btn = document.getElementById(`acc-${reqId}`);
+                            if (btn) btn.onclick = () => acceptRequest(reqId, req.senderId);
+                        }, 0);
+                    }
+
+                    // Sent Pending Requests (Tab 2)
+                    if (req.status === 'pending' && req.senderId === currentUser.uid) {
+                        const item = document.createElement('div');
+                        item.className = 'request-item';
+                        item.innerHTML = `
+                            <div>
+                                <div style="font-weight:600; font-size:13px;">${req.receiverChatId}</div>
+                            </div>
+                            <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: var(--warning); font-size:11px;">Pending</span>`;
+                        sentContainer.appendChild(item);
+                    }
+                }
+
+                // Badge Counter
+                const reqBadge = document.getElementById('reqBadge');
+                if (pendingIncomingCount > 0) {
+                    reqBadge.innerText = pendingIncomingCount;
+                    reqBadge.style.display = 'inline-block';
+                } else {
+                    reqBadge.style.display = 'none';
+                }
+            };
+
+            onSnapshot(qSent, (snap) => {
+                snap.docs.forEach(doc => requestsMap.set(doc.id, doc.data()));
+                render();
+            });
+
+            onSnapshot(qReceived, (snap) => {
+                snap.docs.forEach(doc => requestsMap.set(doc.id, doc.data()));
+                render();
+            });
+        }
+
+        // Accept Request Action
+        async function acceptRequest(requestId, senderId) {
+            await updateDoc(doc(db, 'requests', requestId), { status: 'accepted' });
+            const chatDocId = [currentUser.uid, senderId].sort().join('_');
+            await setDoc(doc(db, 'chats', chatDocId), {
+                members: [currentUser.uid, senderId],
+                updatedAt: serverTimestamp()
+            }, { merge: true });
+        }
+
+        // Open Messaging View
+        function openChat(otherUserId, otherChatId, otherUsername, otherAvatar, reqId) {
+            activeChatUserId = otherUserId;
+            activeRequestId = reqId;
+
+            // Hide sidebar on mobile when opening chat
+            if (window.innerWidth <= 768) {
+                document.getElementById('chatSidebar').classList.add('hidden-mobile');
+            }
+
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('messagesBox').style.display = 'flex';
+            document.getElementById('chatHeaderTitle').innerText = `${otherUsername || 'Student'} (${otherChatId})`;
+            
+            const headerAvatar = document.getElementById('activeChatAvatar');
+            headerAvatar.src = otherAvatar || 'https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png';
+            headerAvatar.style.display = 'block';
+
+            const removeBtn = document.getElementById('removeFriendBtn');
+            removeBtn.style.display = 'inline-block';
+            removeBtn.onclick = () => removeFriend(reqId);
+
+            document.getElementById('messageInput').disabled = false;
+            document.getElementById('sendMsgBtn').disabled = false;
+
+            if (activeChatUnsubscribe) activeChatUnsubscribe();
+
+            const chatDocId = [currentUser.uid, otherUserId].sort().join('_');
+            const messagesRef = collection(db, 'chats', chatDocId, 'messages');
+            const q = query(messagesRef, orderBy('createdAt', 'asc'));
+
+            activeChatUnsubscribe = onSnapshot(q, (snapshot) => {
+                const messagesBox = document.getElementById('messagesBox');
+                messagesBox.innerHTML = '';
+
+                snapshot.docs.forEach((doc) => {
+                    const data = doc.data();
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = `msg-bubble ${data.senderId === currentUser.uid ? 'sent' : 'received'}`;
+
+                    let timeStr = 'Just now';
+                    if (data.createdAt) {
+                        const date = data.createdAt.toDate();
+                        timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    }
+
+                    msgDiv.innerHTML = `
+                        <div>${data.text}</div>
+                        <div class="msg-time">${timeStr}</div>
+                    `;
+                    messagesBox.appendChild(msgDiv);
+                });
+
+                messagesBox.scrollTop = messagesBox.scrollHeight;
+            });
+        }
+
+        // Remove Friend Connection Logic
+        async function removeFriend(reqId) {
+            if (confirm("Are you sure you want to remove this connection?")) {
+                await deleteDoc(doc(db, 'requests', reqId));
+                activeChatUserId = null;
+                document.getElementById('messagesBox').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'flex';
+                document.getElementById('chatHeaderTitle').innerText = 'Select a contact to start chatting';
+                document.getElementById('activeChatAvatar').style.display = 'none';
+                document.getElementById('removeFriendBtn').style.display = 'none';
+                document.getElementById('messageInput').disabled = true;
+                document.getElementById('sendMsgBtn').disabled = true;
+                
+                if (window.innerWidth <= 768) {
+                    document.getElementById('chatSidebar').classList.remove('hidden-mobile');
+                }
+            }
+        }
+
+        // Message Input Handling
+        document.getElementById('sendMsgBtn').addEventListener('click', sendMessage);
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            if (!text || !activeChatUserId) return;
+
+            const chatDocId = [currentUser.uid, activeChatUserId].sort().join('_');
+            await addDoc(collection(db, 'chats', chatDocId, 'messages'), {
+                senderId: currentUser.uid,
+                text: text,
+                createdAt: serverTimestamp()
+            });
+
+            input.value = '';
+        }
+    </script>
+</body>
+</html>
