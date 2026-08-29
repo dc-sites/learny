@@ -261,6 +261,54 @@
             margin-right: 10px;
         }
 
+        /* Premium Popup Modal Styling */
+        .premium-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .premium-modal {
+            background: var(--bg-dark, #1e1b4b);
+            border: 2px solid var(--warning, #f59e0b);
+            border-radius: var(--radius, 16px);
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            animation: modalFadeIn 0.3s ease;
+        }
+        @keyframes modalFadeIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .premium-modal h3 {
+            color: var(--text-main, #fff);
+            margin-top: 10px;
+            margin-bottom: 8px;
+            font-size: 1.3rem;
+        }
+        .premium-modal p {
+            color: var(--text-muted, #94a3b8);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .premium-modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
         /* Mobile Optimization Rules */
         @media (max-width: 768px) {
             .meeting-container {
@@ -365,6 +413,19 @@
 <body>
     <div class="overlay"></div>
 
+    <!-- Premium Upgrade Modal -->
+    <div id="premium-modal" class="premium-modal-overlay hidden">
+        <div class="premium-modal">
+            <i class="fa fa-gem" style="font-size: 3rem; color: var(--warning, #f59e0b);"></i>
+            <h3>Get Premium Access</h3>
+            <p id="premium-modal-msg">Upgrade to Learny Premium to unlock unlimited daily rooms, full room capacities (up to 10 members), and custom Pomodoro durations!</p>
+            <div class="premium-modal-actions">
+                <button id="btn-modal-close" class="btn btn-secondary">Close</button>
+                <a href="premium.html" class="btn btn-primary" style="background: var(--warning, #f59e0b); border-color: var(--warning, #f59e0b); color: #000; font-weight: bold;"><i class="fa fa-gem"></i> Get Premium</a>
+            </div>
+        </div>
+    </div>
+
     <div class="app-container">
         <!-- SIDEBAR -->
         <aside class="sidebar">
@@ -411,7 +472,6 @@
                 <h1 class="page-title"><i class="fa fa-users"></i> Virtual Study Room</h1>
                 <div class="header-actions">
                     <button class="theme-toggle" aria-label="Toggle Theme"><i class="fa fa-moon"></i></button>
-                    
                 </div>
             </header>
 
@@ -442,28 +502,28 @@
                     </div>
                     <div class="grid-2 mb-3">
                         <div class="form-group">
-                            <label><i class="fa fa-users"></i> Max Capacity</label>
+                            <label><i class="fa fa-users"></i> Max Capacity (Free: Max 4)</label>
                             <select id="max-students" class="form-control">
                                 <option value="1">1 Student</option>
                                 <option value="2">2 Students</option>
                                 <option value="3">3 Students</option>
                                 <option value="4" selected>4 Students</option>
-                                <option value="5">5 Students</option>
-                                <option value="6">6 Students</option>
-                                <option value="7">7 Students</option>
-                                <option value="8">8 Students</option>
-                                <option value="9">9 Students</option>
-                                <option value="10">10 Students</option>
+                                <option value="5">5 Students (Premium 🔒)</option>
+                                <option value="6">6 Students (Premium 🔒)</option>
+                                <option value="7">7 Students (Premium 🔒)</option>
+                                <option value="8">8 Students (Premium 🔒)</option>
+                                <option value="9">9 Students (Premium 🔒)</option>
+                                <option value="10">10 Students (Premium 🔒)</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label><i class="fa fa-brain"></i> Focus Duration (m)</label>
-                            <input type="number" id="focus-mins" class="form-control" value="25" min="1" />
+                        <div class="form-group" id="focus-mins-wrapper">
+                            <label><i class="fa fa-brain"></i> Focus Duration (m) <i class="fa fa-lock" style="color:var(--warning);" title="Locked in Free version"></i></label>
+                            <input type="number" id="focus-mins" class="form-control" value="25" min="1" readonly style="background: var(--bg-dark); cursor: not-allowed;" />
                         </div>
                     </div>
-                    <div class="form-group mb-3">
-                        <label><i class="fa fa-coffee"></i> Break Duration (m)</label>
-                        <input type="number" id="break-mins" class="form-control" value="5" min="1" />
+                    <div class="form-group mb-3" id="break-mins-wrapper">
+                        <label><i class="fa fa-coffee"></i> Break Duration (m) <i class="fa fa-lock" style="color:var(--warning);" title="Locked in Free version"></i></label>
+                        <input type="number" id="break-mins" class="form-control" value="5" min="1" readonly style="background: var(--bg-dark); cursor: not-allowed;" />
                     </div>
                     <button id="btn-create" class="btn btn-primary" style="width: 100%;"><i class="fa fa-rocket"></i> Create Study Room</button>
                 </div>
@@ -603,6 +663,42 @@
       let userName = localStorage.getItem("learny_user_name") || "";
       let userAvatar = "https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png";
 
+      // Helper function to trigger Premium Modal
+      function showPremiumModal(message) {
+        if (message) {
+          document.getElementById("premium-modal-msg").innerText = message;
+        }
+        document.getElementById("premium-modal").classList.remove("hidden");
+      }
+
+      document.getElementById("btn-modal-close").addEventListener("click", () => {
+        document.getElementById("premium-modal").classList.add("hidden");
+      });
+
+      // Daily Room Creation Tracking for Free Version (Max 2 rooms per day)
+      function getDailyCreatedRoomsCount() {
+        const today = new Date().toISOString().slice(0, 10);
+        const stored = localStorage.getItem("learny_room_created_tracker");
+        if (stored) {
+          try {
+            const parsed = JSON.parse(stored);
+            if (parsed.date === today) {
+              return parsed.count;
+            }
+          } catch(e){}
+        }
+        return 0;
+      }
+
+      function incrementDailyCreatedRoomsCount() {
+        const today = new Date().toISOString().slice(0, 10);
+        const currentCount = getDailyCreatedRoomsCount();
+        localStorage.setItem("learny_room_created_tracker", JSON.stringify({
+          date: today,
+          count: currentCount + 1
+        }));
+      }
+
       // Load Profile Data from APP state or localStorage
       if (typeof APP !== 'undefined' && APP.data && APP.data.profile) {
         if (APP.data.profile.name) userName = APP.data.profile.name;
@@ -673,6 +769,21 @@
         document.getElementById("tab-btn-create").classList.remove("active");
         document.getElementById("tab-content-join").classList.remove("hidden");
         document.getElementById("tab-content-create").classList.add("hidden");
+      });
+
+      // Handle locked options for Pomodoro and Capacity in Free Version
+      document.getElementById("max-students").addEventListener("change", (e) => {
+        if (parseInt(e.target.value) > 4) {
+          showPremiumModal("Free version is limited to a maximum of 4 members per room. Upgrade to Premium to host up to 10 members!");
+          e.target.value = "4";
+        }
+      });
+
+      document.getElementById("focus-mins-wrapper").addEventListener("click", () => {
+        showPremiumModal("Customizing focus and break durations is a Premium feature. Free version is locked to 25 min Pomodoro sessions!");
+      });
+      document.getElementById("break-mins-wrapper").addEventListener("click", () => {
+        showPremiumModal("Customizing focus and break durations is a Premium feature. Free version is locked to 25 min Pomodoro sessions!");
       });
 
       async function startLocalMedia() {
@@ -930,13 +1041,30 @@
       document.getElementById("btn-create").addEventListener("click", () => {
         if (!validateUserName()) return;
 
+        // Check Daily Creation Limit for Free Tier (Max 2 rooms per day)
+        const roomsCreatedToday = getDailyCreatedRoomsCount();
+        if (roomsCreatedToday >= 2) {
+          showPremiumModal("You have reached the free limit of 2 rooms per day. Upgrade to Premium to create unlimited study rooms!");
+          return;
+        }
+
         const roomName = document.getElementById("new-room-name").value || "Study Room";
-        const maxStudents = parseInt(document.getElementById("max-students").value) || 4;
-        const focusMins = parseInt(document.getElementById("focus-mins").value) || 25;
-        const breakMins = parseInt(document.getElementById("break-mins").value) || 5;
+        let maxStudents = parseInt(document.getElementById("max-students").value) || 4;
+        
+        // Enforce max member limit for Free Tier (Max 4 students)
+        if (maxStudents > 4) {
+          showPremiumModal("Free version allows up to 4 members only. Upgrade to Premium for larger groups!");
+          return;
+        }
+
+        // Lock Pomodoro duration to 25m Focus / 5m Break for Free Tier
+        const focusMins = 25;
+        const breakMins = 5;
 
         currentRoomId = generateRoomId(roomName);
         isHost = true;
+
+        incrementDailyCreatedRoomsCount();
 
         localStorage.setItem("learny_room_id", currentRoomId);
         enterRoom(currentRoomId);
@@ -966,9 +1094,11 @@
           }
           const data = snapshot.val();
           const currentUsersCount = data.users ? Object.keys(data.users).length : 0;
+          const allowedCapacity = Math.min(data.maxStudents || 4, 4);
 
-          if (currentUsersCount >= data.maxStudents && !data.users[userId]) {
-            alert(`Room is full! (Max Limit: ${data.maxStudents} students)`);
+          // Prevent joining if user capacity limit exceeded for free version
+          if (currentUsersCount >= allowedCapacity && !data.users[userId]) {
+            showPremiumModal(`This room has reached the free tier limit of ${allowedCapacity} members. Upgrade to Premium for higher capacities!`);
             return;
           }
 
@@ -1037,7 +1167,7 @@
           }
 
           document.getElementById("display-room-title").innerText = data.roomName;
-          document.getElementById("max-count").innerText = data.maxStudents;
+          document.getElementById("max-count").innerText = Math.min(data.maxStudents || 4, 4);
           chatDisabledByHost = !!data.chatDisabled;
 
           const chatBtn = document.getElementById("btn-toggle-chat-enable");
@@ -1050,7 +1180,7 @@
             document.getElementById("btn-start-session").classList.add("hidden");
           }
 
-          updatePhase(data.status, data.endTime, data.focusMins, data.breakMins);
+          updatePhase(data.status, data.endTime, 25, 5);
         });
 
         onValue(ref(db, `rooms/${roomId}/users`), (snapshot) => {
@@ -1139,8 +1269,7 @@
 
       document.getElementById("btn-start-session").addEventListener("click", () => {
         get(ref(db, `rooms/${currentRoomId}`)).then((snapshot) => {
-          const data = snapshot.val();
-          const endTime = Date.now() + data.focusMins * 60 * 1000;
+          const endTime = Date.now() + 25 * 60 * 1000;
 
           update(ref(db, `rooms/${currentRoomId}`), {
             status: "FOCUS",
@@ -1177,7 +1306,7 @@
             statusMsg.innerHTML = '<i class="fa fa-ban"></i> Chat has been disabled by the Host.';
           }
 
-          document.getElementById("timer-display").innerText = `${String(focusMins).padStart(2, '0')}:00`;
+          document.getElementById("timer-display").innerText = "25:00";
           if (progressRing) progressRing.style.strokeDashoffset = "0";
           return;
         }
@@ -1199,7 +1328,7 @@
           statusMsg.innerHTML = '<i class="fa fa-comments"></i> Break time! Chat is open.';
         }
 
-        totalSessionSecs = (isFocus ? focusMins : breakMins) * 60;
+        totalSessionSecs = (isFocus ? 25 : 5) * 60;
 
         if (timerInterval) clearInterval(timerInterval);
 
@@ -1210,7 +1339,7 @@
 
           if (remainingSecs === 0 && isHost) {
             clearInterval(timerInterval);
-            toggleRoomPhase(status, focusMins, breakMins);
+            toggleRoomPhase(status, 25, 5);
           }
 
           const mins = String(Math.floor(remainingSecs / 60)).padStart(2, '0');
@@ -1229,7 +1358,7 @@
 
       function toggleRoomPhase(currentStatus, focusMins, breakMins) {
         const nextStatus = currentStatus === "FOCUS" ? "BREAK" : "FOCUS";
-        const nextDuration = nextStatus === "FOCUS" ? focusMins : breakMins;
+        const nextDuration = nextStatus === "FOCUS" ? 25 : 5;
         
         update(ref(db, `rooms/${currentRoomId}`), {
           status: nextStatus,
